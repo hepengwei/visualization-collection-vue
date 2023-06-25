@@ -4,7 +4,7 @@ import Components from "unplugin-vue-components/vite";
 import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
 import fs from "fs";
 import path from "path";
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 
 /**
  * 获取 Node.js 进程的当前工作目录的绝对路径
@@ -47,9 +47,9 @@ export default defineConfig({
     vue(),
     createSvgIconsPlugin({
       // 指定需要缓存的图标文件夹
-      iconDirs: [path.resolve(process.cwd(), 'src/images/svg')],
+      iconDirs: [path.resolve(process.cwd(), "src/images/svg")],
       // 指定symbolId格式
-      symbolId: 'icon-[dir]-[name]',
+      symbolId: "icon-[dir]-[name]",
     }),
     Components({
       resolvers: [AntDesignVueResolver({ importStyle: false })],

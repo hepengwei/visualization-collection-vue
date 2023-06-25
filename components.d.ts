@@ -13,7 +13,7 @@ declare module 'vue' {
     ComingSoon: typeof import('./src/components/ComingSoon.vue')['default']
     GridBox: typeof import('./src/components/GridBox.vue')['default']
     GridContent: typeof import('./src/components/GridContent.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    ModuleTitle: typeof import('./src/components/ModuleTitle.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./src/components/SvgIcon.vue')['default']

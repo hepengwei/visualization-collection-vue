@@ -4,6 +4,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ModuleTitle from '@/components/ModuleTitle.vue';
 
 const canvasWidth = 400;
 const canvasHeight = 400;
@@ -155,6 +156,7 @@ onUnmounted(() => {
     backgroundImage: 'linear-gradient(135deg, #224141, #162a2a)',
     position: 'relative',
   }">
+    <ModuleTitle i18nTitle="page.canvasDynamicEffect.dynamicClock" />
     <canvas ref="canvasRef">
       {{ t("common.browserTooLow") }}
     </canvas>

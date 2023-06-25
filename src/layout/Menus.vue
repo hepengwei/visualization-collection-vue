@@ -120,10 +120,6 @@ const items: Ref<ItemType[]> = computed(() => [
         "countDown"
       ),
       getItem(
-        t("menu.canvasDynamicEffect.dynamicParticleBackground"),
-        "particlesBg"
-      ),
-      getItem(
         t("menu.canvasDynamicEffect.rippleEffect"),
         "rippleFloatOnTheWater"
       ),

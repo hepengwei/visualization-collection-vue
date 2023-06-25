@@ -7,6 +7,13 @@ import DynamicClock from "pages/canvas/DynamicClock.vue";
 import Searchlight from "pages/canvas/Searchlight.vue";
 import GlobuleInteraction from "pages/canvas/GlobuleInteraction.vue";
 import KillPlanetGame from "pages/canvas/KillPlanetGame.vue";
+import FreeFallingBody from "pages/canvas/FreeFallingBody.vue";
+import CountDown from "pages/canvas/CountDown/index.vue";
+import RippleFloatOnTheWater from "pages/canvas/RippleFloatOnTheWater/index.vue";
+import FlowerBloom from "pages/canvas/FlowerBloom/index.vue";
+import CodeBgWall from "pages/canvas/CodeBgWall.vue";
+import WordDance from "pages/canvas/WordDance.vue";
+import Scratch from "pages/canvas/Scratch.vue";
 
 const contentRoutes = [
   {
@@ -49,6 +56,34 @@ const contentRoutes = [
       {
         path: "/canvas/killPlanetGame",
         component: KillPlanetGame,
+      },
+      {
+        path: "/canvas/freeFallingBody",
+        component: FreeFallingBody,
+      },
+      {
+        path: "/canvas/countDown",
+        component: CountDown,
+      },
+      {
+        path: "/canvas/rippleFloatOnTheWater",
+        component: RippleFloatOnTheWater,
+      },
+      {
+        path: "/canvas/flowerBloom",
+        component: FlowerBloom,
+      },
+      {
+        path: "/canvas/codeBgWall",
+        component: CodeBgWall,
+      },
+      {
+        path: "/canvas/wordDance",
+        component: WordDance,
+      },
+      {
+        path: "/canvas/scratch",
+        component: Scratch,
       },
     ],
   },

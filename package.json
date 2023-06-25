@@ -14,6 +14,7 @@
     "@ant-design/icons-vue": "^6.1.0",
     "ant-design-vue": "^4.0.0-rc.5",
     "classnames": "^2.3.2",
+    "particles.js": "^2.0.0",
     "sphere-collision": "^1.1.6",
     "vue": "^3.3.0",
     "vue-i18n": "9",
