@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import useScrollToTop from 'hooks/useScrollToTop';
 import GridContent from 'components/GridContent/index.vue';
 import GridBox from 'components/GridContent/GridBox.vue';
 
 const rowSpace = 8;
 const colSpace = 8;
 const gridboxList: number[] = new Array(29).fill(0);
+
+useScrollToTop();
 </script>
 
 <template>

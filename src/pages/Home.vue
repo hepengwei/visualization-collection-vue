@@ -1,6 +1,35 @@
 <script setup lang="ts">
+import { onMounted, ref, watch } from 'vue';
+import type { Ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import Header from '@/layout/Header.vue';
 import Menus from '@/layout/Menus.vue';
+import { useGlobalContext } from 'hooks/useGlobalContext';
+import type { GlobalContext } from 'hooks/useGlobalContext';
+
+const defaultPageUrl = "/html/visualDesign"; // 默认首页
+
+const contentRef = ref<HTMLDivElement>();
+const router = useRouter();
+const route = useRoute();
+const globalContext = useGlobalContext() as Ref<GlobalContext>;
+
+const onScroll = () => {
+  globalContext.value?.setScrollTop(contentRef.value?.scrollTop);
+};
+
+watch(() => route.path, () => {
+  const { path } = route;
+  if (!path || path === "/") {
+    router.push(defaultPageUrl);
+  }
+})
+
+onMounted(() => {
+  if (contentRef.value) {
+    globalContext.value?.setScrollContentRef(contentRef as Ref<HTMLDivElement>);
+  }
+})
 </script>
 
 <template>
@@ -8,7 +37,7 @@ import Menus from '@/layout/Menus.vue';
     <Header />
     <div class="container-body">
       <Menus />
-      <div className="container-content">
+      <div className="container-content" @scroll="onScroll" ref="contentRef">
         <router-view />
       </div>
     </div>

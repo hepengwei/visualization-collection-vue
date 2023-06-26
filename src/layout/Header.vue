@@ -1,6 +1,12 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import type { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useGlobalContext } from 'hooks/useGlobalContext';
+import type { GlobalContext } from 'hooks/useGlobalContext';
 const { t, locale } = useI18n();
+const globalContext = useGlobalContext() as Ref<GlobalContext>;
+const containerRef = ref<HTMLDivElement>();
 
 const onchangeLanguage = () => {
   if (locale.value === "zh-cn") {
@@ -9,11 +15,18 @@ const onchangeLanguage = () => {
     locale.value = "zh-cn";
   }
 };
+
+onMounted(() => {
+  if (containerRef.value) {
+    const { height } = containerRef.value.getBoundingClientRect();
+    globalContext.value?.setHeadHeight(height);
+  }
+})
 </script>
 
 <template>
   <div>
-    <div class="container">
+    <div class="container" ref="containerRef">
       <div class="title">
         {{ t("common.logoName") }}
       </div>
