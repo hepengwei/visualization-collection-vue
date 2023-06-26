@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import useScrollToTop from 'hooks/useScrollToTop';
 import GridContent from 'components/GridContent/index.vue';
 import GridBox from 'components/GridContent/GridBox.vue';
 import GlassMimicry1 from './components/GlassMimicry1.vue';
@@ -14,6 +15,8 @@ const gridboxList = [
   { element: MixBlendMode },
   { element: SwitchingText },
 ];
+
+useScrollToTop();
 </script>
 
 <template>

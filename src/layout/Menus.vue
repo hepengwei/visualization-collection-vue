@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, VueElement, h, computed } from 'vue';
+import { ref, VueElement, h, computed, watch, onMounted, onUnmounted } from 'vue';
 import type { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useGlobalContext } from 'hooks/useGlobalContext';
+import type { GlobalContext } from 'hooks/useGlobalContext';
 import { useRouter, useRoute } from 'vue-router';
 import {
   MenuFoldOutlined,
@@ -17,6 +19,8 @@ import {
 import type { ItemType } from 'ant-design-vue';
 
 const { t } = useI18n();
+const globalContext = useGlobalContext() as Ref<GlobalContext>;
+const containerRef = ref<HTMLDivElement>();
 const router = useRouter();
 const route = useRoute();
 const collapsed = ref<boolean>(false);
@@ -195,6 +199,12 @@ const items: Ref<ItemType[]> = computed(() => [
   ),
 ]);
 
+const updateMenuWidth = () => {
+  if (containerRef.value) {
+    globalContext.value?.setMenuWidth(containerRef.value.clientWidth);
+  }
+};
+
 const selectedKeys = computed(() => {
   const { path } = route;
   const result = [];
@@ -220,11 +230,25 @@ const onMenu = (options: { keyPath: string[] }) => {
   }, "");
   router.push(routePath);
 };
+
+watch([collapsed, containerRef], () => {
+  if (containerRef.value) {
+    updateMenuWidth();
+  }
+},)
+
+onMounted(() => {
+  window.addEventListener("resize", updateMenuWidth);
+})
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateMenuWidth);
+})
 </script>
 
 <template>
   <div style="min-height: 100%">
-    <div class="container">
+    <div class="container" ref="containerRef">
       <div class="topBox">
         <div class="top">
           <a-button type="primary" style="margin-bottom: 16px" @click="toggleCollapsed">

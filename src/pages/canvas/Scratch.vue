@@ -3,29 +3,31 @@
  */
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import type { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useGlobalContext } from 'hooks/useGlobalContext';
+import type { GlobalContext } from 'hooks/useGlobalContext';
 
 let ctxRef: CanvasRenderingContext2D | null = null;
 let startPoint: { x: number; y: number } | null = null;
 let isDraw: boolean = false;
 
 const { t } = useI18n();
+const globalContext = useGlobalContext() as Ref<GlobalContext>;
 const containerRef = ref<HTMLDivElement>();
 const canvasRef = ref<HTMLCanvasElement>();
-const menuWidth = ref<number>(248); // 暂时写死
-const headHeight = ref<number>(60); // 暂时写死
 
 const onMouseDown = (e: MouseEvent) => {
   isDraw = true;
-  const x = e.pageX - menuWidth.value;
-  const y = e.pageY - headHeight.value;
+  const x = e.pageX - globalContext.value.menuWidth;
+  const y = e.pageY - globalContext.value.headHeight;
   startPoint = { x, y };
 };
 
 const onMouseMove = (e: MouseEvent) => {
   if (isDraw && ctxRef && startPoint) {
-    const x = e.pageX - menuWidth.value;
-    const y = e.pageY - headHeight.value;
+    const x = e.pageX - globalContext.value.menuWidth;
+    const y = e.pageY - globalContext.value.headHeight;
     ctxRef.beginPath();
     ctxRef.globalCompositeOperation = "destination-out";
     ctxRef.lineCap = "round";
@@ -43,7 +45,7 @@ const onMouseUp = () => {
   startPoint = null;
 };
 
-watch([menuWidth, containerRef, canvasRef], () => {
+watch([globalContext.value.menuWidth, containerRef, canvasRef], () => {
   if (containerRef.value && canvasRef.value) {
     const { clientWidth, clientHeight } = containerRef.value;
     canvasRef.value.width = clientWidth;
