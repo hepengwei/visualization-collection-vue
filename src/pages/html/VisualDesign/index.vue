@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import GridContent from 'components/GridContent.vue';
-import GridBox from 'components/GridBox.vue';
+import GridContent from 'components/GridContent/index.vue';
+import GridBox from 'components/GridContent/GridBox.vue';
 import GlassMimicry1 from './components/GlassMimicry1.vue';
 import GlassMimicry2 from './components/GlassMimicry2.vue';
+import MixBlendMode from './components/MixBlendMode.vue';
+import SwitchingText from './components/SwitchingText.vue';
 
 const rowSpace = 4;
 const colSpace = 4;
 const gridboxList = [
   { element: GlassMimicry1 },
   { element: GlassMimicry2 },
+  { element: MixBlendMode },
+  { element: SwitchingText },
 ];
 </script>
 
