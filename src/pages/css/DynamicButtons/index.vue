@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import GridContent from 'components/GridContent.vue';
-import GridBox from 'components/GridBox.vue';
+import GridContent from 'components/GridContent/index.vue';
+import GridBox from 'components/GridContent/GridBox.vue';
 import IconMoveButton from './components/IconMoveButton.vue';
 import NeonButton from './components/NeonButton.vue';
 
