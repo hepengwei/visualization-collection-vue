@@ -14,6 +14,7 @@ declare module 'vue' {
     GridBox: typeof import('./src/components/GridBox.vue')['default']
     GridContent: typeof import('./src/components/GridContent.vue')['default']
     ModuleTitle: typeof import('./src/components/ModuleTitle.vue')['default']
+    QuickSwitchingText: typeof import('./src/components/QuickSwitchingText.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./src/components/SvgIcon.vue')['default']
