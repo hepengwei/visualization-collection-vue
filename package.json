@@ -12,10 +12,12 @@
   "author": "River",
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@vueuse/core": "^10.2.0",
     "ant-design-vue": "^4.0.0-rc.5",
     "classnames": "^2.3.2",
     "particles.js": "^2.0.0",
     "sphere-collision": "^1.1.6",
+    "swiper": "^9.4.1",
     "typed.js": "^2.0.16",
     "vue": "^3.3.0",
     "vue-i18n": "9",

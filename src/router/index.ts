@@ -4,6 +4,7 @@ import VisualDesign from "pages/html/VisualDesign/index.vue";
 import InteractiveDesign from "pages/html/InteractiveDesign/index.vue";
 import BackgroundEffect from "pages/html/BackgroundEffect/index.vue";
 import ComplexLayout from "pages/html/ComplexLayout/index.vue";
+import AppPageFrame from "pages/html/AppPageFrame/index.vue";
 import DynamicButtons from "pages/css/DynamicButtons/index.vue";
 import DynamicClock from "pages/canvas/DynamicClock.vue";
 import Searchlight from "pages/canvas/Searchlight.vue";
@@ -36,6 +37,10 @@ const contentRoutes = [
       {
         path: "/html/complexLayout",
         component: ComplexLayout,
+      },
+      {
+        path: "/html/appPageFrame",
+        component: AppPageFrame,
       },
     ],
   },
