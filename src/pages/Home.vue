@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import type { Ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import Header from '@/layout/Header.vue';
@@ -27,8 +27,12 @@ watch(() => route.path, () => {
 
 onMounted(() => {
   if (contentRef.value) {
-    globalContext.value?.setScrollContentRef(contentRef as Ref<HTMLDivElement>);
+    globalContext.value?.setScrollContentRef(contentRef.value as HTMLDivElement);
   }
+})
+
+onUnmounted(() => {
+  globalContext.value?.setScrollContentRef(null);
 })
 </script>
 

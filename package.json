@@ -16,6 +16,7 @@
     "classnames": "^2.3.2",
     "particles.js": "^2.0.0",
     "sphere-collision": "^1.1.6",
+    "typed.js": "^2.0.16",
     "vue": "^3.3.0",
     "vue-i18n": "9",
     "vue-router": "4"

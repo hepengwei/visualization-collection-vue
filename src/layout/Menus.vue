@@ -200,8 +200,8 @@ const items: Ref<ItemType[]> = computed(() => [
 ]);
 
 const updateMenuWidth = () => {
-  if (containerRef.value) {
-    globalContext.value?.setMenuWidth(containerRef.value.clientWidth);
+  if (containerRef.value && globalContext.value.menuWidth !== containerRef.value.clientWidth) {
+    globalContext.value.setMenuWidth(containerRef.value.clientWidth);
   }
 };
 

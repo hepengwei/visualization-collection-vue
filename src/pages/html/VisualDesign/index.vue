@@ -6,6 +6,8 @@ import GlassMimicry1 from './components/GlassMimicry1.vue';
 import GlassMimicry2 from './components/GlassMimicry2.vue';
 import MixBlendMode from './components/MixBlendMode.vue';
 import SwitchingText from './components/SwitchingText.vue';
+import Typed1 from './components/Typed1.vue';
+import Typed2 from './components/Typed2.vue';
 
 const rowSpace = 4;
 const colSpace = 4;
@@ -14,6 +16,8 @@ const gridboxList = [
   { element: GlassMimicry2 },
   { element: MixBlendMode },
   { element: SwitchingText },
+  { element: Typed1 },
+  { element: Typed2 },
 ];
 
 useScrollToTop();
@@ -35,6 +39,7 @@ useScrollToTop();
 .container {
   box-sizing: border-box;
   width: 100%;
+  height: auto !important;
   min-height: 100%;
   display: flex;
   flex: 1;
