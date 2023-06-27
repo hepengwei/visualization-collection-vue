@@ -9,7 +9,7 @@ export interface GlobalContext {
   scrollTop: number;
   setScrollTop: (y?: number) => void;
   scrollContentRef: HTMLDivElement | null | undefined;
-  setScrollContentRef: (scrollContentRef?: HTMLDivElement) => void;
+  setScrollContentRef: (scrollContentRef?: HTMLDivElement | null) => void;
 }
 
 const globalProvideSymbol = Symbol();
@@ -47,10 +47,8 @@ export const useGlobalProvide = () => {
   };
   globalContext.value.setScrollTop = setScrollTop;
 
-  const setScrollContentRef = (scrollContentRef?: HTMLDivElement) => {
-    if (scrollContentRef) {
-      globalContext.value.scrollContentRef = scrollContentRef;
-    }
+  const setScrollContentRef = (scrollContentRef?: HTMLDivElement | null) => {
+    globalContext.value.scrollContentRef = scrollContentRef;
   };
   globalContext.value.setScrollContentRef = setScrollContentRef;
 

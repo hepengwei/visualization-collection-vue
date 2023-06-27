@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import ComingSoon from "components/ComingSoon.vue";
 import VisualDesign from "pages/html/VisualDesign/index.vue";
+import InteractiveDesign from "pages/html/InteractiveDesign/index.vue";
 import BackgroundEffect from "pages/html/BackgroundEffect/index.vue";
 import DynamicButtons from "pages/css/DynamicButtons/index.vue";
 import DynamicClock from "pages/canvas/DynamicClock.vue";
@@ -22,6 +23,10 @@ const contentRoutes = [
       {
         path: "/html/visualDesign",
         component: VisualDesign,
+      },
+      {
+        path: "/html/interactiveDesign",
+        component: InteractiveDesign,
       },
       {
         path: "/html/backgroundEffect",
