@@ -1,14 +1,12 @@
 /**
- * 交互设计
+ * 复杂布局
  */
 <script setup lang="ts">
 import useScrollToTop from 'hooks/useScrollToTop';
-import MagnifyingGlass from './components/MagnifyingGlass.vue';
-import CropImage from './components/CropImage.vue';
+import LineCombination from './components/LineCombination.vue';
 
 const boxList = [
-  { element: MagnifyingGlass },
-  { element: CropImage },
+  { element: LineCombination },
 ];
 
 useScrollToTop();
@@ -28,23 +26,19 @@ useScrollToTop();
   width: 100%;
   height: auto !important;
   min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  align-items: center;
-  flex-wrap: wrap;
   background-image: linear-gradient(135deg, #224141, #162a2a);
-  padding: 4px 0;
+  padding: 6px 4px;
+  overflow-y: auto;
 
   .box {
-    box-sizing: border-box;
-    width: calc(100% - 8px);
-    background-image: linear-gradient(to right, #04182c, #000c17, #04182c);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 3px solid #35a2fd44;
     border-radius: 10px;
-    overflow: hidden;
-    margin: 4px 2px;
-    display: flex;
+    background-image: linear-gradient(to right, #04182c, #000c17, #04182c);
+    color: #ffffff;
   }
 }
 </style>

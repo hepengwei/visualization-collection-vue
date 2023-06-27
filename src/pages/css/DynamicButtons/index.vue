@@ -1,3 +1,6 @@
+/**
+ * 动效按钮
+ */
 <script setup lang="ts">
 import GridContent from 'components/GridContent/index.vue';
 import GridBox from 'components/GridContent/GridBox.vue';
