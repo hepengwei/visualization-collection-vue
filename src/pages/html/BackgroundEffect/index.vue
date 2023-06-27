@@ -1,3 +1,6 @@
+/**
+ * 背景图案
+ */
 <script setup lang="ts">
 import useScrollToTop from 'hooks/useScrollToTop';
 import GridContent from 'components/GridContent/index.vue';
