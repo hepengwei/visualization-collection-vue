@@ -1,5 +1,5 @@
 import { createApp } from "vue";
-import { Menu, Button, Tooltip } from "ant-design-vue";
+import { Menu, Button, Tooltip, Input, Select } from "ant-design-vue";
 import { createI18n } from "vue-i18n";
 import svgIcon from "components/SvgIcon.vue";
 import "virtual:svg-icons-register";
@@ -26,5 +26,7 @@ createApp(App)
   .use(Menu)
   .use(Button)
   .use(Tooltip)
+  .use(Input)
+  .use(Select)
   .use(i18n)
   .mount("#app");

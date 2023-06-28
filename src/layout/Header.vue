@@ -11,8 +11,10 @@ const containerRef = ref<HTMLDivElement>();
 const onchangeLanguage = () => {
   if (locale.value === "zh-cn") {
     locale.value = "en-us";
+    localStorage.setItem("language", "en-us");
   } else {
     locale.value = "zh-cn";
+    localStorage.setItem("language", "zh-cn");
   }
 };
 
