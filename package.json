@@ -20,6 +20,7 @@
     "@vueuse/core": "^10.2.0",
     "ant-design-vue": "^4.0.0-rc.5",
     "classnames": "^2.3.2",
+    "date-fns": "^2.30.0",
     "pako": "^2.1.0",
     "particles.js": "^2.0.0",
     "sphere-collision": "^1.1.6",

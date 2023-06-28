@@ -21,7 +21,6 @@ let isScroll: boolean = false;
 let frameId: number = 0;
 let currentMoveDirection: string = "";
 
-
 enum SwitchPageType {
   "next",
   "prev",

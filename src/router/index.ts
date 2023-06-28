@@ -7,6 +7,7 @@ import ComplexLayout from "pages/html/ComplexLayout/index.vue";
 import AppPageFrame from "pages/html/AppPageFrame/index.vue";
 import UtilitarianFunction from "pages/html/UtilitarianFunction/index.vue";
 import DynamicButtons from "pages/css/DynamicButtons/index.vue";
+import RichDynamicEffect from "pages/css/RichDynamicEffect/index.vue";
 import DynamicClock from "pages/canvas/DynamicClock.vue";
 import Searchlight from "pages/canvas/Searchlight.vue";
 import GlobuleInteraction from "pages/canvas/GlobuleInteraction.vue";
@@ -55,6 +56,10 @@ const contentRoutes = [
       {
         path: "/css/dynamicButtons",
         component: DynamicButtons,
+      },
+      {
+        path: "/css/richDynamicEffect",
+        component: RichDynamicEffect,
       },
     ],
   },
