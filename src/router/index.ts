@@ -20,6 +20,7 @@ import FlowerBloom from "pages/canvas/FlowerBloom/index.vue";
 import CodeBgWall from "pages/canvas/CodeBgWall.vue";
 import WordDance from "pages/canvas/WordDance.vue";
 import Scratch from "pages/canvas/Scratch.vue";
+import GameImage from "pages/GameImage/index.vue";
 
 const contentRoutes = [
   {
@@ -116,6 +117,10 @@ const contentRoutes = [
         component: Scratch,
       },
     ],
+  },
+  {
+    path: "/gameImage",
+    component: GameImage,
   },
   {
     path: "/",

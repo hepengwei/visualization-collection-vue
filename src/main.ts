@@ -7,6 +7,7 @@ import {
   InputNumber,
   Select,
   Slider,
+  Checkbox,
 } from "ant-design-vue";
 import { createI18n } from "vue-i18n";
 import svgIcon from "components/SvgIcon.vue";
@@ -38,5 +39,6 @@ createApp(App)
   .use(InputNumber)
   .use(Select)
   .use(Slider)
+  .use(Checkbox)
   .use(i18n)
   .mount("#app");
