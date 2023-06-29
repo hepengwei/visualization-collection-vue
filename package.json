@@ -21,6 +21,7 @@
     "ant-design-vue": "^4.0.0-rc.5",
     "classnames": "^2.3.2",
     "date-fns": "^2.30.0",
+    "lodash-es": "^4.17.21",
     "pako": "^2.1.0",
     "particles.js": "^2.0.0",
     "sphere-collision": "^1.1.6",
@@ -32,6 +33,7 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.7",
     "@types/node": "^20.3.1",
     "@vitejs/plugin-vue": "^4.1.0",
     "sass": "^1.63.3",
