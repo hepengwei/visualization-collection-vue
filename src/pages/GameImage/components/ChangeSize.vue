@@ -108,7 +108,7 @@ watch(imgInfo, () => {
 
 <template>
   <div class="imgBox" :style="{
-    borderColor: imgDragOver ? primaryColor : primaryShallowColor,
+    borderColor: imgDragOver.value ? primaryColor : primaryShallowColor,
   }" @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
     <div class="fileBox">
       <img :src="imgInfo.value.imgUrl" alt="" />

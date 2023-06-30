@@ -247,7 +247,7 @@ watch([imgSizeQualified, watermarkInfo, leftBoxRef], () => {
 <template>
   <div class="container">
     <div class="imgBox" :style="{
-      borderColor: imgDragOver ? primaryColor : primaryShallowColor,
+      borderColor: imgDragOver.value ? primaryColor : primaryShallowColor,
     }" @dragover="(e: DragEvent) => {
   if (!watermarkInfo) {
     onDragOver(e);
