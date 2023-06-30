@@ -1,5 +1,9 @@
+/**
+ * 图片处理工具
+ */
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import type { Ref } from 'vue';
 import { message } from 'ant-design-vue';
 import { FolderAddOutlined } from "@ant-design/icons-vue";
 import { useI18n } from 'vue-i18n';
@@ -13,6 +17,11 @@ import {
 } from "utils/fileUtil";
 import BasicOperation from "./components/BasicOperation.vue";
 import RectClip from './components/RectClip.vue';
+import RadiusClip from './components/RadiusClip.vue';
+import ChangeSize from './components/ChangeSize.vue';
+import ChangeBrightness from './components/ChangeBrightness.vue';
+import ChangeDiaphaneity from './components/ChangeDiaphaneity.vue';
+import AddWatermark from './components/AddWatermark.vue';
 
 interface ImgInfo {
   name: string;
@@ -25,9 +34,9 @@ interface ImgInfo {
 }
 
 export interface TabPageProps {
-  imgInfo: ImgInfo;
+  imgInfo: Ref<ImgInfo>;
   exportImage: (imageData: ImageData, exportImageType?: string) => void;
-  imgDragOver: boolean;
+  imgDragOver: Ref<boolean>;
   onDragOver: (e: DragEvent) => void;
   onDragLeave: (e: DragEvent) => void;
   onDrop: (e: DragEvent) => void;
@@ -191,9 +200,9 @@ const onClear = () => {
 };
 
 const tabPageProps = computed<TabPageProps>(() => ({
-  imgInfo: imgInfo.value as ImgInfo,
+  imgInfo: imgInfo as Ref<ImgInfo>,
   exportImage,
-  imgDragOver: imgDragOver.value,
+  imgDragOver,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -210,6 +219,31 @@ const tabsList = computed<TabInfo[]>(() => [
     id: TabId.rectClip,
     label: t("menu.imageProcessingTool.rectangularClipping"),
     element: RectClip,
+  },
+  {
+    id: TabId.radiusClip,
+    label: t("menu.imageProcessingTool.roundedCornerClipping"),
+    element: RadiusClip,
+  },
+  {
+    id: TabId.changeSize,
+    label: t("menu.imageProcessingTool.modifyTheSize"),
+    element: ChangeSize,
+  },
+  {
+    id: TabId.changeBrightness,
+    label: t("menu.imageProcessingTool.modifyBrightness"),
+    element: ChangeBrightness,
+  },
+  {
+    id: TabId.changeDiaphaneity,
+    label: t("menu.imageProcessingTool.modifyTransparency"),
+    element: ChangeDiaphaneity,
+  },
+  {
+    id: TabId.addWatermark,
+    label: t("menu.imageProcessingTool.addWatermark"),
+    element: AddWatermark,
   },
 ]);
 

@@ -1,3 +1,6 @@
+/**
+ * 矩形裁剪Tab页/打马赛克Tab页
+ */
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import type { Ref } from 'vue';
@@ -27,15 +30,16 @@ const primaryColor = "#0E5E6F";
 const primaryShallowColor = "#3A8891";
 const clipBoxMinWidthHeight = 10; // 裁剪框的最小宽高
 const defaultMosaicSize = 10; // 默认马赛克颗粒大小
-let isKeyDown: boolean = false;
-let isGetar: boolean = false;
-let leftBoxWidth: number = 0;
-let leftBoxHeight: number = 0;
-let beforeMouseX: number = 0;
-let beforeMouseY: number = 0;
-let clipBoxBeforeLeft: number = 0;
-let clipBoxBeforeTop: number = 0;
+let isKeyDown = false;
+let isGetar = false;
+let leftBoxWidth = 0;
+let leftBoxHeight = 0;
+let beforeMouseX = 0;
+let beforeMouseY = 0;
+let clipBoxBeforeLeft = 0;
+let clipBoxBeforeTop = 0;
 let contact: Contact;
+let doing = false;
 
 const {
   imgInfo,
@@ -53,16 +57,14 @@ const globalContext = useGlobalContext() as Ref<GlobalContext>;
 const imgSizeQualified = ref<boolean>(false);
 const retainOriginalSize = ref<boolean>(false);
 const mosaicSize = ref<number>(defaultMosaicSize);
-const doing = ref<boolean>(false);
 const clipBoxRef = ref<HTMLDivElement | null>(null);
-const img2Ref = ref<HTMLImageElement | null>(null);
 
 const defaultWidth = Math.max(
-  Math.floor(imgInfo.width / 2),
+  Math.floor(imgInfo.value.width / 2),
   clipBoxMinWidthHeight
 );
 const defaultHeight = Math.max(
-  Math.floor(imgInfo.height / 2),
+  Math.floor(imgInfo.value.height / 2),
   clipBoxMinWidthHeight
 );
 const clipBoxWidth = ref<number>(defaultWidth);
@@ -261,25 +263,25 @@ const onMouseUp = () => {
 
 // 点击确定
 const onOk = () => {
-  if (doing.value) {
+  if (doing) {
     message.warning(t("common.workHard"));
     return;
   }
-  doing.value = true;
+  doing = true;
   let newImageData = null;
   if (type === "clip") {
     newImageData = rectClip(
-      imgInfo.imageData as ImageData,
+      imgInfo.value.imageData as ImageData,
       clipBoxWidth.value,
       clipBoxHeight.value,
       clipBoxTop.value,
       clipBoxLeft.value,
       retainOriginalSize.value,
-      imgInfo.fileType
+      imgInfo.value.fileType
     );
   } else if (type === "mosaic") {
     newImageData = mosaic(
-      imgInfo.imageData as ImageData,
+      imgInfo.value.imageData as ImageData,
       clipBoxWidth.value,
       clipBoxHeight.value,
       clipBoxTop.value,
@@ -292,12 +294,12 @@ const onOk = () => {
   } else {
     message.error(t("common.operationFailure"));
   }
-  doing.value = false;
+  doing = false;
 };
 
 
 watch([imgInfo, leftBoxRef], () => {
-  const { width, height } = imgInfo;
+  const { width, height } = imgInfo.value;
   if (
     width < clipBoxMinWidthHeight * 2 ||
     height < clipBoxMinWidthHeight * 2
@@ -316,11 +318,11 @@ watch([imgInfo, leftBoxRef], () => {
   }
 
   const defaultWidth = Math.max(
-    Math.floor(imgInfo.width / 2),
+    Math.floor(imgInfo.value.width / 2),
     clipBoxMinWidthHeight
   );
   const defaultHeight = Math.max(
-    Math.floor(imgInfo.height / 2),
+    Math.floor(imgInfo.value.height / 2),
     clipBoxMinWidthHeight
   );
   clipBoxWidth.value = defaultWidth;
@@ -347,15 +349,15 @@ watch([imgInfo, leftBoxRef], () => {
   <div class="container">
     <div class="imgBox" :style="{ borderColor: imgDragOver ? primaryColor : primaryShallowColor }" @dragover="onDragOver"
       @dragleave="onDragLeave" @drop="onDrop">
-      <div class="content" :style="{ width: `${imgInfo.width}px`, height: `${imgInfo.height}px` }"
+      <div class="content" :style="{ width: `${imgInfo.value.width}px`, height: `${imgInfo.value.height}px` }"
         @mousemove="onMouseMove" @mouseup="onMouseUp" @mouseleave="onMouseUp" ref="contentRef" v-if="imgSizeQualified">
         <div class="leftBox" ref="leftBoxRef">
-          <img :src="imgInfo.imgUrl" class="img1" />
+          <img :src="imgInfo.value.imgUrl" class="img1" />
           <div class="mask" />
-          <img :src="imgInfo.imgUrl" class="img2" :style="{
+          <img :src="imgInfo.value.imgUrl" class="img2" :style="{
             clip: `rect(${clipBoxTop}px, ${clipBoxLeft +
               clipBoxWidth}px, ${clipBoxTop + clipBoxHeight}px, ${clipBoxLeft}px)`
-          }" ref="img2Ref" />
+          }" />
           <div class="clipBox" :style="{
             position: 'absolute', width: `${clipBoxWidth}px`, height:
               `${clipBoxHeight}px`, top: `${clipBoxTop}px`, left: `${clipBoxLeft}px`
@@ -377,40 +379,40 @@ watch([imgInfo, leftBoxRef], () => {
         <a-checkbox class="operationBtn" v-model:checked="retainOriginalSize" v-if="type === 'clip'">
           {{ t("page.imageProcessingTool.WhetherRetainOriginalDimension") }}</a-checkbox>
         <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '200px' }"
-          :min="clipBoxMinWidthHeight" :max="imgInfo.width" :precision="0" :value="clipBoxWidth"
+          :min="clipBoxMinWidthHeight" :max="imgInfo.value.width" :precision="0" :value="clipBoxWidth"
           :addonBefore="t('page.imageProcessingTool.clippingWidth')" :onChange="(value: number |
             null) => {
-            const { width } = imgInfo;
+            const { width } = imgInfo.value;
             if (value && value + clipBoxLeft > width) {
               clipBoxLeft = width - value;
             }
             clipBoxWidth = value || 0;
           }" />
         <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '200px' }"
-          :min="clipBoxMinWidthHeight" :max="imgInfo.height" :precision="0" :value="clipBoxHeight"
+          :min="clipBoxMinWidthHeight" :max="imgInfo.value.height" :precision="0" :value="clipBoxHeight"
           :addonBefore="t('page.imageProcessingTool.clippingHeight')" :onChange="(value: number |
             null) => {
-            const { height } = imgInfo;
+            const { height } = imgInfo.value;
             if (value && value + clipBoxTop > height) {
               clipBoxTop = height - value;
             }
             clipBoxHeight = value || 0;
           }" />
         <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '190px' }" :min="0"
-          :max="imgInfo.width - clipBoxMinWidthHeight" :precision="0" :value="clipBoxLeft"
+          :max="imgInfo.value.width - clipBoxMinWidthHeight" :precision="0" :value="clipBoxLeft"
           :addonBefore="t('page.imageProcessingTool.distanceLeft')" :onChange="(value: number |
             null) => {
             clipBoxLeft = value || 0;
-            const { width } = imgInfo;
+            const { width } = imgInfo.value;
             if (value && value + clipBoxWidth > width) {
               clipBoxWidth = width - value;
             }
           }" />
         <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '190px' }" :min='0'
-          :max="imgInfo.height - clipBoxMinWidthHeight" :precision="0" :value="clipBoxTop"
+          :max="imgInfo.value.height - clipBoxMinWidthHeight" :precision="0" :value="clipBoxTop"
           :addonBefore="t('page.imageProcessingTool.distanceTop')" :onChange="(value: number | null) => {
             clipBoxTop = value || 0;
-            const { height } = imgInfo;
+            const { height } = imgInfo.value;
             if (value && value + clipBoxHeight > height) {
               clipBoxHeight = height - value;
             }
