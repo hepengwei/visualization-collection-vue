@@ -7,7 +7,6 @@ import { message } from 'ant-design-vue';
 import { useI18n } from 'vue-i18n';
 import { cloneDeep } from "lodash-es";
 import {
-  sizeTostr,
   flipSideToSide,
   flipUpsideDown,
   leftRotate,
@@ -30,6 +29,7 @@ import {
   jpgToPng,
   pngToJpg,
 } from "utils/imageUtil";
+import FileBox from "./FileBox.vue";
 import type { TabPageProps } from "../index.vue";
 
 interface Status {
@@ -83,8 +83,6 @@ const defaultImgStatus = {
   jpgToPngStatus: { doing: false, imageData: null },
   pngToJpgStatus: { doing: false, imageData: null },
 };
-const primaryColor = "#0E5E6F";
-const primaryShallowColor = "#3A8891";
 
 const {
   imgInfo,
@@ -127,24 +125,8 @@ watch(imgInfo, () => {
 </script>
 
 <template>
-  <div class="imgBox" :style="{
-    borderColor: imgDragOver.value ? primaryColor : primaryShallowColor,
-  }" @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
-    <div class="fileBox">
-      <img :src="imgInfo.value.imgUrl" alt="" />
-      <div class="fileInfo">
-        <div class="item">
-          {{ t("page.imageProcessingTool.filename") }} ：{{ imgInfo.value.name }} </div>
-        <div class="item">
-          {{ t("page.imageProcessingTool.format") }}： {{ imgInfo.value.fileType }} </div>
-        <div class="item">
-          {{ t("common.dimension") }}： {{ imgInfo.value.width && imgInfo.value.height ?
-            `${imgInfo.value.width}x${imgInfo.value.height}` : t("common.unknown") }} </div>
-        <div class="item">
-          {{ t("common.size") }}： {{ sizeTostr(imgInfo.value.size) }} </div>
-      </div>
-    </div>
-  </div>
+  <FileBox :imgInfo="imgInfo" :imgDragOver="imgDragOver" :onDragOver="onDragOver" :onDragLeave="onDragLeave"
+    :onDrop="onDrop" />
   <div class="operationBtns">
     <div class="left">
       <a-button type="primary" class="operationBtn" @click="() =>
