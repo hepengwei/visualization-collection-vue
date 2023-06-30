@@ -79,7 +79,7 @@ watch(imgInfo, () => {
 
 <template>
   <div class="container">
-    <div class="imgBox" :style="{ borderColor: imgDragOver ? primaryColor : primaryShallowColor }" @dragover="onDragOver"
+    <div class="imgBox" :style="{ borderColor: imgDragOver.value ? primaryColor : primaryShallowColor }" @dragover="onDragOver"
       @dragleave="onDragLeave" @drop="onDrop">
       <div class="content" :style="{
         width: `${imgInfo.value.width}px`, height: `${imgInfo.value.height}px`, borderRadius:

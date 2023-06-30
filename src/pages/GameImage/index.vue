@@ -22,6 +22,8 @@ import ChangeSize from './components/ChangeSize.vue';
 import ChangeBrightness from './components/ChangeBrightness.vue';
 import ChangeDiaphaneity from './components/ChangeDiaphaneity.vue';
 import AddWatermark from './components/AddWatermark.vue';
+import CoverWithMosaic from './components/CoverWithMosaic.vue';
+import Compression from './components/Compression.vue';
 
 interface ImgInfo {
   name: string;
@@ -244,6 +246,16 @@ const tabsList = computed<TabInfo[]>(() => [
     id: TabId.addWatermark,
     label: t("menu.imageProcessingTool.addWatermark"),
     element: AddWatermark,
+  },
+  {
+    id: TabId.coverWithMosaic,
+    label: t("menu.imageProcessingTool.coverWithMosaics"),
+    element: CoverWithMosaic,
+  },
+  {
+    id: TabId.photoCompression,
+    label: t("menu.imageProcessingTool.imageCompression"),
+    element: Compression,
   },
 ]);
 
