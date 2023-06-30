@@ -3,11 +3,10 @@ import { ref } from 'vue';
 import { message } from 'ant-design-vue';
 import { useI18n } from 'vue-i18n';
 import { exportToImage } from "utils/fileUtil";
-import { sizeTostr, compression } from "utils/imageUtil";
+import { compression } from "utils/imageUtil";
+import FileBox from "./FileBox.vue";
 import { TabPageProps } from "../index.vue";
 
-const primaryColor = "#0E5E6F";
-const primaryShallowColor = "#3A8891";
 const defaultCompressionDegree = 70;
 let doing = false;
 
@@ -90,24 +89,8 @@ const onOk = () => {
 </script>
 
 <template>
-  <div class="imgBox" :style="{
-    borderColor: imgDragOver.value ? primaryColor : primaryShallowColor,
-  }" @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
-    <div class="fileBox">
-      <img :src="imgInfo.value.imgUrl" alt="" />
-      <div class="fileInfo">
-        <div class="item">
-          {{ t("page.imageProcessingTool.filename") }} ：{{ imgInfo.value.name }} </div>
-        <div class="item">
-          {{ t("page.imageProcessingTool.format") }}： {{ imgInfo.value.fileType }} </div>
-        <div class="item">
-          {{ t("common.dimension") }}： {{ imgInfo.value.width && imgInfo.value.height ?
-            `${imgInfo.value.width}x${imgInfo.value.height}` : t("common.unknown") }} </div>
-        <div class="item">
-          {{ t("common.size") }}： {{ sizeTostr(imgInfo.value.size) }} </div>
-      </div>
-    </div>
-  </div>
+  <FileBox :imgInfo="imgInfo" :imgDragOver="imgDragOver" :onDragOver="onDragOver" :onDragLeave="onDragLeave"
+    :onDrop="onDrop" />
   <div class="operationBtns">
     <div class="left">
       <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '200px' : '240px' }" :min="10" :max="90"

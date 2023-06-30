@@ -25,7 +25,7 @@ import AddWatermark from './components/AddWatermark.vue';
 import CoverWithMosaic from './components/CoverWithMosaic.vue';
 import Compression from './components/Compression.vue';
 
-interface ImgInfo {
+export interface ImgInfo {
   name: string;
   fileType: string;
   size: number;
