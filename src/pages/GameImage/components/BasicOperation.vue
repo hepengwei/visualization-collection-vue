@@ -1,3 +1,6 @@
+/**
+ * 图片处理工具-基础操作Tab页
+ */
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { message } from 'ant-design-vue';
@@ -105,9 +108,9 @@ const doTask = (
   } else if (status.doing) {
     message.warning(t("common.workHard"));
     return;
-  } else if (imgInfo?.imageData) {
+  } else if (imgInfo.value.imageData) {
     status.doing = true;
-    const newImageData = method(imgInfo.imageData);
+    const newImageData = method(imgInfo.value.imageData);
     if (newImageData) {
       status.imageData = newImageData;
       exportImage(newImageData, exportImageType);
@@ -128,17 +131,17 @@ watch(imgInfo, () => {
     borderColor: imgDragOver ? primaryColor : primaryShallowColor,
   }" @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
     <div class="fileBox">
-      <img :src="imgInfo.imgUrl" alt="" />
+      <img :src="imgInfo.value.imgUrl" alt="" />
       <div class="fileInfo">
         <div class="item">
-          {{ t("page.imageProcessingTool.filename") }} ：{{ imgInfo.name }} </div>
+          {{ t("page.imageProcessingTool.filename") }} ：{{ imgInfo.value.name }} </div>
         <div class="item">
-          {{ t("page.imageProcessingTool.format") }}： {{ imgInfo.fileType }} </div>
+          {{ t("page.imageProcessingTool.format") }}： {{ imgInfo.value.fileType }} </div>
         <div class="item">
-          {{ t("common.dimension") }}： {{ imgInfo.width && imgInfo.height ?
-            `${imgInfo.width}x${imgInfo.height}` : t("common.unknown") }} </div>
+          {{ t("common.dimension") }}： {{ imgInfo.value.width && imgInfo.value.height ?
+            `${imgInfo.value.width}x${imgInfo.value.height}` : t("common.unknown") }} </div>
         <div class="item">
-          {{ t("common.size") }}： {{ sizeTostr(imgInfo.size) }} </div>
+          {{ t("common.size") }}： {{ sizeTostr(imgInfo.value.size) }} </div>
       </div>
     </div>
   </div>
