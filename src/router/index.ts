@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createRouter, createWebHashHistory } from "vue-router";
 import ComingSoon from "components/ComingSoon.vue";
 import VisualDesign from "pages/html/VisualDesign/index.vue";
@@ -20,6 +21,8 @@ import FlowerBloom from "pages/canvas/FlowerBloom/index.vue";
 import CodeBgWall from "pages/canvas/CodeBgWall.vue";
 import WordDance from "pages/canvas/WordDance.vue";
 import Scratch from "pages/canvas/Scratch.vue";
+import AppPage3DFrame from "pages/threejs/AppPageFrame.vue";
+import CarShow from 'pages/threejs/CarShow.vue';
 import GameImage from "pages/GameImage/index.vue";
 
 const contentRoutes = [
@@ -115,6 +118,19 @@ const contentRoutes = [
       {
         path: "/canvas/scratch",
         component: Scratch,
+      },
+    ],
+  },
+  {
+    path: "/threejs",
+    children: [
+      {
+        path: "/threejs/threejsAppPageFrame",
+        component: AppPage3DFrame,
+      },
+      {
+        path: "/threejs/carShow",
+        component: CarShow,
       },
     ],
   },
