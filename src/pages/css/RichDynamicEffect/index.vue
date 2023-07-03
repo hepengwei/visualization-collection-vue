@@ -5,6 +5,15 @@
 import useScrollToTop from 'hooks/useScrollToTop';
 import DynamicTime from './components/DynamicTime.vue';
 import FlopTime from './components/FlopTime/index.vue';
+import ChargingAnimation from './components/ChargingAnimation.vue';
+import ZongziLoading from './components/ZongziLoading.vue';
+import BoxReflect from './components/BoxReflect.vue';
+import TextAnimation from './components/TextAnimation.vue';
+import TextSearchlight from './components/TextSearchlight.vue';
+import DisplayTextInSmoke from './components/DisplayTextInSmoke.vue';
+import PlayVideoInText from './components/PlayVideoInText.vue';
+import WaveFont from './components/WaveFont.vue';
+
 useScrollToTop();
 </script>
 
@@ -17,6 +26,32 @@ useScrollToTop();
       <div class="box">
         <FlopTime />
       </div>
+    </div>
+    <div class="multipleColumnsBox">
+      <div class="box">
+        <ChargingAnimation />
+      </div>
+      <div class="box">
+        <ZongziLoading />
+      </div>
+      <div class="box">
+        <BoxReflect />
+      </div>
+    </div>
+    <div class="box">
+      <TextAnimation />
+    </div>
+    <div class="box">
+      <TextSearchlight />
+    </div>
+    <div class="box">
+      <DisplayTextInSmoke />
+    </div>
+    <div class="box">
+      <PlayVideoInText />
+    </div>
+    <div class="box">
+      <WaveFont />
     </div>
   </div>
 </template>
@@ -42,7 +77,7 @@ useScrollToTop();
     background-image: linear-gradient(to right, #04182c, #000c17, #04182c);
     color: #ffffff;
     position: relative;
-    margin: 8px 2px;
+    margin: 4px 2px;
     overflow: hidden;
   }
 
