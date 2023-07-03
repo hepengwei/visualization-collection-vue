@@ -1,0 +1,64 @@
+<template>
+  <div>
+    <div class="container">
+      <button>
+        Button
+        <span></span>
+      </button>
+    </div>
+  </div>
+</template>
+      
+<style scoped lang="scss">
+.container {
+  button {
+    box-sizing: border-box;
+    width: $dynamicButtonsWidth;
+    height: $dynamicButtonsHeight;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0 !important;
+    color: $buttonColor;
+    background-color: transparent;
+    font-size: 24px;
+    line-height: 24px;
+    cursor: pointer;
+    z-index: 1;
+    position: relative;
+
+    span {
+      position: absolute;
+      box-sizing: border-box;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      border: 4px solid $buttonColor;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 8%;
+        height: 400%;
+        top: 50%;
+        left: 50%;
+        background-color: #04111b;
+        transform: translate(-50%, -50%) rotate(-60deg);
+        transition: all 0.3s;
+      }
+    }
+
+    &:hover {
+      color: #fff;
+
+      span::after {
+        background-color: $buttonColor;
+        width: 100%;
+      }
+    }
+  }
+}
+</style>

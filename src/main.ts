@@ -15,6 +15,7 @@ import "virtual:svg-icons-register";
 import router from "./router/index";
 import zh_CN from "./locale/zh-CN";
 import en_US from "./locale/en-US";
+import VueTilt from "./directives/vueTilt";
 import App from "./App.vue";
 import "./style.css";
 
@@ -31,6 +32,7 @@ const i18n = createI18n({
 
 createApp(App)
   .use(router)
+  .use(i18n)
   .component("svg-icon", svgIcon)
   .use(Menu)
   .use(Button)
@@ -40,5 +42,5 @@ createApp(App)
   .use(Select)
   .use(Slider)
   .use(Checkbox)
-  .use(i18n)
+  .use(VueTilt)
   .mount("#app");
