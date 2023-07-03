@@ -12,8 +12,8 @@
 <style scoped lang="scss">
 .container {
   button {
-    width: 160px;
-    height: 48px;
+    width: $dynamicButtonsWidth;
+    height: $dynamicButtonsHeight;
     border: 0;
     border-radius: 6px;
     background: $buttonColor;
