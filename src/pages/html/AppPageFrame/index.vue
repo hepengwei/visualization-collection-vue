@@ -225,6 +225,7 @@ onMounted(() => {
     },
     on: {
       slideChange: function () {
+        // @ts-ignore
         showPageIndex.value = this.activeIndex + 1
       },
     },

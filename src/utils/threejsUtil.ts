@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
@@ -16,7 +17,7 @@ export const loadGlb: (url: string) => Promise<GLTF> = (url) => {
         resolve(gltf);
       },
       undefined,
-      (error) => {
+      (error: Error) => {
         reject(error);
       }
     );
