@@ -13,6 +13,11 @@ import TextSearchlight from './components/TextSearchlight.vue';
 import DisplayTextInSmoke from './components/DisplayTextInSmoke.vue';
 import PlayVideoInText from './components/PlayVideoInText.vue';
 import WaveFont from './components/WaveFont.vue';
+import TextOutlineAnimation1 from './components/TextOutlineAnimation1.vue';
+import TextOutlineAnimation2 from './components/TextOutlineAnimation2.vue';
+import MobiusBand1 from './components/MobiusBand1.vue';
+import MobiusBand2 from './components/MobiusBand2.vue';
+import TankShaking from './components/TankShaking.vue';
 
 useScrollToTop();
 </script>
@@ -52,6 +57,25 @@ useScrollToTop();
     </div>
     <div class="box">
       <WaveFont />
+    </div>
+    <div class="multipleColumnsBox">
+      <div class="box">
+        <TextOutlineAnimation1 />
+      </div>
+      <div class="box">
+        <TextOutlineAnimation2 />
+      </div>
+    </div>
+    <div class="multipleColumnsBox">
+      <div class="box">
+        <MobiusBand1 />
+      </div>
+      <div class="box">
+        <MobiusBand2 />
+      </div>
+    </div>
+    <div class="box">
+      <TankShaking />
     </div>
   </div>
 </template>
