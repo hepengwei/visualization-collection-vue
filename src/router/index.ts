@@ -22,7 +22,9 @@ import CodeBgWall from "pages/canvas/CodeBgWall.vue";
 import WordDance from "pages/canvas/WordDance.vue";
 import Scratch from "pages/canvas/Scratch.vue";
 import AppPage3DFrame from "pages/threejs/AppPageFrame.vue";
-import CarShow from 'pages/threejs/CarShow.vue';
+import CarShow from "pages/threejs/CarShow.vue";
+import HumanPostureDetection from "pages/AIApplication/HumanPostureDetection.vue";
+import NotBlockPeopleBarrage from "pages/AIApplication/NotBlockPeopleBarrage.vue";
 import GameImage from "pages/GameImage/index.vue";
 
 const contentRoutes = [
@@ -131,6 +133,19 @@ const contentRoutes = [
       {
         path: "/threejs/carShow",
         component: CarShow,
+      },
+    ],
+  },
+  {
+    path: "/AIApplication",
+    children: [
+      {
+        path: "/AIApplication/humanPostureDetection",
+        component: HumanPostureDetection,
+      },
+      {
+        path: "/AIApplication/notBlockPeopleBarrage",
+        component: NotBlockPeopleBarrage,
       },
     ],
   },

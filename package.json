@@ -12,8 +12,10 @@
   "author": "River",
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@mediapipe/pose": "^0.5.1675469404",
     "@mediapipe/selfie_segmentation": "^0.1.1675465747",
     "@tensorflow-models/body-segmentation": "^1.0.1",
+    "@tensorflow-models/pose-detection": "^2.1.0",
     "@tensorflow/tfjs-backend-webgl": "^4.8.0",
     "@tensorflow/tfjs-converter": "^4.8.0",
     "@tensorflow/tfjs-core": "^4.8.0",
