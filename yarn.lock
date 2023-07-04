@@ -207,6 +207,11 @@
   resolved "https://registry.yarnpkg.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.15.tgz#d7c6e6755c78567a951e04ab52ef0fd26de59f32"
   integrity sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==
 
+"@mediapipe/pose@^0.5.1675469404":
+  version "0.5.1675469404"
+  resolved "https://registry.yarnpkg.com/@mediapipe/pose/-/pose-0.5.1675469404.tgz#8f81e64c6561b2357a021a134b54de0204bafc72"
+  integrity sha512-DFZsNWTsSphRIZppnUCuunzBiHP2FdJXR9ehc7mMi4KG+oPaOH0Em3d6kr7Py+TSyTXC1doH88KcF28k2sBxsQ==
+
 "@mediapipe/selfie_segmentation@^0.1.1675465747":
   version "0.1.1675465747"
   resolved "https://registry.yarnpkg.com/@mediapipe/selfie_segmentation/-/selfie_segmentation-0.1.1675465747.tgz#f1f61eb116bf2efc262faf0a49a1829f4bae2712"
@@ -256,6 +261,14 @@
   integrity sha512-IPQ+a848KDZ/yzxJwP+GDPGwa6RLJ3+VbFraxlSWxAfygqTKx0EQQWHUawbCKxILtlzcfeinW+Gdcyiq0Onkfw==
   dependencies:
     rimraf "^3.0.2"
+
+"@tensorflow-models/pose-detection@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/pose-detection/-/pose-detection-2.1.0.tgz#733ce55dfe4a75d40cb04935e461beacac2e8e4d"
+  integrity sha512-4WOgxiPuA1ymZff9Epez2GsC0FSv7Fj8olu5LzXB/JAYo/zgyu2PFOQFeDXvvqyXwxdB4IrYYsgerUqlZaGdSQ==
+  dependencies:
+    rimraf "^3.0.2"
+    tslib "2.4.0"
 
 "@tensorflow/tfjs-backend-cpu@4.8.0":
   version "4.8.0"
@@ -2220,6 +2233,11 @@ traverse@^0.6.6:
   version "0.6.7"
   resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.7.tgz#46961cd2d57dd8706c36664acde06a248f1173fe"
   integrity sha512-/y956gpUo9ZNCb99YjxG7OaslxZWHfCHAUUfshwqOXmxUIvqLjVO581BT+gM59+QV9tFe6/CGG53tsA1Y7RSdg==
+
+tslib@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 typed.js@^2.0.16:
   version "2.0.16"
