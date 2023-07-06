@@ -1,0 +1,82 @@
+<script setup lang="ts">
+import scenery1 from "images/html/scenery1.jpg";
+import scenery2 from "images/html/scenery2.jpg";
+import scenery3 from "images/html/scenery3.jpg";
+import scenery4 from "images/html/scenery4.jpg";
+import scenery5 from "images/html/scenery5.jpg";
+import scenery6 from "images/html/scenery6.jpg";
+</script>
+
+<template>
+  <div style="width: 100%">
+    <div class="container">
+      <div class="content">
+        <img :src="scenery1" alt="" />
+        <img :src="scenery2" alt="" />
+        <img :src="scenery3" alt="" />
+        <img :src="scenery4" alt="" />
+        <img :src="scenery5" alt="" />
+        <img :src="scenery6" alt="" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.container {
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(to right, #04182c, #000c17, #04182c);
+
+  .content {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: auto 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+
+    img {
+      width: 200px;
+      /* control the size */
+      aspect-ratio: 1;
+      object-fit: cover;
+      transition: 0.35s;
+      filter: grayscale(1);
+      cursor: pointer;
+
+      &:nth-child(1) {
+        clip-path: polygon(0 0, 50% 0, 100% 100%, 0 100%);
+      }
+
+      &:nth-child(2) {
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+      }
+
+      &:nth-child(3) {
+        clip-path: polygon(50% 0, 100% 0, 100% 100%, 0 100%);
+      }
+
+      &:nth-child(4) {
+        clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
+      }
+
+      &:nth-child(5) {
+        clip-path: polygon(50% 0, 100% 100%, 0% 100%);
+      }
+
+      &:nth-child(6) {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%);
+      }
+
+      &:hover {
+        filter: grayscale(0);
+      }
+    }
+  }
+}
+</style>
