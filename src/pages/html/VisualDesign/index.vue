@@ -11,6 +11,14 @@ import MixBlendMode from './components/MixBlendMode.vue';
 import SwitchingText from './components/SwitchingText.vue';
 import Typed1 from './components/Typed1.vue';
 import Typed2 from './components/Typed2.vue';
+import AutoEllipsisText from './components/AutoEllipsisText.vue';
+import TextWrap from './components/TextWrap.vue';
+import BgFusion from './components/BgFusion.vue';
+import MyLogo from './components/MyLogo.vue';
+import ShearAngle from './components/ShearAngle.vue';
+import AnnulusLoading from './components/AnnulusLoading.vue';
+import Honeycomb from './components/Honeycomb.vue';
+import PizzaPie from './components/PizzaPie.vue';
 
 const rowSpace = 4;
 const colSpace = 4;
@@ -21,6 +29,14 @@ const gridboxList = [
   { element: SwitchingText },
   { element: Typed1 },
   { element: Typed2 },
+  { element: AutoEllipsisText },
+  { element: TextWrap },
+  { element: BgFusion },
+  { element: MyLogo },
+  { element: ShearAngle },
+  { element: AnnulusLoading },
+  { element: Honeycomb },
+  { element: PizzaPie },
 ];
 
 useScrollToTop();
