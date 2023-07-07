@@ -19,6 +19,19 @@ import ShearAngle from './components/ShearAngle.vue';
 import AnnulusLoading from './components/AnnulusLoading.vue';
 import Honeycomb from './components/Honeycomb.vue';
 import PizzaPie from './components/PizzaPie.vue';
+import AnnulusProgressBar from './components/AnnulusProgressBar.vue';
+import AudioLoading from './components/AudioLoading.vue';
+import FilterCSS from './components/FilterCSS.vue';
+import SudokuImageAnimation from './components/SudokuImageAnimation.vue';
+import WaterDropLogin from './components/WaterDropLogin.vue';
+import TextShadow from './components/TextShadow.vue';
+import HorseRaceLamp from './components/HorseRaceLamp.vue';
+import HarmonyLogo from './components/HarmonyLogo.vue';
+import Preserve3D from './components/Preserve3D.vue';
+import RotateAndBgFixed from './components/RotateAndBgFixed.vue';
+import HexagonalMesh from './components/HexagonalMesh.vue';
+// import HexagonalRadar from './components/HexagonalRadar.vue';
+import HoverEnlargement from './components/HoverEnlargement.vue';
 
 const rowSpace = 4;
 const colSpace = 4;
@@ -37,6 +50,19 @@ const gridboxList = [
   { element: AnnulusLoading },
   { element: Honeycomb },
   { element: PizzaPie },
+  { element: AnnulusProgressBar },
+  { element: AudioLoading },
+  { element: FilterCSS },
+  { element: SudokuImageAnimation },
+  { element: WaterDropLogin },
+  { element: TextShadow },
+  { element: HorseRaceLamp },
+  { element: HarmonyLogo },
+  { element: Preserve3D },
+  { element: RotateAndBgFixed },
+  { element: HexagonalMesh },
+  // { element: HexagonalRadar },
+  { element: HoverEnlargement },
 ];
 
 useScrollToTop();
