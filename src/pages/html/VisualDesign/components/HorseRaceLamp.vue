@@ -11,12 +11,7 @@ const containerRef = ref<HTMLDivElement | null>(null);
       <template v-if="!!containerRef">
         <div v-for="(_, index) in list" :key="index" class="scroll"
           :style="{ width: `${containerRef.clientWidth + 400}px` }">
-          <span key="first">
-            Police line do not cross - Police line do not cross - Police line do not
-            cross - Police line do not cross - Police line do not cross - Police line
-            do not cross
-          </span>
-          <span key="second">
+          <span v-for="(_, index) in 2" :key="index">
             Police line do not cross - Police line do not cross - Police line do not
             cross - Police line do not cross - Police line do not cross - Police line
             do not cross
