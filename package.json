@@ -21,12 +21,15 @@
     "@tensorflow/tfjs-core": "^4.8.0",
     "@vueuse/core": "^10.2.0",
     "ant-design-vue": "^4.0.0-rc.5",
+    "bignumber.js": "^9.1.1",
     "classnames": "^2.3.2",
     "date-fns": "^2.30.0",
+    "echarts": "^5.4.2",
     "gsap": "^3.12.2",
     "lodash-es": "^4.17.21",
     "pako": "^2.1.0",
     "particles.js": "^2.0.0",
+    "rambda": "^8.1.0",
     "sphere-collision": "^1.1.6",
     "swiper": "^9.4.1",
     "three": "^0.154.0",
@@ -38,6 +41,7 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/echarts": "^4.9.18",
     "@types/lodash-es": "^4.17.7",
     "@types/node": "^20.3.1",
     "@types/swiper": "^6.0.0",

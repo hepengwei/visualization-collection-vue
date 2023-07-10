@@ -26,6 +26,7 @@ import CarShow from "pages/threejs/CarShow.vue";
 import HumanPostureDetection from "pages/AIApplication/HumanPostureDetection.vue";
 import NotBlockPeopleBarrage from "pages/AIApplication/NotBlockPeopleBarrage.vue";
 import GameImage from "pages/GameImage/index.vue";
+import Pie from "pages/echarts/Pie/index.vue";
 
 const contentRoutes = [
   {
@@ -120,6 +121,15 @@ const contentRoutes = [
       {
         path: "/canvas/scratch",
         component: Scratch,
+      },
+    ],
+  },
+  {
+    path: "/echarts",
+    children: [
+      {
+        path: "/echarts/pie",
+        component: Pie,
       },
     ],
   },
