@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted, markRaw } from 'vue';
 import echarts from "utils/echarts.config";
 import type { ChartOptions } from "utils/echarts.config";
 
@@ -12,9 +12,8 @@ export interface BasicEchartProps {
   onGlobalout?: (params: any) => void;
 }
 
-
 const {
-  options = {}, // options
+  options, // options
   renderType = "canvas", //默认渲染模式canva 类型
   onHoverChange, //点击事件
   onClickChange, //鼠标hover事件
@@ -42,15 +41,23 @@ const setPieLabelLayout = (
   return { labelLinePoints: points };
 };
 
+
+const setOptions = () => {
+  //设置配置项
+  if (options && Object.keys(options).length > 0) {
+    chartInstance.value?.setOption(options);
+  }
+}
+
 const renderChart = () => {
   if (chartRef.value) {
-    const render = echarts?.getInstanceByDom(chartRef.value);
+    const render = echarts.getInstanceByDom(chartRef.value);
     if (render) {
       chartInstance.value = render;
     } else {
-      chartInstance.value = echarts?.init(chartRef.value, undefined, {
+      chartInstance.value = markRaw(echarts.init(chartRef.value, undefined, {
         renderer: renderType,
-      });
+      }));
     }
 
     //绑定点击事件
@@ -73,7 +80,7 @@ const renderChart = () => {
 
     //设置环形图的labelLayout
     if (
-      (options.series &&
+      (options?.series &&
         ((options.series as any)[0]?.type ?? "")) === "pie"
     ) {
       //当echart为环形图时
@@ -85,20 +92,20 @@ const renderChart = () => {
     // 鼠标离开图表的事件
     onGlobalout && chartInstance.value?.on("globalout", onGlobalout);
 
-    //设置配置项
-    chartInstance.value.setOption(options);
+    setOptions();
   }
 };
 
-watch(chartRef, () => {
-  renderChart();
-}, { immediate: true })
+watch(options, () => {
+  setOptions();
+})
 
 const handleResize = () => {
   chartInstance.value?.resize();
 };
 
 onMounted(() => {
+  renderChart();
   window.addEventListener("resize", handleResize);
 })
 
@@ -109,7 +116,6 @@ onUnmounted(() => {
   }
   window.removeEventListener("resize", handleResize);
 })
-
 </script>
 
 <template>

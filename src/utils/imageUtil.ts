@@ -1,3 +1,4 @@
+// @ts-ignore
 import UPNG from "./UPNG";
 
 // 将文件字节大小转成带单位的文件大小

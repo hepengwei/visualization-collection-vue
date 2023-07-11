@@ -15,7 +15,7 @@ import Page5 from "./components/Page5.vue";
 const innerHeadHeight = 100; // 内顶部区域高度
 const pageNum = 5; // 总页面
 const moveSpeed = 25; // 首页与第二页的切换速度
-let swiper: Swiper | null = null;
+let swiper: any = null;
 let isOwnScroll: boolean = false;
 let isScroll: boolean = false;
 let frameId: number = 0;

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import {
   AndroidOutlined,
   AppleOutlined,
@@ -181,7 +180,6 @@ const onMouseOver = (e: MouseEvent) => {
     svg.style.filter = "drop-shadow(0 0 20px #0f0)";
   }
 }
-
 
 const onMouseLeave = (e: MouseEvent) => {
   if (e.target && (e.target as Element).tagName === "SPAN") {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, watch } from 'vue';
 import { getGraphic } from "utils/echarts.config";
 import type { ChartOptions } from "utils/echarts.config";
 import { ECHART_COMMON_COLOR } from "constants/common";
@@ -21,8 +21,8 @@ const {
 } = defineProps<PieProps>();
 
 
-// 图表最终的配置数据
-const chartOptions = computed(() => {
+// 获取整个图表的基础配置
+const getBaseOptions = () => {
   const baseOptions: ChartOptions = {
     color: ECHART_COMMON_COLOR,
     // @ts-ignore
@@ -98,11 +98,20 @@ const chartOptions = computed(() => {
       source: [],
     },
   };
-  const { dataSource } = data;
-  if (!dataSource) return baseOptions;
-  baseOptions.dataset = { source: dataSource };
   return baseOptions;
-})
+};
+
+// 图表最终的配置数据
+const chartOptions = ref<ChartOptions>({});
+
+watch(data, () => {
+  const newOptions = getBaseOptions();
+  const { dataSource } = data;
+  if (dataSource) {
+    newOptions.dataset = { source: dataSource };
+  }
+  chartOptions.value = newOptions;
+}, { immediate: true })
 </script>
 
 <template>

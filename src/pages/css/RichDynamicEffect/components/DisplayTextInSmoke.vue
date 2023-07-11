@@ -26,7 +26,7 @@ const onceAgain = () => {
     <div class="container">
       <video muted autoPlay preload="true" x5-video-player-fullscreen="true" x5-playsinline="true" playsInline
         webkit-playsinline="true" ref="videoRef">
-        <source src="public/smoke.mp4" />
+        <source src="/smoke.mp4" />
       </video>
       <p ref="pRef">
         <span class="span1">H</span>
