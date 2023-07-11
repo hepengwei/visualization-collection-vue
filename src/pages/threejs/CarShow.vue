@@ -113,7 +113,7 @@ const initializeHandle = (
     (gridHelper.material as THREE.Material).transparent = true;
     scene.add(gridHelper);
 
-    loadGlb("./public/model/bmw.glb").then((gltf: GLTF) => {
+    loadGlb("/model/bmw.glb").then((gltf: GLTF) => {
       const bmw = gltf.scene;
       bmw.traverse((child: any) => {
         if (child.isMesh) {

@@ -3,7 +3,7 @@
     <div class="container">
       <video muted autoPlay preload="true" loop x5-video-player-fullscreen="true" x5-playsinline="true" playsInline
         webkit-playsinline="true">
-        <source src="public/vista.mp4" />
+        <source src="/vista.mp4" />
       </video>
       <p>River</p>
     </div>

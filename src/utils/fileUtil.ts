@@ -68,7 +68,7 @@ export const getImgInfo = (
 };
 
 // 根据buffer中的文件头信息判断图片类型
-export const getImageType = (buffer: Buffer) => {
+export const getImageType = (buffer: ArrayBuffer) => {
   let fileType = "";
   if (buffer) {
     const view = new DataView(buffer);

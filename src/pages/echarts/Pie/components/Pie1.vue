@@ -15,10 +15,8 @@ const echartData = computed(() => {
 </script>
 
 <template>
-  <div style="width: 100%">
-    <div class="echart">
-      <Pie :data="echartData" />
-    </div>
+  <div class="echart">
+    <Pie :data="echartData" />
   </div>
 </template>
 

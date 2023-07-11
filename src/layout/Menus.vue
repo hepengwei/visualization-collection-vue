@@ -235,7 +235,7 @@ watch([collapsed, containerRef], () => {
   if (containerRef.value) {
     updateMenuWidth();
   }
-},)
+})
 
 onMounted(() => {
   window.addEventListener("resize", updateMenuWidth);

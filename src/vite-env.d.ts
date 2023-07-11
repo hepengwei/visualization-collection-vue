@@ -17,3 +17,5 @@ declare module "sphere-collision";
 declare module "particles.js";
 
 declare module "typed.js";
+
+declare module "swiper";

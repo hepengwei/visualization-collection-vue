@@ -23,6 +23,7 @@ export default defineConfig({
     outDir: "docs",
     sourcemap: false,
   },
+  publicDir: "public",
   resolve: {
     extensions: [".ts", ".js"],
     alias: {

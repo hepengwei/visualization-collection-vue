@@ -176,7 +176,7 @@ onUnmounted(() => {
       <video :style="{ width: `${videoWidth}px`, height: `${videoHeight}px` }" :muted="false" preload="true" loop
         x5-video-player-fullscreen="true" x5-playsinline="true" playsInline webkit-playsinline="true"
         crossOrigin="anonymous" ref="videoRef">
-        <source src="public/dance.mp4" />
+        <source src="/dance.mp4" />
       </video>
       <div class="barrageBox" ref="barrageBoxRef"></div>
       <a-button type="primary" ghost @click="onTogglePlay" v-if="videoStatus !== VideoStatus.ready">

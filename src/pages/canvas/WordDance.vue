@@ -5,7 +5,6 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-
 const canvasWidth = 324;
 const canvasHeight = 570;
 let ctxRef: CanvasRenderingContext2D | null = null;
@@ -75,7 +74,7 @@ onUnmounted(() => {
   <div class="container" ref="boxRef">
     <video :muted="false" autoPlay preload="true" loop x5-video-player-fullscreen="true" x5-playsinline="true" playsInline
       webkit-playsinline="true" crossOrigin="anonymous" ref="videoRef">
-      <source src="public/dance.mp4" />
+      <source src="/dance.mp4" />
     </video>
     <canvas ref="canvasRef">
       {{ t("common.browserTooLow") }}

@@ -2,12 +2,14 @@
 import useScrollToTop from 'hooks/useScrollToTop';
 import GridContent from 'components/GridContent/index.vue';
 import GridBox from 'components/GridContent/GridBox.vue';
-import Pie1 from './components/Pie1.vue';
-import Pie2 from './components/Pie2.vue';
+import Bar1 from './components/Bar1.vue';
+import Bar2 from './components/Bar2.vue';
+import Bar3 from './components/Bar3.vue';
+import Bar4 from './components/Bar4.vue';
 
 const rowSpace = 4;
 const colSpace = 4;
-const gridboxList = [{ element: Pie1 }, { element: Pie2 }];
+const gridboxList = [{ element: Bar1 }, { element: Bar2 }, { element: Bar3 }, { element: Bar4 }];
 
 useScrollToTop();
 </script>
