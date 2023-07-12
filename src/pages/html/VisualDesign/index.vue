@@ -32,6 +32,7 @@ import RotateAndBgFixed from './components/RotateAndBgFixed.vue';
 import HexagonalMesh from './components/HexagonalMesh.vue';
 // import HexagonalRadar from './components/HexagonalRadar.vue';
 import HoverEnlargement from './components/HoverEnlargement.vue';
+import ActivityCountDown from './components/ActivityCountDown.vue';
 
 const rowSpace = 4;
 const colSpace = 4;
@@ -63,6 +64,7 @@ const gridboxList = [
   { element: HexagonalMesh },
   // { element: HexagonalRadar },
   { element: HoverEnlargement },
+  { element: ActivityCountDown },
 ];
 
 useScrollToTop();
