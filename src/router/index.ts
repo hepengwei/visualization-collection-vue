@@ -10,6 +10,7 @@ import UtilitarianFunction from "pages/html/UtilitarianFunction/index.vue";
 import DynamicButtons from "pages/css/DynamicButtons/index.vue";
 import RichDynamicEffect from "pages/css/RichDynamicEffect/index.vue";
 import GenerateRegularPolygon from "pages/css/GenerateRegularPolygon/index.vue";
+import SphereCollisionExample from "pages/canvas/SphereCollisionExample.vue";
 import DynamicClock from "pages/canvas/DynamicClock.vue";
 import Searchlight from "pages/canvas/Searchlight.vue";
 import GlobuleInteraction from "pages/canvas/GlobuleInteraction.vue";
@@ -79,6 +80,10 @@ const contentRoutes = [
   {
     path: "/canvas",
     children: [
+      {
+        path: "/canvas/sphereCollisionExample",
+        component: SphereCollisionExample,
+      },
       {
         path: "/canvas/dynamicClock",
         component: DynamicClock,
