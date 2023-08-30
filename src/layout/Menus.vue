@@ -99,6 +99,10 @@ const items: Ref<ItemType[]> = computed(() => [
     () => h(PlayCircleOutlined),
     [
       getItem(
+        t("menu.canvasDynamicEffect.sphereCollisionExample"),
+        "sphereCollisionExample"
+      ),
+      getItem(
         t("menu.canvasDynamicEffect.dynamicClock"),
         "dynamicClock"
       ),
