@@ -20,7 +20,6 @@ const globuleRadius = 80; // 球半径
 const fontSize = 40; // 文字大小
 const textColor = "#E76F5A"; // 文字颜色
 const maxMouseOutForce = 25; // 鼠标交互时能提供的最大力限制
-const collisionLossV = 0.4; // 碰撞损失的速度
 const moveLossV = 0.02; // 运动损失的速度
 const maxMoveV = null; // 小球最大移动速度限制
 const gDirection = "toInit"; // 引力方向。目前只有“toInit”，朝向原始位置。
@@ -86,7 +85,6 @@ const startAnimation = () => {
         color: "transparent",
         isPureColor: true,
         bgImg: bubble,
-        collisionLossV,
         moveLossV,
         gDirection,
         gCoefficient,
