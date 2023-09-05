@@ -30,7 +30,7 @@
     "pako": "^2.1.0",
     "particles.js": "^2.0.0",
     "rambda": "^8.1.0",
-    "sphere-collision": "^1.1.9",
+    "sphere-collision": "^1.1.10",
     "swiper": "^9.4.1",
     "three": "^0.154.0",
     "typed.js": "^2.0.16",

@@ -1,3 +1,6 @@
+/**
+ * 水波荡漾效果
+ */
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
