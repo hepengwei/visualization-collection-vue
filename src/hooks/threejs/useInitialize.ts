@@ -24,8 +24,8 @@ const useInitialize = (
 
   const render = () => {
     if (scene && camera && renderer) {
-      renderer.render(scene, camera);
       renderHandle && renderHandle(scene, camera, renderer);
+      renderer.render(scene, camera);
       frameId = window.requestAnimationFrame(render);
     }
   };

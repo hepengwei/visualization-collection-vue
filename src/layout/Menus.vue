@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { ref, VueElement, h, computed, watch, onMounted, onUnmounted } from 'vue';
-import type { Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useGlobalContext } from 'hooks/useGlobalContext';
-import type { GlobalContext } from 'hooks/useGlobalContext';
-import { useRouter, useRoute } from 'vue-router';
+import {
+  ref,
+  VueElement,
+  h,
+  computed,
+  watch,
+  onMounted,
+  onUnmounted,
+} from "vue";
+import type { Ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useGlobalContext } from "hooks/useGlobalContext";
+import type { GlobalContext } from "hooks/useGlobalContext";
+import { useRouter, useRoute } from "vue-router";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -16,7 +24,7 @@ import {
   FireOutlined,
   FileImageOutlined,
 } from "@ant-design/icons-vue";
-import type { ItemType } from 'ant-design-vue';
+import type { ItemType } from "ant-design-vue";
 
 const { t } = useI18n();
 const globalContext = useGlobalContext() as Ref<GlobalContext>;
@@ -31,7 +39,7 @@ const getItem = (
   key: string,
   icon?: any,
   children?: ItemType[],
-  type?: 'group',
+  type?: "group"
 ) => {
   return {
     key,
@@ -40,59 +48,25 @@ const getItem = (
     label,
     type,
   } as ItemType;
-}
+};
 
 const items: Ref<ItemType[]> = computed(() => [
-  getItem(
-    t("menu.htmlVision"),
-    "html",
-    () => h(BuildOutlined),
-    [
-      getItem(
-        t("menu.htmlVision.visualDesign"),
-        "visualDesign"
-      ),
-      getItem(
-        t("menu.htmlVision.interactiveDesign"),
-        "interactiveDesign"
-      ),
-      getItem(
-        t("menu.htmlVision.backgroundPattern"),
-        "backgroundEffect"
-      ),
-      getItem(
-        t("menu.htmlVision.complexLayout"),
-        "complexLayout"
-      ),
-      getItem(
-        t("menu.htmlVision.applicationPageFrame"),
-        "appPageFrame"
-      ),
-      getItem(
-        t("menu.htmlVision.utilitarianFunction"),
-        "utilitarianFunction"
-      ),
-    ]
-  ),
-  getItem(
-    t("menu.cssDynamicEffect"),
-    "css",
-    () => h(FormatPainterOutlined),
-    [
-      getItem(
-        t("menu.cssDynamicEffect.dynamicEffectButton"),
-        "dynamicButtons"
-      ),
-      getItem(
-        t("menu.cssDynamicEffect.richDynamicEffect"),
-        "richDynamicEffect"
-      ),
-      getItem(
-        t("menu.cssDynamicEffect.generateRegularPolygon"),
-        "generateRegularPolygon"
-      ),
-    ]
-  ),
+  getItem(t("menu.htmlVision"), "html", () => h(BuildOutlined), [
+    getItem(t("menu.htmlVision.visualDesign"), "visualDesign"),
+    getItem(t("menu.htmlVision.interactiveDesign"), "interactiveDesign"),
+    getItem(t("menu.htmlVision.backgroundPattern"), "backgroundEffect"),
+    getItem(t("menu.htmlVision.complexLayout"), "complexLayout"),
+    getItem(t("menu.htmlVision.applicationPageFrame"), "appPageFrame"),
+    getItem(t("menu.htmlVision.utilitarianFunction"), "utilitarianFunction"),
+  ]),
+  getItem(t("menu.cssDynamicEffect"), "css", () => h(FormatPainterOutlined), [
+    getItem(t("menu.cssDynamicEffect.dynamicEffectButton"), "dynamicButtons"),
+    getItem(t("menu.cssDynamicEffect.richDynamicEffect"), "richDynamicEffect"),
+    getItem(
+      t("menu.cssDynamicEffect.generateRegularPolygon"),
+      "generateRegularPolygon"
+    ),
+  ]),
   getItem(
     t("menu.canvasDynamicEffect"),
     "canvas",
@@ -102,15 +76,8 @@ const items: Ref<ItemType[]> = computed(() => [
         t("menu.canvasDynamicEffect.sphereCollisionExample"),
         "sphereCollisionExample"
       ),
-      getItem(
-        t("menu.canvasDynamicEffect.dynamicClock"),
-        "dynamicClock"
-      ),
-      getItem(
-        t("menu.canvasDynamicEffect.searchlightEffect"
-        ),
-        "searchlight"
-      ),
+      getItem(t("menu.canvasDynamicEffect.dynamicClock"), "dynamicClock"),
+      getItem(t("menu.canvasDynamicEffect.searchlightEffect"), "searchlight"),
       getItem(
         t("menu.canvasDynamicEffect.sphereCollisionInteraction"),
         "globuleInteraction"
@@ -135,76 +102,40 @@ const items: Ref<ItemType[]> = computed(() => [
         t("menu.canvasDynamicEffect.flowerBloomingAnimation"),
         "flowerBloom"
       ),
-      getItem(
-        t("menu.canvasDynamicEffect.codeBackgroundWall"),
-        "codeBgWall"
-      ),
-      getItem(
-        t("menu.canvasDynamicEffect.wordDance"),
-        "wordDance"
-      ),
-      getItem(
-        t("menu.canvasDynamicEffect.scratch"),
-        "scratch"
-      ),
+      getItem(t("menu.canvasDynamicEffect.codeBackgroundWall"), "codeBgWall"),
+      getItem(t("menu.canvasDynamicEffect.wordDance"), "wordDance"),
+      getItem(t("menu.canvasDynamicEffect.scratch"), "scratch"),
     ]
   ),
-  getItem(
-    t("menu.echartsInteraction"),
-    "echarts",
-    () => h(LineChartOutlined),
-    [
-      getItem(
-        t("menu.echartsInteraction.barCharts"),
-        "bar"
-      ),
-      getItem(
-        t("menu.echartsInteraction.pieCharts"),
-        "pie"
-      ),
-    ]
-  ),
-  getItem(
-    t("menu.threeJs3D"),
-    "threejs",
-    () => h(RocketOutlined),
-    [
-      getItem(
-        t("menu.threeJs3D.appPageFrame"),
-        "threejsAppPageFrame"
-      ),
-      getItem(
-        t("menu.threeJs3D.carShow"),
-        "carShow"
-      ),
-    ]
-  ),
-  getItem(
-    t("menu.AIApplication"),
-    "AIApplication",
-    () => h(FireOutlined),
-    [
-      getItem(
-        t("menu.AIApplication.humanPostureDetection"
-        ),
-        "humanPostureDetection"
-      ),
-      getItem(
-        t("menu.AIApplication.notBlockPeopleBarrage",
-        ),
-        "notBlockPeopleBarrage"
-      ),
-    ]
-  ),
-  getItem(
-    t("menu.imageProcessingTool"),
-    "gameImage",
-    () => h(FileImageOutlined),
+  getItem(t("menu.echartsInteraction"), "echarts", () => h(LineChartOutlined), [
+    getItem(t("menu.echartsInteraction.barCharts"), "bar"),
+    getItem(t("menu.echartsInteraction.pieCharts"), "pie"),
+  ]),
+  getItem(t("menu.threeJs3D"), "threejs", () => h(RocketOutlined), [
+    getItem(t("menu.threeJs3D.appPageFrame"), "threejsAppPageFrame"),
+    getItem(t("menu.threeJs3D.carShow"), "carShow"),
+    getItem(t("menu.threeJs3D.rubiksCube"), "rubiksCube"),
+  ]),
+  getItem(t("menu.AIApplication"), "AIApplication", () => h(FireOutlined), [
+    getItem(
+      t("menu.AIApplication.humanPostureDetection"),
+      "humanPostureDetection"
+    ),
+    getItem(
+      t("menu.AIApplication.notBlockPeopleBarrage"),
+      "notBlockPeopleBarrage"
+    ),
+  ]),
+  getItem(t("menu.imageProcessingTool"), "gameImage", () =>
+    h(FileImageOutlined)
   ),
 ]);
 
 const updateMenuWidth = () => {
-  if (containerRef.value && globalContext.value.menuWidth !== containerRef.value.clientWidth) {
+  if (
+    containerRef.value &&
+    globalContext.value.menuWidth !== containerRef.value.clientWidth
+  ) {
     globalContext.value.setMenuWidth(containerRef.value.clientWidth);
   }
 };
@@ -220,7 +151,7 @@ const selectedKeys = computed(() => {
     }
   }
   return result;
-})
+});
 
 const toggleCollapsed = () => {
   collapsed.value = !collapsed.value;
@@ -239,15 +170,15 @@ watch([collapsed, containerRef], () => {
   if (containerRef.value) {
     updateMenuWidth();
   }
-})
+});
 
 onMounted(() => {
   window.addEventListener("resize", updateMenuWidth);
-})
+});
 
 onUnmounted(() => {
   window.removeEventListener("resize", updateMenuWidth);
-})
+});
 </script>
 
 <template>
@@ -255,14 +186,25 @@ onUnmounted(() => {
     <div class="container" ref="containerRef">
       <div class="topBox">
         <div class="top">
-          <a-button type="primary" style="margin-bottom: 16px" @click="toggleCollapsed">
+          <a-button
+            type="primary"
+            style="margin-bottom: 16px"
+            @click="toggleCollapsed"
+          >
             <MenuUnfoldOutlined v-if="collapsed" />
             <MenuFoldOutlined v-else />
           </a-button>
         </div>
 
-        <a-menu v-model:openKeys="openKeys" :selectedKeys="selectedKeys" mode="inline" theme="dark"
-          :inlineCollapsed="collapsed" :items="items" @click="onMenu">
+        <a-menu
+          v-model:openKeys="openKeys"
+          :selectedKeys="selectedKeys"
+          mode="inline"
+          theme="dark"
+          :inlineCollapsed="collapsed"
+          :items="items"
+          @click="onMenu"
+        >
         </a-menu>
       </div>
 
@@ -322,7 +264,7 @@ onUnmounted(() => {
     margin-top: 10px;
     margin-bottom: 20px;
     font-size: 14px;
-    color: #A84448;
+    color: #a84448;
     font-weight: 400;
     display: flex;
     flex-direction: column;
