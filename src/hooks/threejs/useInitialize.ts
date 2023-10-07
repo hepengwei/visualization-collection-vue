@@ -67,7 +67,6 @@ const useInitialize = (
   const onResize = () => {
     if (conatinerRef.value && scene && camera && renderer) {
       const { clientWidth, clientHeight } = conatinerRef.value;
-
       // 更新相机
       camera.aspect = clientWidth / clientHeight;
       camera.updateProjectionMatrix();
@@ -96,10 +95,12 @@ const useInitialize = (
     sceneRef: Ref<THREE.Scene | null>;
     cameraRef: Ref<THREE.PerspectiveCamera | null>;
     rendererRef: Ref<THREE.WebGLRenderer | null>;
+    resize: () => void;
   } = {
     sceneRef,
     cameraRef,
     rendererRef,
+    resize: onResize,
   };
 
   return result;

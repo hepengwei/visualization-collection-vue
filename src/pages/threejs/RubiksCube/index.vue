@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from "vue";
+import { ref, onUnmounted, Ref, watch } from "vue";
 import * as THREE from "three";
 // @ts-ignore
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry";
@@ -8,6 +8,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 // @ts-ignore
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { gsap } from "gsap";
+import { useGlobalContext } from "hooks/useGlobalContext";
+import type { GlobalContext } from "hooks/useGlobalContext";
 import useInitialize from "hooks/threejs/useInitialize";
 import { initPositionList, position2RubiksCubeList } from "./rubiksCubeInfo";
 
@@ -41,6 +43,7 @@ let planeGroup: THREE.Group | null = null;
 let gsapAnimation: gsap.core.Tween | null = null;
 let timer: number = 0;
 
+const globalContext = useGlobalContext() as Ref<GlobalContext>;
 const containerRef = ref<HTMLDivElement | null>(null);
 
 // 让魔方的随机一个面旋转一次
@@ -267,7 +270,19 @@ const renderHandle = () => {
   controls?.update();
 };
 
-useInitialize(containerRef, initializeHandle, null, renderHandle);
+const { resize } = useInitialize(
+  containerRef,
+  initializeHandle,
+  null,
+  renderHandle
+);
+
+watch(
+  () => globalContext.value.menuWidth,
+  () => {
+    resize();
+  }
+);
 
 onUnmounted(() => {
   gsapAnimation?.kill();
@@ -283,6 +298,7 @@ onUnmounted(() => {
 .container {
   width: 100%;
   height: 100%;
+  background-color: #121212;
   overflow: hidden;
   position: relative;
 
