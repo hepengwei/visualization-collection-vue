@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, Ref, watch } from "vue";
 import * as THREE from "three";
 // @ts-ignore
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { gsap } from "gsap";
-import { useDebounceFn } from '@vueuse/core';
+import { useDebounceFn } from "@vueuse/core";
+import { useGlobalContext } from "hooks/useGlobalContext";
+import type { GlobalContext } from "hooks/useGlobalContext";
 import useInitialize from "hooks/threejs/useInitialize";
 import { loadGlb } from "utils/threejsUtil";
 import moonImg from "images/threejs/moon.jpg";
@@ -16,14 +18,12 @@ let pageIndex = 0;
 let scrollCameraTimeline: any = gsap.timeline();
 let contentTween: gsap.core.Tween | null = null;
 
+const globalContext = useGlobalContext() as Ref<GlobalContext>;
 const containerRef = ref<HTMLDivElement | null>(null);
 const contentRef = ref<HTMLDivElement | null>(null);
 const containerHeight = ref<number>(0);
 
-
-const initializeHandle = (
-  scene: THREE.Scene,
-) => {
+const initializeHandle = (scene: THREE.Scene) => {
   if (containerRef.value && scene) {
     const { clientHeight } = containerRef.value;
     containerHeight.value = clientHeight;
@@ -115,7 +115,7 @@ const resizeHandle = () => {
   }
 };
 
-const { cameraRef } = useInitialize(
+const { cameraRef, resize } = useInitialize(
   containerRef,
   initializeHandle,
   resizeHandle
@@ -139,73 +139,79 @@ const onMouseMove = (e: MouseEvent) => {
   }
 };
 
-const onMouseWheel = useDebounceFn(
-  (e: any) => {
-    if (cameraRef.value) {
-      if (
-        scrollCameraTimeline &&
-        scrollCameraTimeline.isActive()
-      )
-        return;
-      if (
-        e.wheelDelta < 0 &&
-        pageIndex < gltfList.length - 1
-      ) {
-        pageIndex += 1;
-        scrollCameraTimeline.to(cameraRef.value.position, {
-          duration: 0.8,
-          y: pageIndex * -20,
-        });
-      } else if (e.wheelDelta > 0 && pageIndex > 0) {
-        pageIndex -= 1;
-        scrollCameraTimeline.to(cameraRef.value.position, {
-          duration: 0.8,
-          y: pageIndex * -20,
-        });
-      } else {
-        return;
-      }
-    }
-    if (containerRef.value && contentRef.value) {
-      const { clientHeight } = containerRef.value;
-      contentTween = gsap.to(contentRef.value, {
+const onMouseWheel = useDebounceFn((e: any) => {
+  if (cameraRef.value) {
+    if (scrollCameraTimeline && scrollCameraTimeline.isActive()) return;
+    if (e.wheelDelta < 0 && pageIndex < gltfList.length - 1) {
+      pageIndex += 1;
+      scrollCameraTimeline.to(cameraRef.value.position, {
         duration: 0.8,
-        top: `-${pageIndex * clientHeight}px`,
-        onComplete: () => {
-          contentTween?.kill();
-          contentTween = null;
-        },
+        y: pageIndex * -20,
       });
+    } else if (e.wheelDelta > 0 && pageIndex > 0) {
+      pageIndex -= 1;
+      scrollCameraTimeline.to(cameraRef.value.position, {
+        duration: 0.8,
+        y: pageIndex * -20,
+      });
+    } else {
+      return;
     }
-  },
-  100
+  }
+  if (containerRef.value && contentRef.value) {
+    const { clientHeight } = containerRef.value;
+    contentTween = gsap.to(contentRef.value, {
+      duration: 0.8,
+      top: `-${pageIndex * clientHeight}px`,
+      onComplete: () => {
+        contentTween?.kill();
+        contentTween = null;
+      },
+    });
+  }
+}, 100);
+
+watch(
+  () => globalContext.value.menuWidth,
+  () => {
+    resize();
+  }
 );
 
 onMounted(() => {
   window.addEventListener("mousewheel", onMouseWheel);
-})
+});
 
 onUnmounted(() => {
   window.removeEventListener("mousewheel", onMouseWheel);
-})
+});
 </script>
 
 <template>
   <div class="container" @mousemove="onMouseMove" ref="containerRef">
     <div class="content" ref="contentRef">
-      <div class="page" :style="{
-        height: containerHeight > 0 ? `${containerHeight}px` : '100vh',
-      }">
+      <div
+        class="page"
+        :style="{
+          height: containerHeight > 0 ? `${containerHeight}px` : '100vh',
+        }"
+      >
         <p>Page One</p>
       </div>
-      <div class="page" :style="{
-        height: containerHeight > 0 ? `${containerHeight}px` : '100vh',
-      }">
+      <div
+        class="page"
+        :style="{
+          height: containerHeight > 0 ? `${containerHeight}px` : '100vh',
+        }"
+      >
         <p>Page Two</p>
       </div>
-      <div class="page" :style="{
-        height: containerHeight > 0 ? `${containerHeight}px` : '100vh',
-      }">
+      <div
+        class="page"
+        :style="{
+          height: containerHeight > 0 ? `${containerHeight}px` : '100vh',
+        }"
+      >
         <p>Page Three</p>
       </div>
     </div>
@@ -216,6 +222,7 @@ onUnmounted(() => {
 .container {
   width: 100%;
   height: 100%;
+  background-color: #000;
   overflow: hidden;
   position: relative;
 

@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, Ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import * as THREE from "three";
 // @ts-ignore
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 // @ts-ignore
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { useGlobalContext } from "hooks/useGlobalContext";
+import type { GlobalContext } from "hooks/useGlobalContext";
 import useInitialize from "hooks/threejs/useInitialize";
 import { loadGlb } from "utils/threejsUtil";
 
@@ -61,10 +63,9 @@ const glassMeterial = new THREE.MeshPhysicalMaterial({
 });
 
 const { t } = useI18n();
+const globalContext = useGlobalContext() as Ref<GlobalContext>;
 const containerRef = ref<HTMLDivElement | null>(null);
 const controlsRef = ref<OrbitControls | null>(null);
-
-
 
 const filmMaterialList = [
   {
@@ -184,7 +185,12 @@ const renderHandle = () => {
   }
 };
 
-useInitialize(containerRef, initializeHandle, null, renderHandle);
+const { resize } = useInitialize(
+  containerRef,
+  initializeHandle,
+  null,
+  renderHandle
+);
 
 const selectBodyColor = (color: any) => {
   bodyMeterial.color.set(color);
@@ -202,10 +208,7 @@ const selectWheelColor = (color: any) => {
   wheelMeterial.color.set(color);
 };
 
-const selectFilmMaterial = (
-  clearcoatRoughness: number,
-  roughness: number
-) => {
+const selectFilmMaterial = (clearcoatRoughness: number, roughness: number) => {
   frontMeterial.clearcoatRoughness = clearcoatRoughness;
   frontMeterial.roughness = roughness;
   bodyMeterial.clearcoatRoughness = clearcoatRoughness;
@@ -217,6 +220,13 @@ const selectFilmMaterial = (
 const selectGlassMaterial = (transmission: number) => {
   glassMeterial.transmission = transmission;
 };
+
+watch(
+  () => globalContext.value.menuWidth,
+  () => {
+    resize();
+  }
+);
 </script>
 
 <template>
@@ -228,49 +238,83 @@ const selectGlassMaterial = (transmission: number) => {
       <div class="itemBox">
         <p>{{ t("page.threeJs3D.bodyColor") }}</p>
         <div class="selectBox">
-          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectBodyColor(color)"></div>
+          <div
+            v-for="color in colorList"
+            :key="color"
+            class="btn"
+            :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectBodyColor(color)"
+          ></div>
         </div>
       </div>
       <div class="itemBox">
         <p>
-          {{ t("page.threeJs3D.anteriorFaceColor") }} </p>
+          {{ t("page.threeJs3D.anteriorFaceColor") }}
+        </p>
         <div class="selectBox">
-          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectFrontColor(color)"></div>
+          <div
+            v-for="color in colorList"
+            :key="color"
+            class="btn"
+            :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectFrontColor(color)"
+          ></div>
         </div>
       </div>
       <div class="itemBox">
         <p>
-          {{ t("page.threeJs3D.hoodColor") }} </p>
+          {{ t("page.threeJs3D.hoodColor") }}
+        </p>
         <div class="selectBox">
-          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectHoodColor(color)"></div>
+          <div
+            v-for="color in colorList"
+            :key="color"
+            class="btn"
+            :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectHoodColor(color)"
+          ></div>
         </div>
       </div>
       <div class="itemBox">
         <p>
-          {{ t("page.threeJs3D.hubColor") }} </p>
+          {{ t("page.threeJs3D.hubColor") }}
+        </p>
         <div class="selectBox">
-          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectWheelColor(color)"></div>
+          <div
+            v-for="color in colorList"
+            :key="color"
+            class="btn"
+            :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectWheelColor(color)"
+          ></div>
         </div>
       </div>
       <div class="itemBox">
         <p>{{ t("page.threeJs3D.filmMaterial") }}</p>
         <div class="selectBox">
-          <div v-for="item in filmMaterialList" :key="item.key" class="textBtn"
-            @click="() => selectFilmMaterial(item.clearcoatRoughness, item.roughness)">
+          <div
+            v-for="item in filmMaterialList"
+            :key="item.key"
+            class="textBtn"
+            @click="
+              () => selectFilmMaterial(item.clearcoatRoughness, item.roughness)
+            "
+          >
             {{ item.name }}
           </div>
         </div>
       </div>
       <div class="itemBox">
         <p>
-          {{ t("page.threeJs3D.windshieldMaterial") }} </p>
+          {{ t("page.threeJs3D.windshieldMaterial") }}
+        </p>
         <div class="selectBox">
-          <div v-for="item  in glassMaterialList" :key="item.key" class="textBtn"
-            @click="() => selectGlassMaterial(item.transmission)">
+          <div
+            v-for="item in glassMaterialList"
+            :key="item.key"
+            class="textBtn"
+            @click="() => selectGlassMaterial(item.transmission)"
+          >
             {{ item.name }}
           </div>
         </div>
@@ -283,6 +327,7 @@ const selectGlassMaterial = (transmission: number) => {
 .container {
   width: 100%;
   height: 100%;
+  background-color: #ddd;
   overflow: hidden;
   position: relative;
 

@@ -167,9 +167,11 @@ const onMenu = (options: { keyPath: string[] }) => {
 };
 
 watch([collapsed, containerRef], () => {
-  if (containerRef.value) {
-    updateMenuWidth();
-  }
+  window.setTimeout(() => {
+    if (containerRef.value) {
+      updateMenuWidth();
+    }
+  }, 600);
 });
 
 onMounted(() => {
