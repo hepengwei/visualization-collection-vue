@@ -2102,10 +2102,10 @@ source-map@^0.5.6:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==
 
-sphere-collision@^1.1.10:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/sphere-collision/-/sphere-collision-1.1.10.tgz#9e0a93603d07bc91ae4cbb133ab375c4dea6d2be"
-  integrity sha512-0BulYJLWnkWcvE5AKtaVk4svTFYdNR07Zw8oOG5sD7ozlq6oowwEhJBWp7p2Z8fg2/aYWZydrLvMP2UsSdIlLg==
+sphere-collision@^1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/sphere-collision/-/sphere-collision-1.1.11.tgz#c136b30dcae097a243036b4587ca4afebc86932d"
+  integrity sha512-PKGmvYbbEyloBY8p9Wlp2zjEAc5WkAc2MzSSPD80FilkSthd6ZzprTgsDlAUMmQIZhDval6MjcvBvLv1gKnSvw==
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
