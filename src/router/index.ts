@@ -22,6 +22,7 @@ import FlowerBloom from "pages/canvas/FlowerBloom/index.vue";
 import CodeBgWall from "pages/canvas/CodeBgWall.vue";
 import WordDance from "pages/canvas/WordDance.vue";
 import Scratch from "pages/canvas/Scratch.vue";
+import MatchLine from "pages/canvas/MatchLine.vue";
 import AppPage3DFrame from "pages/threejs/AppPageFrame.vue";
 import CarShow from "pages/threejs/CarShow.vue";
 import RubiksCube from "pages/threejs/RubiksCube/index.vue";
@@ -128,6 +129,10 @@ const contentRoutes = [
       {
         path: "/canvas/scratch",
         component: Scratch,
+      },
+      {
+        path: "/canvas/matchLine",
+        component: MatchLine,
       },
     ],
   },

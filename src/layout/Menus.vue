@@ -105,6 +105,7 @@ const items: Ref<ItemType[]> = computed(() => [
       getItem(t("menu.canvasDynamicEffect.codeBackgroundWall"), "codeBgWall"),
       getItem(t("menu.canvasDynamicEffect.wordDance"), "wordDance"),
       getItem(t("menu.canvasDynamicEffect.scratch"), "scratch"),
+      getItem(t("menu.canvasDynamicEffect.matchLine"), "matchLine"),
     ]
   ),
   getItem(t("menu.echartsInteraction"), "echarts", () => h(LineChartOutlined), [

@@ -17,6 +17,7 @@ const en_US = {
   "common.noData": "No data",
   "common.unknown": "Unknown",
   "common.confirm": "Confirm",
+  "common.cancel": "Cancel",
   "common.clear": "Clear",
   "common.play": "Play",
   "common.pause": "Pause",
@@ -30,10 +31,11 @@ const en_US = {
   "common.saveSuccessfully": "Save successfully",
   "common.saveFailed": "Failed to save, the browser does not support",
   "common.parsingDataFailure":
-    "Data parsing failed. Please replace it with another picture",
+    "Data parsing failed. Please replace it with another file",
   "common.uploadFile": "Upload File",
   "common.dragTheFileHere": "Or drag the file here",
-  "common.supportedImageType": "Jpg, jpeg, and png are supported",
+  "common.supportedImageType": "jpg, jpeg, and png are supported",
+  "common.supportedVideoType": "webm and mp4 are supported",
   "common.pleaseUploadPicture": "Please upload the picture first",
   "common.deviceNotFound": "Requested device not found",
   "common.impowerOpenMicrophone":
@@ -45,12 +47,42 @@ const en_US = {
   "common.browserTooLow":
     "Your browser version is too low, please update your browser",
   "common.backgroundColor": "Background Color",
+  "common.filename": "Filename",
+  "common.format": "Format",
   "common.dimension": "Dimension",
   "common.size": "Size",
+  "common.width": "Width",
+  "common.height": "Height",
+  "common.duration": "Duration",
   "common.transparency": "Transparency",
   "common.red": "Red",
   "common.blue": "Blue",
   "common.white": "White",
+  "common.watermarkSizeLimit":
+    "Please select watermark images of 20x20 and above",
+  "common.watermarkSizeTooLarge":
+    "Please select a watermark image that is smaller than the size of the target image",
+  "common.uploadWatermark": "Upload watermark",
+  "common.distanceLeft": "Distance left",
+  "common.distanceTop": "Distance Top",
+  "common.clippingWidth": "Clipping width",
+  "common.clippingHeight": "Clipping height",
+  "common.flipSideToSide": "Flip Side To Side",
+  "common.flipTopToBottom": "Flip Top To Bottom",
+  "common.rotateLeft": "Rotate Left",
+  "common.rotateRight": "Rotate Right",
+  "common.graying": "Graying",
+  "common.vampix": "Vampix",
+  "common.mosaicGrainSize": "Mosaic grain size",
+  "common.parsingData": "Parsing data",
+  "common.whetherMaintainOriginalProportion":
+    "Whether to maintain the original proportion",
+  "common.pleaseEnterWidthOrHeight": "Please enter width or height",
+  "common.reset": "Reset",
+  "common.backout": "Backout",
+  "common.delete": "Delete",
+  "common.inquire": "Inquire",
+  "common.checkout": "Checkout",
   "common.ad.btnText": "Experience right away",
 
   // 菜单
@@ -84,6 +116,7 @@ const en_US = {
   "menu.canvasDynamicEffect.codeBackgroundWall": "Code Background Wall",
   "menu.canvasDynamicEffect.wordDance": "Word Dance",
   "menu.canvasDynamicEffect.scratch": "Scratch",
+  "menu.canvasDynamicEffect.matchLine": "Match Line",
   "menu.echartsInteraction": "Echarts Interaction",
   "menu.echartsInteraction.barCharts": "Bar Charts",
   "menu.echartsInteraction.pieCharts": "Pie Charts",
@@ -105,6 +138,16 @@ const en_US = {
   "menu.imageProcessingTool.addWatermark": "Add Watermark",
   "menu.imageProcessingTool.coverWithMosaics": "Cover With Mosaics",
   "menu.imageProcessingTool.imageCompression": "Image Compression",
+  "menu.videoProcessingTool": "Video Processing Tool",
+  "menu.videoProcessingTool.basicOperation": "Basic Operation",
+  "menu.videoProcessingTool.modifyTheSize": "Modify The Size",
+  "menu.videoProcessingTool.clipping": "Clipping",
+  "menu.videoProcessingTool.combine": "Combine",
+  "menu.videoProcessingTool.varyingVelocity": "Varying Velocity",
+  "menu.videoProcessingTool.addWatermark": "Add Watermark",
+  "menu.videoProcessingTool.generateGIF": "Generate GIF",
+  "menu.videoProcessingTool.AIGenerateSubtitles": "AI Generated Subtitles",
+  "menu.videoProcessingTool.addAudio": "Add Audio",
 
   // Html视觉-视觉设计页
   "page.htmlVision.visualDesign.displaysCustomRows":
@@ -221,6 +264,14 @@ const en_US = {
   "page.canvasDynamicEffect.score": "Score",
   "page.canvasDynamicEffect.videoIsSlowToLoad":
     "The video is slow to load, please wait patiently",
+  "page.canvasDynamicEffect.matchLineQuestion": "Match line question",
+  "page.canvasDynamicEffect.fruit": "Fruit",
+  "page.canvasDynamicEffect.animal": "Animal",
+  "page.canvasDynamicEffect.car": "Car",
+  "page.canvasDynamicEffect.vegetable": "Vegetable",
+  "page.canvasDynamicEffect.pleaseReset": "Currently verified, please reset",
+  "page.canvasDynamicEffect.noVerifiableAnswer":
+    "There is no verifiable answer",
 
   // Three.js3D
   "page.threeJs3D.abrazine": "Abrazine",
@@ -250,21 +301,6 @@ const en_US = {
     "Please select the size above 20x20",
   "page.imageProcessingTool.imageTooLarge":
     "Please select the size below 1350x1350",
-  "page.imageProcessingTool.watermarkSizeLimit":
-    "Please select watermark images of 20x20 and above",
-  "page.imageProcessingTool.watermarkSizeTooLarge":
-    "Please select a watermark image that is smaller than the size of the target image",
-  "page.imageProcessingTool.uploadWatermark": "Upload watermark",
-  "page.imageProcessingTool.distanceLeft": "Distance left",
-  "page.imageProcessingTool.distanceTop": "Distance Top",
-  "page.imageProcessingTool.filename": "Filename",
-  "page.imageProcessingTool.format": "Format",
-  "page.imageProcessingTool.flipSideToSide": "Flip Side To Side",
-  "page.imageProcessingTool.flipTopToBottom": "Flip Top To Bottom",
-  "page.imageProcessingTool.rotateLeft": "Rotate Left",
-  "page.imageProcessingTool.rotateRight": "Rotate Right",
-  "page.imageProcessingTool.graying": "Graying",
-  "page.imageProcessingTool.vampix": "Vampix",
   "page.imageProcessingTool.shmpch": "Shmpch",
   "page.imageProcessingTool.edgeSharpening": "Edge Sharpening",
   "page.imageProcessingTool.filterContrast": "Filter Contrast",
@@ -291,12 +327,6 @@ const en_US = {
   "page.imageProcessingTool.whetherValueFixed": "Whether the value is fixed",
   "page.imageProcessingTool.becomeTransparent": "Become transparent",
   "page.imageProcessingTool.becomeOpaque": "Become opaque",
-  "page.imageProcessingTool.pleaseEnterWidthOrHeight":
-    "Please enter width or height",
-  "page.imageProcessingTool.width": "Width",
-  "page.imageProcessingTool.height": "Height",
-  "page.imageProcessingTool.whetherMaintainOriginalProportion":
-    "Whether to maintain the original proportion",
   "page.imageProcessingTool.compressibility": "Compressibility",
   "page.imageProcessingTool.pleaseEnterFilletRadius":
     "Please enter the fillet radius",
@@ -305,9 +335,11 @@ const en_US = {
     "Clipped and converted to PNG format",
   "page.imageProcessingTool.WhetherRetainOriginalDimension":
     "Whether to retain the original dimension",
-  "page.imageProcessingTool.clippingWidth": "Clipping width",
-  "page.imageProcessingTool.clippingHeight": "Clipping height",
-  "page.imageProcessingTool.mosaicGrainSize": "Mosaic grain size",
+
+  // 视频处理工具页
+  "page.videoProcessingTool.tip":
+    "The tool processing video will be very slow, because it is a pure front-end implementation, the correct approach is to upload the file to the background for processing, here is only to provide a pure front-end video processing solution.",
+  "page.videoProcessingTool.generatingVideo": "Work hard at generating video",
 
   // Html视觉-应用页面框架页
   "page.htmlVision.applicationPageFrame.secondPage": "Second Page",
@@ -356,17 +388,6 @@ const en_US = {
     "1. Both iframe and postMessage can be cross-domain, while localStorage cannot share data across domains.",
   "page.htmlVision.applicationPageFrame.des12":
     "2. Window in window.postMessage always refers to the window object of the target page to be jumped to.",
-
-  // 广告语
-  "ad.phoneAccessories":
-    "Upgrade your phone game with our top-notch Amazon accessories. Shop now for the ultimate phone experience!",
-  "ad.books":
-    "Unlock the Power of Computing and the Internet with Amazon Books - Expand Your Knowledge Today!",
-  "ad.digitalCamera":
-    "Capture life's moments in stunning detail with our Amazon digital cameras. From breathtaking landscapes to candid portraits, our cameras will help you create memories that last a lifetime. Shop now and unleash your inner photographer!",
-  "ad.officeEquipment":
-    "Upgrade your workspace with Amazon's cutting-edge office gear - productivity, innovation, and style, all in one place!",
-  "ad.sportsElectronics": "Make exercise more intelligent, make health easier!",
 };
 
 export default en_US;

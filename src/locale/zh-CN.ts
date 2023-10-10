@@ -15,6 +15,7 @@ const zh_CN = {
   "common.noData": "暂无",
   "common.unknown": "未知",
   "common.confirm": "确定",
+  "common.cancel": "取消",
   "common.clear": "清空",
   "common.play": "播放",
   "common.pause": "暂停",
@@ -27,10 +28,11 @@ const zh_CN = {
   "common.save": "保存",
   "common.saveSuccessfully": "保存成功",
   "common.saveFailed": "保存失败，浏览器不支持",
-  "common.parsingDataFailure": "解析数据失败，请更换其他图片",
+  "common.parsingDataFailure": "解析数据失败，请更换其他文件",
   "common.uploadFile": "上传文件",
   "common.dragTheFileHere": "或将文件拖到此处",
   "common.supportedImageType": "支持jpg、jpeg、png格式",
+  "common.supportedVideoType": "支持webm、mp4格式",
   "common.pleaseUploadPicture": "请先上传图片",
   "common.deviceNotFound": "请求的设备未找到",
   "common.impowerOpenMicrophone":
@@ -41,12 +43,39 @@ const zh_CN = {
   "common.notSupportGetDisplayMedia": "浏览器不支持getDisplayMedia",
   "common.browserTooLow": "您的浏览器版本过低，请更新浏览器",
   "common.backgroundColor": "背景色",
+  "common.filename": "文件名",
+  "common.format": "格式",
   "common.dimension": "尺寸",
   "common.size": "大小",
+  "common.width": "宽度",
+  "common.height": "高度",
+  "common.duration": "时长",
   "common.transparency": "透明色",
   "common.red": "红色",
   "common.blue": "蓝色",
   "common.white": "白色",
+  "common.watermarkSizeLimit": "请选择20x20以上尺寸的水印图片",
+  "common.watermarkSizeTooLarge": "请选择小于目标图片尺寸的水印图片",
+  "common.uploadWatermark": "上传水印",
+  "common.distanceLeft": "距离左侧",
+  "common.distanceTop": "距离顶部",
+  "common.clippingWidth": "裁剪宽度",
+  "common.clippingHeight": "裁剪高度",
+  "common.flipSideToSide": "左右翻转",
+  "common.flipTopToBottom": "上下翻转",
+  "common.rotateLeft": "左旋转",
+  "common.rotateRight": "右旋转",
+  "common.graying": "灰化",
+  "common.vampix": "黑白化",
+  "common.mosaicGrainSize": "马赛克颗粒大小",
+  "common.parsingData": "解析数据中",
+  "common.whetherMaintainOriginalProportion": "是否保持原比例",
+  "common.pleaseEnterWidthOrHeight": "请输入宽度或高度",
+  "common.reset": "重置",
+  "common.backout": "撤销",
+  "common.delete": "删除",
+  "common.inquire": "查询",
+  "common.checkout": "校验",
   "common.ad.btnText": "马上体验",
 
   // 菜单
@@ -76,6 +105,7 @@ const zh_CN = {
   "menu.canvasDynamicEffect.codeBackgroundWall": "代码背景墙",
   "menu.canvasDynamicEffect.wordDance": "文字跳舞",
   "menu.canvasDynamicEffect.scratch": "刮刮乐",
+  "menu.canvasDynamicEffect.matchLine": "连接线",
   "menu.echartsInteraction": "Echarts交互",
   "menu.echartsInteraction.barCharts": "柱状图",
   "menu.echartsInteraction.pieCharts": "饼图",
@@ -96,10 +126,20 @@ const zh_CN = {
   "menu.imageProcessingTool.addWatermark": "添加水印",
   "menu.imageProcessingTool.coverWithMosaics": "打马赛克",
   "menu.imageProcessingTool.imageCompression": "图片压缩",
+  "menu.videoProcessingTool": "视频处理工具",
+  "menu.videoProcessingTool.basicOperation": "基础操作",
+  "menu.videoProcessingTool.modifyTheSize": "修改尺寸",
+  "menu.videoProcessingTool.clipping": "裁剪",
+  "menu.videoProcessingTool.combine": "合并",
+  "menu.videoProcessingTool.varyingVelocity": "变速",
+  "menu.videoProcessingTool.addWatermark": "添加水印",
+  "menu.videoProcessingTool.generateGIF": "生成GIF图",
+  "menu.videoProcessingTool.AIGenerateSubtitles": "AI生成字幕",
+  "menu.videoProcessingTool.addAudio": "添加音频",
 
   // Html视觉-视觉设计页
   "page.htmlVision.visualDesign.displaysCustomRows":
-    "该组件为超出时显示省略号的文本组件, 还可以动态地获取到文字是否超出。",
+    "该组件为超出时显示省略号的文本组件, 还可动态获取文字是否超出。",
   "page.htmlVision.visualDesign.displaysCustomRows2":
     "该组件为可显示自定义行数，超出时显示省略号的文本组件，还支持在最后面出现省略号时显示自定义的文字按钮。",
   "page.htmlVision.visualDesign.thisIsText": "这是文字。",
@@ -187,6 +227,13 @@ const zh_CN = {
   "page.canvasDynamicEffect.gameHasPaused": "游戏已暂停",
   "page.canvasDynamicEffect.score": "分数",
   "page.canvasDynamicEffect.videoIsSlowToLoad": "视频加载比较慢，请耐心等待",
+  "page.canvasDynamicEffect.matchLineQuestion": "连线题",
+  "page.canvasDynamicEffect.fruit": "水果",
+  "page.canvasDynamicEffect.animal": "动物",
+  "page.canvasDynamicEffect.car": "汽车",
+  "page.canvasDynamicEffect.vegetable": "蔬菜",
+  "page.canvasDynamicEffect.pleaseReset": "当前已校验，请重置",
+  "page.canvasDynamicEffect.noVerifiableAnswer": "没有可校验的答案",
 
   // Three.js3D
   "page.threeJs3D.abrazine": "磨砂",
@@ -214,21 +261,6 @@ const zh_CN = {
     "浏览器插件，将该项目中的extension文件夹加载到浏览器中即可使用。",
   "page.imageProcessingTool.imageTooSmall": "请选择20x20以上尺寸的图片",
   "page.imageProcessingTool.imageTooLarge": "请选择1350x1350以下尺寸的图片",
-  "page.imageProcessingTool.watermarkSizeLimit":
-    "请选择20x20以上尺寸的水印图片",
-  "page.imageProcessingTool.watermarkSizeTooLarge":
-    "请选择小于目标图片尺寸的水印图片",
-  "page.imageProcessingTool.uploadWatermark": "上传水印",
-  "page.imageProcessingTool.distanceLeft": "距离左侧",
-  "page.imageProcessingTool.distanceTop": "距离顶部",
-  "page.imageProcessingTool.filename": "文件名",
-  "page.imageProcessingTool.format": "格式",
-  "page.imageProcessingTool.flipSideToSide": "左右翻转",
-  "page.imageProcessingTool.flipTopToBottom": "上下翻转",
-  "page.imageProcessingTool.rotateLeft": "左旋转",
-  "page.imageProcessingTool.rotateRight": "右旋转",
-  "page.imageProcessingTool.graying": "灰化",
-  "page.imageProcessingTool.vampix": "黑白化",
   "page.imageProcessingTool.shmpch": "锐化",
   "page.imageProcessingTool.edgeSharpening": "边缘锐化",
   "page.imageProcessingTool.filterContrast": "反色滤镜",
@@ -252,19 +284,16 @@ const zh_CN = {
   "page.imageProcessingTool.whetherValueFixed": "是否统一为固定值",
   "page.imageProcessingTool.becomeTransparent": "变透明",
   "page.imageProcessingTool.becomeOpaque": "变不透",
-  "page.imageProcessingTool.pleaseEnterWidthOrHeight": "请输入宽度或高度",
-  "page.imageProcessingTool.width": "宽度",
-  "page.imageProcessingTool.height": "高度",
-  "page.imageProcessingTool.whetherMaintainOriginalProportion":
-    "是否保持原比例",
   "page.imageProcessingTool.compressibility": "压缩率",
   "page.imageProcessingTool.pleaseEnterFilletRadius": "请输入圆角半径",
   "page.imageProcessingTool.filletRadius": "圆角半径",
   "page.imageProcessingTool.clippedAndConvertedToPng": "裁剪后转成PNG格式",
   "page.imageProcessingTool.WhetherRetainOriginalDimension": "是否保留原尺寸",
-  "page.imageProcessingTool.clippingWidth": "裁剪宽度",
-  "page.imageProcessingTool.clippingHeight": "裁剪高度",
-  "page.imageProcessingTool.mosaicGrainSize": "马赛克颗粒大小",
+
+  // 视频处理工具页
+  "page.videoProcessingTool.tip":
+    "该工具处理视频会非常慢，因为是纯前端实现的，正确做法还是将文件上传到后台进行处理，这里只是提供一种纯前端实现视频处理的解决方案。",
+  "page.videoProcessingTool.generatingVideo": "努力生成视频中",
 
   // Html视觉-应用页面框架页
   "page.htmlVision.applicationPageFrame.secondPage": "第二页",
@@ -312,16 +341,6 @@ const zh_CN = {
     "1. iframe和postMessage都是可以跨域的，而localStorage是不能跨域共享数据的。",
   "page.htmlVision.applicationPageFrame.des12":
     "2. window.postMessage中的window始终是指将要跳转的目标页面的window对象。",
-
-  // 广告语
-  "ad.phoneAccessories":
-    "升级你的手机，尽在亚马逊手机配件！从保护壳到充电器，让你的手机更加完美！立即点击，享受更多惊喜！",
-  "ad.books":
-    "探索计算机世界，开启无限可能！亚马逊计算机与互联网类书籍，带你领略科技的魅力，成就你的未来",
-  "ad.digitalCamera":
-    "记录美好瞬间，从这里开始。亚马逊数码相机，让你的每一次拍摄都更加精彩。点击了解更多。",
-  "ad.officeEquipment": "提高工作效率，从亚马逊办公设备开始！点击了解更多！",
-  "ad.sportsElectronics": "让运动更智能，让健康更简单！",
 };
 
 export default zh_CN;
