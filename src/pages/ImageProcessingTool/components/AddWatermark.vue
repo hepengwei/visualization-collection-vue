@@ -295,7 +295,7 @@ watch([imgSizeQualified, watermarkInfo, leftBoxRef], () => {
           <div class="top">
             <a-button type="primary" class="uploadBtn">
               <FolderAddOutlined />
-              {{ t("page.imageProcessingTool.uploadWatermark") }}
+              {{ t("common.uploadWatermark") }}
               <input type="file" accept="image/jpg, image/jpeg, image/png" :onChange="onUploadWatermarkChange" />
             </a-button>
             {{ watermarkInfo
@@ -305,7 +305,7 @@ watch([imgSizeQualified, watermarkInfo, leftBoxRef], () => {
           <div class="bottom" v-if="!!watermarkInfo">
             <a-input-number class="operationBtn" style="width: 160px" :min="0"
               :max="imgInfo.value.width - watermarkMinWidthHeight" :precision="0" :value="clipBoxLeft"
-              :addonBefore="t('page.imageProcessingTool.distanceLeft')" :onChange="(value: number | null) => {
+              :addonBefore="t('common.distanceLeft')" :onChange="(value: number | null) => {
                 clipBoxLeft = value || 0;
                 const { width } = imgInfo.value;
                 if (value && value + clipBoxWidth > width) {
@@ -314,7 +314,7 @@ watch([imgSizeQualified, watermarkInfo, leftBoxRef], () => {
               }" />
             <a-input-number class="operationBtn" style="width: 160px" :min="0"
               :max="imgInfo.value.height - watermarkMinWidthHeight" :precision="0" :value="clipBoxTop"
-              :addonBefore="t('page.imageProcessingTool.distanceTop')" :onChange="(value: number | null) => {
+              :addonBefore="t('common.distanceTop')" :onChange="(value: number | null) => {
                 clipBoxTop = value || 0;
                 const { height } = imgInfo.value;
                 if (value && value + clipBoxHeight > height) {

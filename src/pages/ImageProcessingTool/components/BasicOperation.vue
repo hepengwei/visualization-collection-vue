@@ -1,10 +1,8 @@
-/**
- * 图片处理工具-基础操作Tab页
- */
+/** * 图片处理工具-基础操作Tab页 */
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { message } from 'ant-design-vue';
-import { useI18n } from 'vue-i18n';
+import { ref, watch } from "vue";
+import { message } from "ant-design-vue";
+import { useI18n } from "vue-i18n";
 import { cloneDeep } from "lodash-es";
 import {
   flipSideToSide,
@@ -119,112 +117,184 @@ const doTask = (
   }
 };
 
-watch(imgInfo, () => {
-  imgStatusInfo.value = cloneDeep(defaultImgStatus);
-}, { immediate: true })
+watch(
+  imgInfo,
+  () => {
+    imgStatusInfo.value = cloneDeep(defaultImgStatus);
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
-  <FileBox :imgInfo="imgInfo" :imgDragOver="imgDragOver" :onDragOver="onDragOver" :onDragLeave="onDragLeave"
-    :onDrop="onDrop" />
+  <FileBox
+    :imgInfo="imgInfo"
+    :imgDragOver="imgDragOver"
+    :onDragOver="onDragOver"
+    :onDragLeave="onDragLeave"
+    :onDrop="onDrop"
+  />
   <div class="operationBtns">
     <div class="left">
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.flipSideToSideStatus, flipSideToSide)
-        ">
-        {{ t("page.imageProcessingTool.flipSideToSide") }}
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="
+          () => doTask(imgStatusInfo.flipSideToSideStatus, flipSideToSide)
+        "
+      >
+        {{ t("common.flipSideToSide") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.flipUpsideDownStatus, flipUpsideDown)
-        ">
-        {{ t("page.imageProcessingTool.flipTopToBottom") }}
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="
+          () => doTask(imgStatusInfo.flipUpsideDownStatus, flipUpsideDown)
+        "
+      >
+        {{ t("common.flipTopToBottom") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.leftRotateStatus, leftRotate)
-        ">
-        {{ t("page.imageProcessingTool.rotateLeft") }}
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.leftRotateStatus, leftRotate)"
+      >
+        {{ t("common.rotateLeft") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.rightRotateStatus, rightRotate)
-        ">
-        {{ t("page.imageProcessingTool.rotateRight") }}
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.rightRotateStatus, rightRotate)"
+      >
+        {{ t("common.rotateRight") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() => doTask(imgStatusInfo.toGreyStatus, toGrey)">
-        {{ t("page.imageProcessingTool.graying") }}
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toGreyStatus, toGrey)"
+      >
+        {{ t("common.graying") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(
-          imgStatusInfo.toBlackAndWhiteStatus,
-          toBlackAndWhite
-        )
-        ">
-        {{ t("page.imageProcessingTool.vampix") }}
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="
+          () => doTask(imgStatusInfo.toBlackAndWhiteStatus, toBlackAndWhite)
+        "
+      >
+        {{ t("common.vampix") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() => doTask(imgStatusInfo.sharpenStatus, sharpen)">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.sharpenStatus, sharpen)"
+      >
         {{ t("page.imageProcessingTool.shmpch") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.marginSharpenStatus, marginSharpen)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.marginSharpenStatus, marginSharpen)"
+      >
         {{ t("page.imageProcessingTool.edgeSharpening") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toOppositeStatus, toOpposite)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toOppositeStatus, toOpposite)"
+      >
         {{ t("page.imageProcessingTool.filterContrast") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() => doTask(imgStatusInfo.toRedStatus, toRed)">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toRedStatus, toRed)"
+      >
         {{ t("page.imageProcessingTool.redFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() => doTask(imgStatusInfo.toGreenStatus, toGreen)">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toGreenStatus, toGreen)"
+      >
         {{ t("page.imageProcessingTool.greenFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() => doTask(imgStatusInfo.toBlueStatus, toBlue)">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toBlueStatus, toBlue)"
+      >
         {{ t("page.imageProcessingTool.blueFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toRedAndGreenStatus, toRedAndGreen)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toRedAndGreenStatus, toRedAndGreen)"
+      >
         {{ t("page.imageProcessingTool.redGreenFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toRedAndBlueStatus, toRedAndBlue)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toRedAndBlueStatus, toRedAndBlue)"
+      >
         {{ t("page.imageProcessingTool.redBlueFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toBlueAndGreenStatus, toBlueAndGreen)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="
+          () => doTask(imgStatusInfo.toBlueAndGreenStatus, toBlueAndGreen)
+        "
+      >
         {{ t("page.imageProcessingTool.blueGreenFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toRedAndGreyStatus, toRedAndGrey)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toRedAndGreyStatus, toRedAndGrey)"
+      >
         {{ t("page.imageProcessingTool.redGreyFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toGreenAndGreyStatus, toGreenAndGrey)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="
+          () => doTask(imgStatusInfo.toGreenAndGreyStatus, toGreenAndGrey)
+        "
+      >
         {{ t("page.imageProcessingTool.greenGreyFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toBlueAndGreyStatus, toBlueAndGrey)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.toBlueAndGreyStatus, toBlueAndGrey)"
+      >
         {{ t("page.imageProcessingTool.blueGreyFilter") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.toGaussianBlurStatus, toGaussianBlur)
-        ">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="
+          () => doTask(imgStatusInfo.toGaussianBlurStatus, toGaussianBlur)
+        "
+      >
         {{ t("page.imageProcessingTool.gaussianBlur") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.jpgToPngStatus, jpgToPng, 'PNG')" v-if="['JPG',
-    'JPEG'].includes(imgInfo.fileType)">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.jpgToPngStatus, jpgToPng, 'PNG')"
+        v-if="['JPG', 'JPEG'].includes(imgInfo.fileType)"
+      >
         {{ t("page.imageProcessingTool.jpgToPng") }}
       </a-button>
-      <a-button type="primary" class="operationBtn" @click="() =>
-        doTask(imgStatusInfo.pngToJpgStatus, pngToJpg, 'JPEG')" v-if="imgInfo.fileType
-    === 'PNG'">
+      <a-button
+        type="primary"
+        class="operationBtn"
+        @click="() => doTask(imgStatusInfo.pngToJpgStatus, pngToJpg, 'JPEG')"
+        v-if="imgInfo.fileType === 'PNG'"
+      >
         {{ t("page.imageProcessingTool.pngToJpg") }}
       </a-button>
     </div>

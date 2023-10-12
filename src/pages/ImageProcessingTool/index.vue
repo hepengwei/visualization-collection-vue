@@ -270,8 +270,8 @@ const showTabInfo = computed<TabInfo>(() => tabsList.value.filter((item: TabInfo
 </script>
 
 <template>
-  <div class="gameImage-container">
-    <div class="gameImage-content">
+  <div class="imageProcessingTool-container">
+    <div class="imageProcessingTool-content">
       <Tabs class="tabs" :data="tabsList" :selectedTabId="selectedTabId" :onChange="onTabsChange" />
       <div class="imgBox" :style="{ borderColor: imgDragOver ? primaryColor : primaryShallowColor, }"
         @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop" v-if="!imgInfo">
@@ -309,7 +309,7 @@ const showTabInfo = computed<TabInfo>(() => tabsList.value.filter((item: TabInfo
 </template>
 
 <style lang="scss">
-.gameImage-container {
+.imageProcessingTool-container {
   box-sizing: border-box;
   width: 100%;
   min-height: 100%;
@@ -322,7 +322,7 @@ const showTabInfo = computed<TabInfo>(() => tabsList.value.filter((item: TabInfo
   $primaryColor: #0e5e6f;
   $primaryShallowColor: #3a8891;
 
-  .gameImage-content {
+  .imageProcessingTool-content {
     min-width: 1160px;
     max-width: 1350px;
     display: flex;
