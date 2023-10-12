@@ -1,10 +1,8 @@
-/**
- * 图片处理工具-修改尺寸Tab页
- */
+/** * 图片处理工具-修改尺寸Tab页 */
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { message } from 'ant-design-vue';
-import { useI18n } from 'vue-i18n';
+import { ref, watch } from "vue";
+import { message } from "ant-design-vue";
+import { useI18n } from "vue-i18n";
 import { changeSize } from "utils/imageUtil";
 import FileBox from "./FileBox.vue";
 import { TabPageProps } from "../index.vue";
@@ -22,8 +20,7 @@ const {
   onClear,
 } = defineProps<TabPageProps>();
 const { t } = useI18n();
-const keepOriginalProportion =
-  ref<boolean>(false);
+const keepOriginalProportion = ref<boolean>(false);
 const toWidth = ref<number | null>(imgInfo.value.width);
 const toHeight = ref<number | null>(imgInfo.value.height);
 
@@ -76,9 +73,7 @@ const onOk = () => {
   }
   const { imgUrl, width, height } = imgInfo.value;
   if (!toWidth.value || !toHeight.value) {
-    message.warning(
-      t("page.imageProcessingTool.pleaseEnterWidthOrHeight")
-    );
+    message.warning(t("page.imageProcessingTool.pleaseEnterWidthOrHeight"));
     return;
   }
   doing = true;
@@ -102,23 +97,48 @@ watch(imgInfo, () => {
   toWidth.value = imgInfo.value.width;
   toHeight.value = imgInfo.value.height;
 });
-
 </script>
 
 <template>
-  <FileBox :imgInfo="imgInfo" :imgDragOver="imgDragOver" :onDragOver="onDragOver" :onDragLeave="onDragLeave"
-    :onDrop="onDrop" />
+  <FileBox
+    :imgInfo="imgInfo"
+    :imgDragOver="imgDragOver"
+    :onDragOver="onDragOver"
+    :onDragLeave="onDragLeave"
+    :onDrop="onDrop"
+  />
   <div class="operationBtns">
     <div class="left">
-      <a-checkbox class="operationBtn" :checked="keepOriginalProportion" :onChange="onKeepProportionChange">
-        {{ t("page.imageProcessingTool.whetherMaintainOriginalProportion") }}
+      <a-checkbox
+        class="operationBtn"
+        :checked="keepOriginalProportion"
+        :onChange="onKeepProportionChange"
+      >
+        {{ t("common.whetherMaintainOriginalProportion") }}
       </a-checkbox>
-      <a-input-number class="operationBtn" style="width: 160px" :min="1" :max="maxWidthHeight" :precision="0"
-        :value="toWidth" :addonBefore="t('page.imageProcessingTool.width')" :onChange="onWidthChange" />
-      <a-input-number class="operationBtn" style="width: 160px" :min="1" :max="maxWidthHeight" :precision="0"
-        :value="toHeight" :addonBefore="t('page.imageProcessingTool.height')" :onChange="onHeightChange" />
+      <a-input-number
+        class="operationBtn"
+        style="width: 160px"
+        :min="1"
+        :max="maxWidthHeight"
+        :precision="0"
+        :value="toWidth"
+        :addonBefore="t('common.width')"
+        :onChange="onWidthChange"
+      />
+      <a-input-number
+        class="operationBtn"
+        style="width: 160px"
+        :min="1"
+        :max="maxWidthHeight"
+        :precision="0"
+        :value="toHeight"
+        :addonBefore="t('common.height')"
+        :onChange="onHeightChange"
+      />
       <a-button type="primary" class="operationBtn" @click="onOk">
-        {{ t("common.confirm") }} </a-button>
+        {{ t("common.confirm") }}
+      </a-button>
     </div>
     <a-button class="right" ghost type="primary" @click="onClear">
       {{ t("common.clear") }}

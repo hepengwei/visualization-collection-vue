@@ -1,3 +1,6 @@
+/**
+ * 炫酷3D应用页面
+ */
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, Ref, watch } from "vue";
 import * as THREE from "three";

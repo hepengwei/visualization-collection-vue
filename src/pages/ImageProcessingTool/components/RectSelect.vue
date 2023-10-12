@@ -1,13 +1,11 @@
-/**
- * 矩形裁剪Tab页/打马赛克Tab页
- */
+/** * 矩形裁剪Tab页/打马赛克Tab页 */
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import type { Ref } from 'vue';
-import { message } from 'ant-design-vue';
-import { useI18n } from 'vue-i18n';
-import { useGlobalContext } from 'hooks/useGlobalContext';
-import type { GlobalContext } from 'hooks/useGlobalContext';
+import { ref, watch } from "vue";
+import type { Ref } from "vue";
+import { message } from "ant-design-vue";
+import { useI18n } from "vue-i18n";
+import { useGlobalContext } from "hooks/useGlobalContext";
+import type { GlobalContext } from "hooks/useGlobalContext";
 import { rectClip, mosaic } from "utils/imageUtil";
 import { TabPageProps } from "../index.vue";
 
@@ -74,9 +72,6 @@ const clipBoxLeft = ref<number>(0);
 const contentRef = ref<HTMLDivElement | null>(null);
 const leftBoxRef = ref<HTMLDivElement | null>(null);
 
-
-
-
 // 获取元素相对于屏幕左边和上边的距离，利用offsetLefe
 const getPosition = (node: HTMLElement) => {
   var left = node.offsetLeft;
@@ -109,7 +104,10 @@ const rightMove = (e: MouseEvent) => {
   const widthBefore = clipBoxWidth.value - 2;
   const mainX = getPosition(clipBoxNode).left;
   const addWidth = x - widthBefore - mainX;
-  clipBoxWidth.value = Math.max(Math.floor(widthBefore + addWidth), clipBoxMinWidthHeight);
+  clipBoxWidth.value = Math.max(
+    Math.floor(widthBefore + addWidth),
+    clipBoxMinWidthHeight
+  );
 };
 
 //up移动
@@ -131,7 +129,10 @@ const upMove = (e: MouseEvent) => {
     leftBoxHeight - clipBoxMinWidthHeight
   );
   const heightBefore = clipBoxHeight.value;
-  clipBoxHeight.value = Math.max(Math.floor(heightBefore + mainY - y), clipBoxMinWidthHeight);
+  clipBoxHeight.value = Math.max(
+    Math.floor(heightBefore + mainY - y),
+    clipBoxMinWidthHeight
+  );
 };
 
 //left移动
@@ -153,7 +154,10 @@ const leftMove = (e: MouseEvent) => {
     leftBoxWidth - clipBoxMinWidthHeight
   );
   const widthBefore = clipBoxWidth.value;
-  clipBoxWidth.value = Math.max(Math.floor(widthBefore + mainX - x), clipBoxMinWidthHeight);
+  clipBoxWidth.value = Math.max(
+    Math.floor(widthBefore + mainX - x),
+    clipBoxMinWidthHeight
+  );
 };
 
 //down移动
@@ -172,7 +176,10 @@ const downMove = (e: MouseEvent) => {
   const heightBefore = clipBoxHeight.value - 2;
   const mainY = getPosition(clipBoxNode).top;
   const addHeight = y - heightBefore - mainY;
-  clipBoxHeight.value = Math.max(Math.floor(heightBefore + addHeight), clipBoxMinWidthHeight);
+  clipBoxHeight.value = Math.max(
+    Math.floor(heightBefore + addHeight),
+    clipBoxMinWidthHeight
+  );
 };
 
 const onMouseMove = (e: MouseEvent) => {
@@ -297,132 +304,235 @@ const onOk = () => {
   doing = false;
 };
 
-
-watch([imgInfo, leftBoxRef], () => {
-  const { width, height } = imgInfo.value;
-  if (
-    width < clipBoxMinWidthHeight * 2 ||
-    height < clipBoxMinWidthHeight * 2
-  ) {
-    message.error(
-      t("page.imageProcessingTool.imageTooSmall")
-    );
-    imgSizeQualified.value = false;
-    return;
-  } else if (width > 1350 || height > 1350) {
-    message.error(
-      t("page.imageProcessingTool.imageTooLarge")
-    );
-    imgSizeQualified.value = false;
-    return;
-  }
-
-  const defaultWidth = Math.max(
-    Math.floor(imgInfo.value.width / 2),
-    clipBoxMinWidthHeight
-  );
-  const defaultHeight = Math.max(
-    Math.floor(imgInfo.value.height / 2),
-    clipBoxMinWidthHeight
-  );
-  clipBoxWidth.value = defaultWidth;
-  clipBoxHeight.value = defaultHeight;
-  clipBoxLeft.value = 0;
-  clipBoxTop.value = 0;
-  if (imgSizeQualified.value) {
-    if (leftBoxRef.value) {
-      const leftBoxNode = leftBoxRef.value as HTMLDivElement;
-      const { offsetWidth, offsetHeight } = leftBoxNode;
-      leftBoxWidth = offsetWidth;
-      leftBoxHeight = offsetHeight;
+watch(
+  [imgInfo, leftBoxRef],
+  () => {
+    const { width, height } = imgInfo.value;
+    if (
+      width < clipBoxMinWidthHeight * 2 ||
+      height < clipBoxMinWidthHeight * 2
+    ) {
+      message.error(t("page.imageProcessingTool.imageTooSmall"));
+      imgSizeQualified.value = false;
+      return;
+    } else if (width > 1350 || height > 1350) {
+      message.error(t("page.imageProcessingTool.imageTooLarge"));
+      imgSizeQualified.value = false;
+      return;
     }
-  } else {
-    imgSizeQualified.value = true;
-  }
-  if (type === "clip") {
-    retainOriginalSize.value = false;
-  }
-}, { immediate: true });
+
+    const defaultWidth = Math.max(
+      Math.floor(imgInfo.value.width / 2),
+      clipBoxMinWidthHeight
+    );
+    const defaultHeight = Math.max(
+      Math.floor(imgInfo.value.height / 2),
+      clipBoxMinWidthHeight
+    );
+    clipBoxWidth.value = defaultWidth;
+    clipBoxHeight.value = defaultHeight;
+    clipBoxLeft.value = 0;
+    clipBoxTop.value = 0;
+    if (imgSizeQualified.value) {
+      if (leftBoxRef.value) {
+        const leftBoxNode = leftBoxRef.value as HTMLDivElement;
+        const { offsetWidth, offsetHeight } = leftBoxNode;
+        leftBoxWidth = offsetWidth;
+        leftBoxHeight = offsetHeight;
+      }
+    } else {
+      imgSizeQualified.value = true;
+    }
+    if (type === "clip") {
+      retainOriginalSize.value = false;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
   <div class="container">
-    <div class="imgBox" :style="{ borderColor: imgDragOver.value ? primaryColor : primaryShallowColor }"
-      @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
-      <div class="content" :style="{ width: `${imgInfo.value.width}px`, height: `${imgInfo.value.height}px` }"
-        @mousemove="onMouseMove" @mouseup="onMouseUp" @mouseleave="onMouseUp" ref="contentRef" v-if="imgSizeQualified">
+    <div
+      class="imgBox"
+      :style="{
+        borderColor: imgDragOver.value ? primaryColor : primaryShallowColor,
+      }"
+      @dragover="onDragOver"
+      @dragleave="onDragLeave"
+      @drop="onDrop"
+    >
+      <div
+        class="content"
+        :style="{
+          width: `${imgInfo.value.width}px`,
+          height: `${imgInfo.value.height}px`,
+        }"
+        @mousemove="onMouseMove"
+        @mouseup="onMouseUp"
+        @mouseleave="onMouseUp"
+        ref="contentRef"
+        v-if="imgSizeQualified"
+      >
         <div class="leftBox" ref="leftBoxRef">
           <img :src="imgInfo.value.imgUrl" class="img1" />
           <div class="mask" />
-          <img :src="imgInfo.value.imgUrl" class="img2" :style="{
-            clip: `rect(${clipBoxTop}px, ${clipBoxLeft +
-              clipBoxWidth}px, ${clipBoxTop + clipBoxHeight}px, ${clipBoxLeft}px)`
-          }" />
-          <div class="clipBox" :style="{
-            position: 'absolute', width: `${clipBoxWidth}px`, height:
-              `${clipBoxHeight}px`, top: `${clipBoxTop}px`, left: `${clipBoxLeft}px`
-          }" @mousedown="onMouseDownClipBox" ref="clipBoxRef">
-            <div class="dot leftUp" @mousedown="(e) => onMouseDownDot(e, Contact.leftUp)"></div>
-            <div class="dot up" @mousedown="(e) => onMouseDownDot(e, Contact.up)"></div>
-            <div class="dot rightUp" @mousedown="(e) => onMouseDownDot(e, Contact.rightUp)"></div>
-            <div class="dot right" @mousedown="(e) => onMouseDownDot(e, Contact.right)"></div>
-            <div class="dot rightDown" @mousedown="(e) => onMouseDownDot(e, Contact.rightDown)"></div>
-            <div class="dot down" @mousedown="(e) => onMouseDownDot(e, Contact.down)"></div>
-            <div class="dot leftDown" @mousedown="(e) => onMouseDownDot(e, Contact.leftDown)"></div>
-            <div class="dot left" @mousedown="(e) => onMouseDownDot(e, Contact.left)"></div>
+          <img
+            :src="imgInfo.value.imgUrl"
+            class="img2"
+            :style="{
+              clip: `rect(${clipBoxTop}px, ${clipBoxLeft + clipBoxWidth}px, ${
+                clipBoxTop + clipBoxHeight
+              }px, ${clipBoxLeft}px)`,
+            }"
+          />
+          <div
+            class="clipBox"
+            :style="{
+              position: 'absolute',
+              width: `${clipBoxWidth}px`,
+              height: `${clipBoxHeight}px`,
+              top: `${clipBoxTop}px`,
+              left: `${clipBoxLeft}px`,
+            }"
+            @mousedown="onMouseDownClipBox"
+            ref="clipBoxRef"
+          >
+            <div
+              class="dot leftUp"
+              @mousedown="(e) => onMouseDownDot(e, Contact.leftUp)"
+            ></div>
+            <div
+              class="dot up"
+              @mousedown="(e) => onMouseDownDot(e, Contact.up)"
+            ></div>
+            <div
+              class="dot rightUp"
+              @mousedown="(e) => onMouseDownDot(e, Contact.rightUp)"
+            ></div>
+            <div
+              class="dot right"
+              @mousedown="(e) => onMouseDownDot(e, Contact.right)"
+            ></div>
+            <div
+              class="dot rightDown"
+              @mousedown="(e) => onMouseDownDot(e, Contact.rightDown)"
+            ></div>
+            <div
+              class="dot down"
+              @mousedown="(e) => onMouseDownDot(e, Contact.down)"
+            ></div>
+            <div
+              class="dot leftDown"
+              @mousedown="(e) => onMouseDownDot(e, Contact.leftDown)"
+            ></div>
+            <div
+              class="dot left"
+              @mousedown="(e) => onMouseDownDot(e, Contact.left)"
+            ></div>
           </div>
         </div>
       </div>
     </div>
     <div class="operationBtns" v-if="imgSizeQualified">
       <div class="left">
-        <a-checkbox class="operationBtn" v-model:checked="retainOriginalSize" v-if="type === 'clip'">
-          {{ t("page.imageProcessingTool.WhetherRetainOriginalDimension") }}</a-checkbox>
-        <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '200px' }"
-          :min="clipBoxMinWidthHeight" :max="imgInfo.value.width" :precision="0" :value="clipBoxWidth"
-          :addonBefore="t('page.imageProcessingTool.clippingWidth')" :onChange="(value: number |
+        <a-checkbox
+          class="operationBtn"
+          v-model:checked="retainOriginalSize"
+          v-if="type === 'clip'"
+        >
+          {{
+            t("page.imageProcessingTool.WhetherRetainOriginalDimension")
+          }}</a-checkbox
+        >
+        <a-input-number
+          class="operationBtn"
+          :style="{ width: locale === 'zh-cn' ? '160px' : '200px' }"
+          :min="clipBoxMinWidthHeight"
+          :max="imgInfo.value.width"
+          :precision="0"
+          :value="clipBoxWidth"
+          :addonBefore="t('common.clippingWidth')"
+          :onChange="(value: number |
             null) => {
             const { width } = imgInfo.value;
             if (value && value + clipBoxLeft > width) {
               clipBoxLeft = width - value;
             }
             clipBoxWidth = value || 0;
-          }" />
-        <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '200px' }"
-          :min="clipBoxMinWidthHeight" :max="imgInfo.value.height" :precision="0" :value="clipBoxHeight"
-          :addonBefore="t('page.imageProcessingTool.clippingHeight')" :onChange="(value: number |
+          }"
+        />
+        <a-input-number
+          class="operationBtn"
+          :style="{ width: locale === 'zh-cn' ? '160px' : '200px' }"
+          :min="clipBoxMinWidthHeight"
+          :max="imgInfo.value.height"
+          :precision="0"
+          :value="clipBoxHeight"
+          :addonBefore="t('common.clippingHeight')"
+          :onChange="(value: number |
             null) => {
             const { height } = imgInfo.value;
             if (value && value + clipBoxTop > height) {
               clipBoxTop = height - value;
             }
             clipBoxHeight = value || 0;
-          }" />
-        <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '190px' }" :min="0"
-          :max="imgInfo.value.width - clipBoxMinWidthHeight" :precision="0" :value="clipBoxLeft"
-          :addonBefore="t('page.imageProcessingTool.distanceLeft')" :onChange="(value: number |
+          }"
+        />
+        <a-input-number
+          class="operationBtn"
+          :style="{ width: locale === 'zh-cn' ? '160px' : '190px' }"
+          :min="0"
+          :max="imgInfo.value.width - clipBoxMinWidthHeight"
+          :precision="0"
+          :value="clipBoxLeft"
+          :addonBefore="t('common.distanceLeft')"
+          :onChange="(value: number |
             null) => {
             clipBoxLeft = value || 0;
             const { width } = imgInfo.value;
             if (value && value + clipBoxWidth > width) {
               clipBoxWidth = width - value;
             }
-          }" />
-        <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '160px' : '190px' }" :min='0'
-          :max="imgInfo.value.height - clipBoxMinWidthHeight" :precision="0" :value="clipBoxTop"
-          :addonBefore="t('page.imageProcessingTool.distanceTop')" :onChange="(value: number | null) => {
+          }"
+        />
+        <a-input-number
+          class="operationBtn"
+          :style="{ width: locale === 'zh-cn' ? '160px' : '190px' }"
+          :min="0"
+          :max="imgInfo.value.height - clipBoxMinWidthHeight"
+          :precision="0"
+          :value="clipBoxTop"
+          :addonBefore="t('common.distanceTop')"
+          :onChange="(value: number | null) => {
             clipBoxTop = value || 0;
             const { height } = imgInfo.value;
             if (value && value + clipBoxHeight > height) {
               clipBoxHeight = height - value;
             }
-          }" />
-        <a-input-number class="operationBtn" :style="{ width: locale === 'zh-cn' ? '200px' : '220px' }" :min="2" :max="40"
-          :precision="0" :value="mosaicSize" :addonBefore="t('page.imageProcessingTool.mosaicGrainSize')" :onChange="(value: number | null) => {
+          }"
+        />
+        <a-input-number
+          class="operationBtn"
+          :style="{ width: locale === 'zh-cn' ? '200px' : '220px' }"
+          :min="2"
+          :max="40"
+          :precision="0"
+          :value="mosaicSize"
+          :addonBefore="t('common.mosaicGrainSize')"
+          :onChange="(value: number | null) => {
             mosaicSize = value || 0;
-          }" v-if="type === 'mosaic'" />
-        <a-button type="primary" class="operationBtn" @click="onOk" :disabled="!imgSizeQualified">
-          {{ t("common.confirm") }}</a-button>
+          }"
+          v-if="type === 'mosaic'"
+        />
+        <a-button
+          type="primary"
+          class="operationBtn"
+          @click="onOk"
+          :disabled="!imgSizeQualified"
+        >
+          {{ t("common.confirm") }}</a-button
+        >
       </div>
       <a-button class="right" ghost type="primary" @click="onClear">
         {{ t("common.clear") }}
