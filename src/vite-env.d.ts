@@ -19,3 +19,5 @@ declare module "particles.js";
 declare module "typed.js";
 
 declare module "swiper";
+
+declare module "d3-geo";
