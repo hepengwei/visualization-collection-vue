@@ -117,6 +117,7 @@ const items: Ref<ItemType[]> = computed(() => [
     getItem(t("menu.threeJs3D.carShow"), "carShow"),
     getItem(t("menu.threeJs3D.rubiksCube"), "rubiksCube"),
     getItem(t("menu.threeJs3D.throwDice"), "throwDice"),
+    getItem(t("menu.threeJs3D.mapDisplay"), "mapDisplay"),
   ]),
   getItem(t("menu.AIApplication"), "AIApplication", () => h(FireOutlined), [
     getItem(

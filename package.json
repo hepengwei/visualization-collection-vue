@@ -24,6 +24,7 @@
     "bignumber.js": "^9.1.1",
     "cannon-es": "^0.20.0",
     "classnames": "^2.3.2",
+    "d3-geo": "^3.1.0",
     "date-fns": "^2.30.0",
     "echarts": "^5.4.2",
     "gsap": "^3.12.2",
