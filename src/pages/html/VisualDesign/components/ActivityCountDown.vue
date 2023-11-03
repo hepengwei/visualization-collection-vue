@@ -31,7 +31,7 @@ const over = ref<boolean>(false);
 <style scoped lang="scss">
 .container {
   width: 100%;
-  height: 360px;
+  height: 420px;
   display: flex;
   flex-direction: column;
   justify-content: center;

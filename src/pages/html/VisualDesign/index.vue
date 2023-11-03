@@ -1,38 +1,37 @@
-/**
- * 视觉设计
- */
+/** * 视觉设计 */
 <script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import GridContent from 'components/GridContent/index.vue';
-import GridBox from 'components/GridContent/GridBox.vue';
-import GlassMimicry1 from './components/GlassMimicry1.vue';
-import GlassMimicry2 from './components/GlassMimicry2.vue';
-import MixBlendMode from './components/MixBlendMode.vue';
-import SwitchingText from './components/SwitchingText.vue';
-import Typed1 from './components/Typed1.vue';
-import Typed2 from './components/Typed2.vue';
-import AutoEllipsisText from './components/AutoEllipsisText.vue';
-import TextWrap from './components/TextWrap.vue';
-import BgFusion from './components/BgFusion.vue';
-import MyLogo from './components/MyLogo.vue';
-import ShearAngle from './components/ShearAngle.vue';
-import AnnulusLoading from './components/AnnulusLoading.vue';
-import Honeycomb from './components/Honeycomb.vue';
-import PizzaPie from './components/PizzaPie.vue';
-import AnnulusProgressBar from './components/AnnulusProgressBar.vue';
-import AudioLoading from './components/AudioLoading.vue';
-import FilterCSS from './components/FilterCSS.vue';
-import SudokuImageAnimation from './components/SudokuImageAnimation.vue';
-import WaterDropLogin from './components/WaterDropLogin.vue';
-import TextShadow from './components/TextShadow.vue';
-import HorseRaceLamp from './components/HorseRaceLamp.vue';
-import HarmonyLogo from './components/HarmonyLogo.vue';
-import Preserve3D from './components/Preserve3D.vue';
-import RotateAndBgFixed from './components/RotateAndBgFixed.vue';
-import HexagonalMesh from './components/HexagonalMesh.vue';
+import useScrollToTop from "hooks/useScrollToTop";
+import GridContent from "components/GridContent/index.vue";
+import GridBox from "components/GridContent/GridBox.vue";
+import GlassMimicry1 from "./components/GlassMimicry1.vue";
+import GlassMimicry2 from "./components/GlassMimicry2.vue";
+import MixBlendMode from "./components/MixBlendMode.vue";
+import SwitchingText from "./components/SwitchingText.vue";
+import Typed1 from "./components/Typed1.vue";
+import Typed2 from "./components/Typed2.vue";
+import AutoEllipsisText from "./components/AutoEllipsisText.vue";
+import TextWrap from "./components/TextWrap.vue";
+import BgFusion from "./components/BgFusion.vue";
+import MyLogo from "./components/MyLogo.vue";
+import ShearAngle from "./components/ShearAngle.vue";
+import AnnulusLoading from "./components/AnnulusLoading.vue";
+import Honeycomb from "./components/Honeycomb.vue";
+import PizzaPie from "./components/PizzaPie.vue";
+import AnnulusProgressBar from "./components/AnnulusProgressBar.vue";
+import AudioLoading from "./components/AudioLoading.vue";
+import FilterCSS from "./components/FilterCSS.vue";
+import SudokuImageAnimation from "./components/SudokuImageAnimation.vue";
+import WaterDropLogin from "./components/WaterDropLogin.vue";
+import TextShadow from "./components/TextShadow.vue";
+import HorseRaceLamp from "./components/HorseRaceLamp.vue";
+import HarmonyLogo from "./components/HarmonyLogo.vue";
+import Preserve3D from "./components/Preserve3D.vue";
+import RotateAndBgFixed from "./components/RotateAndBgFixed.vue";
+import HexagonalMesh from "./components/HexagonalMesh.vue";
 // import HexagonalRadar from './components/HexagonalRadar.vue';
-import HoverEnlargement from './components/HoverEnlargement.vue';
-import ActivityCountDown from './components/ActivityCountDown.vue';
+import HoverEnlargement from "./components/HoverEnlargement.vue";
+import ActivityCountDown from "./components/ActivityCountDown.vue";
+import Ribbon from "./components/Ribbon.vue";
 
 const rowSpace = 4;
 const colSpace = 4;
@@ -65,6 +64,7 @@ const gridboxList = [
   // { element: HexagonalRadar },
   { element: HoverEnlargement },
   { element: ActivityCountDown },
+  { element: Ribbon },
 ];
 
 useScrollToTop();
@@ -72,8 +72,17 @@ useScrollToTop();
 
 <template>
   <div class="container">
-    <GridContent :differentScreenCols="[2, 2, 2, 1, 1]" :rowSpace="rowSpace" :colSpace="colSpace">
-      <GridBox v-for="(item, index) in gridboxList" :key="index" :rowSpace="rowSpace" :colSpace="colSpace">
+    <GridContent
+      :differentScreenCols="[2, 2, 2, 1, 1]"
+      :rowSpace="rowSpace"
+      :colSpace="colSpace"
+    >
+      <GridBox
+        v-for="(item, index) in gridboxList"
+        :key="index"
+        :rowSpace="rowSpace"
+        :colSpace="colSpace"
+      >
         <div class="box">
           <component :is="item.element"></component>
         </div>
@@ -96,7 +105,7 @@ useScrollToTop();
   padding: 4px;
 
   .box {
-    background-color: #000c17dd;
+    background-image: linear-gradient(to right, #04182c, #000c17, #04182c);
     border: 3px solid #35a2fd44;
     border-radius: 10px;
     overflow: hidden;
