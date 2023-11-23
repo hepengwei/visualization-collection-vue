@@ -195,7 +195,12 @@ const initializeHandle = (
 ) => {
   if (containerRef.value) {
     // 添加背景图
-    scene.background = new THREE.TextureLoader().load(pageBg);
+    new THREE.TextureLoader().load(pageBg, (t: THREE.Texture) => {
+      // @ts-ignore
+      t.colorSpace = "srgb"; // 设置标准色
+      scene.background = t;
+    });
+    
     camera.position.set(
       cameraInitPosition.x,
       cameraInitPosition.y,

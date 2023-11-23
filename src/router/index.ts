@@ -28,6 +28,7 @@ import CarShow from "pages/threejs/CarShow.vue";
 import RubiksCube from "pages/threejs/RubiksCube/index.vue";
 import ThrowDice from "pages/threejs/ThrowDice.vue";
 import MapDisplay from "pages/threejs/MapDisplay.vue";
+import EarthDisplay from "pages/threejs/EarthDisplay/index.vue";
 import HumanPostureDetection from "pages/AIApplication/HumanPostureDetection.vue";
 import NotBlockPeopleBarrage from "pages/AIApplication/NotBlockPeopleBarrage.vue";
 import ImageProcessingTool from "pages/ImageProcessingTool/index.vue";
@@ -173,6 +174,10 @@ const contentRoutes = [
       {
         path: "/threejs/mapDisplay",
         component: MapDisplay,
+      },
+      {
+        path: "/threejs/earthDisplay",
+        component: EarthDisplay,
       },
     ],
   },
