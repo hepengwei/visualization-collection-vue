@@ -34,6 +34,7 @@ import NotBlockPeopleBarrage from "pages/AIApplication/NotBlockPeopleBarrage.vue
 import ImageProcessingTool from "pages/ImageProcessingTool/index.vue";
 import Bar from "pages/echarts/Bar/index.vue";
 import Pie from "pages/echarts/Pie/index.vue";
+import Tree from "pages/echarts/Tree/index.vue";
 
 const contentRoutes = [
   {
@@ -149,6 +150,10 @@ const contentRoutes = [
       {
         path: "/echarts/pie",
         component: Pie,
+      },
+      {
+        path: "/echarts/tree",
+        component: Tree,
       },
     ],
   },

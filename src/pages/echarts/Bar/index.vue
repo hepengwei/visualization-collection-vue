@@ -1,23 +1,40 @@
 <script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import GridContent from 'components/GridContent/index.vue';
-import GridBox from 'components/GridContent/GridBox.vue';
-import Bar1 from './components/Bar1.vue';
-import Bar2 from './components/Bar2.vue';
-import Bar3 from './components/Bar3.vue';
-import Bar4 from './components/Bar4.vue';
+/**
+ * 柱状图
+ */
+import useScrollToTop from "hooks/useScrollToTop";
+import GridContent from "components/GridContent/index.vue";
+import GridBox from "components/GridContent/GridBox.vue";
+import Bar1 from "./components/Bar1.vue";
+import Bar2 from "./components/Bar2.vue";
+import Bar3 from "./components/Bar3.vue";
+import Bar4 from "./components/Bar4.vue";
 
 const rowSpace = 4;
 const colSpace = 4;
-const gridboxList = [{ element: Bar1 }, { element: Bar2 }, { element: Bar3 }, { element: Bar4 }];
+const gridboxList = [
+  { element: Bar1 },
+  { element: Bar2 },
+  { element: Bar3 },
+  { element: Bar4 },
+];
 
 useScrollToTop();
 </script>
 
 <template>
   <div class="container">
-    <GridContent :differentScreenCols="[2, 2, 2, 1, 1]" :rowSpace="rowSpace" :colSpace="colSpace">
-      <GridBox v-for="(item, index) in gridboxList" :key="index" :rowSpace="rowSpace" :colSpace="colSpace">
+    <GridContent
+      :differentScreenCols="[2, 2, 2, 1, 1]"
+      :rowSpace="rowSpace"
+      :colSpace="colSpace"
+    >
+      <GridBox
+        v-for="(item, index) in gridboxList"
+        :key="index"
+        :rowSpace="rowSpace"
+        :colSpace="colSpace"
+      >
         <div class="box">
           <component :is="item.element"></component>
         </div>

@@ -111,6 +111,7 @@ const items: Ref<ItemType[]> = computed(() => [
   getItem(t("menu.echartsInteraction"), "echarts", () => h(LineChartOutlined), [
     getItem(t("menu.echartsInteraction.barCharts"), "bar"),
     getItem(t("menu.echartsInteraction.pieCharts"), "pie"),
+    getItem(t("menu.echartsInteraction.treeCharts"), "tree"),
   ]),
   getItem(t("menu.threeJs3D"), "threejs", () => h(RocketOutlined), [
     getItem(t("menu.threeJs3D.appPageFrame"), "threejsAppPageFrame"),

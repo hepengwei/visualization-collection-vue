@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import GridContent from 'components/GridContent/index.vue';
-import GridBox from 'components/GridContent/GridBox.vue';
-import Pie1 from './components/Pie1.vue';
-import Pie2 from './components/Pie2.vue';
+/**
+ * 饼图
+ */
+import useScrollToTop from "hooks/useScrollToTop";
+import GridContent from "components/GridContent/index.vue";
+import GridBox from "components/GridContent/GridBox.vue";
+import Pie1 from "./components/Pie1.vue";
+import Pie2 from "./components/Pie2.vue";
 
 const rowSpace = 4;
 const colSpace = 4;
@@ -14,8 +17,17 @@ useScrollToTop();
 
 <template>
   <div class="container">
-    <GridContent :differentScreenCols="[2, 2, 2, 1, 1]" :rowSpace="rowSpace" :colSpace="colSpace">
-      <GridBox v-for="(item, index) in gridboxList" :key="index" :rowSpace="rowSpace" :colSpace="colSpace">
+    <GridContent
+      :differentScreenCols="[2, 2, 2, 1, 1]"
+      :rowSpace="rowSpace"
+      :colSpace="colSpace"
+    >
+      <GridBox
+        v-for="(item, index) in gridboxList"
+        :key="index"
+        :rowSpace="rowSpace"
+        :colSpace="colSpace"
+      >
         <div class="box">
           <component :is="item.element"></component>
         </div>
