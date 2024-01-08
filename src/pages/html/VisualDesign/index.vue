@@ -31,6 +31,8 @@ import HexagonalMesh from "./components/HexagonalMesh.vue";
 // import HexagonalRadar from './components/HexagonalRadar.vue';
 import HoverEnlargement from "./components/HoverEnlargement.vue";
 import ActivityCountDown from "./components/ActivityCountDown.vue";
+import GlassDesign1 from "./components/GlassDesign1.vue";
+import GlassDesign2 from "./components/GlassDesign2.vue";
 import Ribbon from "./components/Ribbon.vue";
 
 const rowSpace = 4;
@@ -65,6 +67,8 @@ const gridboxList = [
   { element: HoverEnlargement },
   { element: ActivityCountDown },
   { element: Ribbon },
+  { element: GlassDesign1 },
+  { element: GlassDesign2 },
 ];
 
 useScrollToTop();
