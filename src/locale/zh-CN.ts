@@ -111,6 +111,7 @@ const zh_CN = {
   "menu.echartsInteraction": "Echarts交互",
   "menu.echartsInteraction.barCharts": "柱状图",
   "menu.echartsInteraction.pieCharts": "饼图",
+  "menu.echartsInteraction.treeCharts": "树状图",
   "menu.threeJs3D": "Three.js3D",
   "menu.threeJs3D.appPageFrame": "炫酷3D应用页面",
   "menu.threeJs3D.carShow": "汽车展览",
