@@ -40,10 +40,7 @@ G6.registerNode(
           name: "box-shape",
         });
         // 添加标题(每行20个字符)
-        const text = `【第${cfg.level}层】${cfg.title}`.replace(
-          /(.{20})/g,
-          "$1\n"
-        );
+        const text = textAddLineBreak(`【第${cfg.level}层】${cfg.title}`, 20);
         const title = group.addShape("text", {
           attrs: {
             text,
@@ -68,7 +65,7 @@ G6.registerNode(
         if (rows <= 1) {
           y += 4;
         } else {
-          y -= Math.ceil((rows - 2) * 3.5);
+          y -= Math.ceil((rows - 2) * 4);
         }
         // 添加编号
         const code = group.addShape("text", {
@@ -92,7 +89,7 @@ G6.registerNode(
           y: -titleBox.height / 2 - padding,
           width: titleBox.width + padding * 2,
           height: Math.ceil(
-            titleBox.height + codeBox.height + padding * 2 + rows * 1.5
+            titleBox.height + codeBox.height + padding * 2 + rows
           ),
         });
         // 非第1层且有字节的要增加展开收起按钮

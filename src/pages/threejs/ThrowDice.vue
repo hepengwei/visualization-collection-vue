@@ -1,7 +1,7 @@
-/** 
+<script setup lang="ts">
+/**
  * 投骰子
  */
-<script setup lang="ts">
 import { ref, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { message } from "ant-design-vue";
@@ -22,6 +22,7 @@ const g = 300; // 重力加速度
 const restitution = 0.36; // 物理世界的反弹系数
 const cameraInitPosition = { x: 0, y: 40, z: 120 }; // 相机位置
 const floorY = -60; // 地板的y位置
+const maxDistance = 1000; // 轨道控制器的最远距离
 
 let controls: OrbitControls | null = null;
 let diceList: { mesh: THREE.Mesh; body: CANNON.Body }[] = []; // 存放所有骰子对象
@@ -217,7 +218,11 @@ const throwDice = () => {
         item.body.applyImpulse(new CANNON.Vec3(-16, force, -5));
       } else {
         // 隐藏其他不需要的骰子
-        item.body.position = new CANNON.Vec3(1000, floorY + diceSize / 2, 0);
+        item.body.position = new CANNON.Vec3(
+          0,
+          floorY + diceSize / 2,
+          maxDistance + diceSize * index
+        );
         // @ts-ignore
         item.mesh.position.copy(item.body.position);
         item.mesh.rotation.set(0, 0, 0);
@@ -270,6 +275,7 @@ const initializeHandle = (
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableRotate = false; // 禁止旋转，只能缩放
+    controls.maxDistance = maxDistance; // 最远距离
 
     // 创建物理世界
     createPhysicsWorld();

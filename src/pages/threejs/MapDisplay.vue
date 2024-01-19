@@ -1,5 +1,7 @@
-/** * 地图展示 */
 <script setup lang="ts">
+/**
+ * 地图展示
+ */
 import { ref, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { AppstoreOutlined } from "@ant-design/icons-vue";
@@ -200,7 +202,7 @@ const initializeHandle = (
       t.colorSpace = "srgb"; // 设置标准色
       scene.background = t;
     });
-    
+
     camera.position.set(
       cameraInitPosition.x,
       cameraInitPosition.y,

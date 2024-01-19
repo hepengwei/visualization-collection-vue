@@ -1,7 +1,7 @@
-/** 
+<script setup lang="ts">
+/**
  * 连接线
  */
-<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { message } from "ant-design-vue";
 import { useI18n } from "vue-i18n";
@@ -19,6 +19,9 @@ const standardAnwsers = {
   vegetable: "🥕",
 };
 
+const question: string[] = Object.values(standardAnwsers).sort(
+  () => Math.random() - 0.5
+); // 当前题目右边的顺序
 let ctx: CanvasRenderingContext2D | null = null;
 let backCtx: CanvasRenderingContext2D | null = null;
 let startElement: HTMLDivElement | null = null; // 记录每一次连线开始元素
@@ -419,9 +422,7 @@ const onCheckout = () => {
           <div class="options" ref="rightOptionsRef">
             <div
               class="option"
-              v-for="value in Object.values(standardAnwsers).sort(
-                () => Math.random() - 0.5
-              )"
+              v-for="value in question"
               :data-value="value"
               data-ownership="R"
             >
