@@ -1,7 +1,7 @@
+<script setup lang="ts">
 /**
  * 3阶魔方
  */
-<script setup lang="ts">
 import { ref, onUnmounted, Ref, watch } from "vue";
 import * as THREE from "three";
 // @ts-ignore

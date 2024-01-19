@@ -1,7 +1,7 @@
-/** 
+<script setup lang="ts">
+/**
  * 汽车展览
  */
-<script setup lang="ts">
 import { ref, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import * as THREE from "three";

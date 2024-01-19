@@ -1,7 +1,7 @@
-/** 
- * 地球展示c
- */
 <script setup lang="ts">
+/**
+ * 地球展示
+ */
 import { ref, Ref, watch, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { AppstoreOutlined } from "@ant-design/icons-vue";
