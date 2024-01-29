@@ -14,10 +14,16 @@ const { data = [], selectedTabId, onChange } = defineProps<TabsProps>();
 
 <template>
   <div class="container">
-    <div v-for="tab in data" :key="tab.id" :class="`tabs-tabItem ${selectedTabId === tab.id ? 'active' : ''
-      }`" @click="() => {
-    onChange && onChange(tab.id);
-  }">
+    <div
+      v-for="tab in data"
+      :key="tab.id"
+      :class="{ 'tabs-tabItem': true, active: selectedTabId === tab.id }"
+      @click="
+        () => {
+          onChange && onChange(tab.id);
+        }
+      "
+    >
       {{ tab.label }}
     </div>
   </div>
@@ -29,7 +35,6 @@ const { data = [], selectedTabId, onChange } = defineProps<TabsProps>();
   height: 44px;
   display: flex;
   align-items: center;
-
 
   $primaryColor: #2320e5;
   $primaryShallowColor: #a3d5f3;
