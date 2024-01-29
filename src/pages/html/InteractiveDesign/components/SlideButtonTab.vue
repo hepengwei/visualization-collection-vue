@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
 const btnList = new Array(4).fill(0);
 const contentPaddingLeft = 16;
@@ -9,13 +9,11 @@ let btnWidth = 0;
 const contentRef = ref<HTMLDivElement | null>(null);
 const activedBtnIndex = ref<number>(0);
 
-
 const onBtnClick = (index: number) => {
   if (contentRef.value && activedBtnIndex.value !== index) {
-    const left = `${contentPaddingLeft +
-      btnWidth * index +
-      index * btnMarginLeftRight * 2
-      }px`;
+    const left = `${
+      contentPaddingLeft + btnWidth * index + index * btnMarginLeftRight * 2
+    }px`;
     contentRef.value.style.setProperty("--groove-left", left);
 
     let rotate = "0deg";
@@ -45,8 +43,7 @@ onMounted(() => {
       btnList.length;
     contentRef.value.style.setProperty("--btnWidth", `${btnWidth}px`);
   }
-})
-
+});
 </script>
 
 <template>
@@ -54,8 +51,12 @@ onMounted(() => {
     <div class="container">
       <ModuleTitle i18nTitle="page.htmlVision.interactiveDesign.swipeTab" />
       <div class="content" ref="contentRef">
-        <div v-for="(_, index) in btnList" :key="index" :className="`btn${activedBtnIndex === index ? ' actived' : ''}`"
-          @click="() => onBtnClick(index)">
+        <div
+          v-for="(_, index) in btnList"
+          :key="index"
+          :class="{ btn: true, actived: activedBtnIndex === index }"
+          @click="() => onBtnClick(index)"
+        >
           Button{{ index + 1 }}
         </div>
       </div>
@@ -103,8 +104,7 @@ onMounted(() => {
     border-radius: 12px;
     overflow: hidden;
     background-color: #e2e6eb;
-    box-shadow: -10px -10px 15px #343f49,
-    10px 10px 15px #212d38;
+    box-shadow: -10px -10px 15px #343f49, 10px 10px 15px #212d38;
     display: flex;
     justify-content: space-between;
     transform-origin: center; // 添加转换原点
@@ -154,7 +154,6 @@ onMounted(() => {
 
     /* 按钮选中缩放动画 */
     @keyframes txtEnterScale {
-
       0%,
       30% {
         transform: scale(1);
@@ -171,7 +170,6 @@ onMounted(() => {
 
     /* 按钮未选中缩放动画 */
     @keyframes txtOutScale {
-
       0%,
       30% {
         transform: scale(1.1);
