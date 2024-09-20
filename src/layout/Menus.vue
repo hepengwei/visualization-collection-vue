@@ -7,12 +7,12 @@ import {
   watch,
   onMounted,
   onUnmounted,
-} from "vue";
-import type { Ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useGlobalContext } from "hooks/useGlobalContext";
-import type { GlobalContext } from "hooks/useGlobalContext";
-import { useRouter, useRoute } from "vue-router";
+} from 'vue';
+import type { Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useGlobalContext } from 'hooks/useGlobalContext';
+import type { GlobalContext } from 'hooks/useGlobalContext';
+import { useRouter, useRoute } from 'vue-router';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -23,8 +23,8 @@ import {
   RocketOutlined,
   FireOutlined,
   FileImageOutlined,
-} from "@ant-design/icons-vue";
-import type { ItemType } from "ant-design-vue";
+} from '@ant-design/icons-vue';
+import type { ItemType } from 'ant-design-vue';
 
 const { t } = useI18n();
 const globalContext = useGlobalContext() as Ref<GlobalContext>;
@@ -32,14 +32,14 @@ const containerRef = ref<HTMLDivElement>();
 const router = useRouter();
 const route = useRoute();
 const collapsed = ref<boolean>(false);
-const openKeys = ref<string[]>(["html"]);
+const openKeys = ref<string[]>(['html']);
 
 const getItem = (
   label: VueElement | string,
   key: string,
   icon?: any,
   children?: ItemType[],
-  type?: "group"
+  type?: 'group'
 ) => {
   return {
     key,
@@ -51,87 +51,88 @@ const getItem = (
 };
 
 const items: Ref<ItemType[]> = computed(() => [
-  getItem(t("menu.htmlVision"), "html", () => h(BuildOutlined), [
-    getItem(t("menu.htmlVision.visualDesign"), "visualDesign"),
-    getItem(t("menu.htmlVision.interactiveDesign"), "interactiveDesign"),
-    getItem(t("menu.htmlVision.backgroundPattern"), "backgroundEffect"),
-    getItem(t("menu.htmlVision.complexLayout"), "complexLayout"),
-    getItem(t("menu.htmlVision.applicationPageFrame"), "appPageFrame"),
-    getItem(t("menu.htmlVision.utilitarianFunction"), "utilitarianFunction"),
+  getItem(t('menu.htmlVision'), 'html', () => h(BuildOutlined), [
+    getItem(t('menu.htmlVision.visualDesign'), 'visualDesign'),
+    getItem(t('menu.htmlVision.interactiveDesign'), 'interactiveDesign'),
+    getItem(t('menu.htmlVision.backgroundPattern'), 'backgroundEffect'),
+    getItem(t('menu.htmlVision.complexLayout'), 'complexLayout'),
+    getItem(t('menu.htmlVision.applicationPageFrame'), 'appPageFrame'),
+    getItem(t('menu.htmlVision.utilitarianFunction'), 'utilitarianFunction'),
   ]),
-  getItem(t("menu.cssDynamicEffect"), "css", () => h(FormatPainterOutlined), [
-    getItem(t("menu.cssDynamicEffect.dynamicEffectButton"), "dynamicButtons"),
-    getItem(t("menu.cssDynamicEffect.richDynamicEffect"), "richDynamicEffect"),
+  getItem(t('menu.cssDynamicEffect'), 'css', () => h(FormatPainterOutlined), [
+    getItem(t('menu.cssDynamicEffect.dynamicEffectButton'), 'dynamicButtons'),
+    getItem(t('menu.cssDynamicEffect.richDynamicEffect'), 'richDynamicEffect'),
     getItem(
-      t("menu.cssDynamicEffect.generateRegularPolygon"),
-      "generateRegularPolygon"
+      t('menu.cssDynamicEffect.generateRegularPolygon'),
+      'generateRegularPolygon'
     ),
+    getItem(t('menu.cssDynamicEffect.generateShadow'), 'generateShadow'),
   ]),
   getItem(
-    t("menu.canvasDynamicEffect"),
-    "canvas",
+    t('menu.canvasDynamicEffect'),
+    'canvas',
     () => h(PlayCircleOutlined),
     [
       getItem(
-        t("menu.canvasDynamicEffect.sphereCollisionExample"),
-        "sphereCollisionExample"
+        t('menu.canvasDynamicEffect.sphereCollisionExample'),
+        'sphereCollisionExample'
       ),
-      getItem(t("menu.canvasDynamicEffect.dynamicClock"), "dynamicClock"),
-      getItem(t("menu.canvasDynamicEffect.searchlightEffect"), "searchlight"),
+      getItem(t('menu.canvasDynamicEffect.dynamicClock'), 'dynamicClock'),
+      getItem(t('menu.canvasDynamicEffect.searchlightEffect'), 'searchlight'),
       getItem(
-        t("menu.canvasDynamicEffect.sphereCollisionInteraction"),
-        "globuleInteraction"
-      ),
-      getItem(
-        t("menu.canvasDynamicEffect.destroyThePlanetGame"),
-        "killPlanetGame"
+        t('menu.canvasDynamicEffect.sphereCollisionInteraction'),
+        'globuleInteraction'
       ),
       getItem(
-        t("menu.canvasDynamicEffect.sphereFreeFallInteraction"),
-        "freeFallingBody"
+        t('menu.canvasDynamicEffect.destroyThePlanetGame'),
+        'killPlanetGame'
       ),
       getItem(
-        t("menu.canvasDynamicEffect.coolCountdownAnimation"),
-        "countDown"
+        t('menu.canvasDynamicEffect.sphereFreeFallInteraction'),
+        'freeFallingBody'
       ),
       getItem(
-        t("menu.canvasDynamicEffect.rippleEffect"),
-        "rippleFloatOnTheWater"
+        t('menu.canvasDynamicEffect.coolCountdownAnimation'),
+        'countDown'
       ),
       getItem(
-        t("menu.canvasDynamicEffect.flowerBloomingAnimation"),
-        "flowerBloom"
+        t('menu.canvasDynamicEffect.rippleEffect'),
+        'rippleFloatOnTheWater'
       ),
-      getItem(t("menu.canvasDynamicEffect.codeBackgroundWall"), "codeBgWall"),
-      getItem(t("menu.canvasDynamicEffect.wordDance"), "wordDance"),
-      getItem(t("menu.canvasDynamicEffect.scratch"), "scratch"),
-      getItem(t("menu.canvasDynamicEffect.matchLine"), "matchLine"),
+      getItem(
+        t('menu.canvasDynamicEffect.flowerBloomingAnimation'),
+        'flowerBloom'
+      ),
+      getItem(t('menu.canvasDynamicEffect.codeBackgroundWall'), 'codeBgWall'),
+      getItem(t('menu.canvasDynamicEffect.wordDance'), 'wordDance'),
+      getItem(t('menu.canvasDynamicEffect.scratch'), 'scratch'),
+      getItem(t('menu.canvasDynamicEffect.matchLine'), 'matchLine'),
     ]
   ),
-  getItem(t("menu.echartsInteraction"), "echarts", () => h(LineChartOutlined), [
-    getItem(t("menu.echartsInteraction.barCharts"), "bar"),
-    getItem(t("menu.echartsInteraction.pieCharts"), "pie"),
-    getItem(t("menu.echartsInteraction.treeCharts"), "tree"),
+  getItem(t('menu.echartsInteraction'), 'echarts', () => h(LineChartOutlined), [
+    getItem(t('menu.echartsInteraction.barCharts'), 'bar'),
+    getItem(t('menu.echartsInteraction.pieCharts'), 'pie'),
+    getItem(t('menu.echartsInteraction.treeCharts'), 'tree'),
   ]),
-  getItem(t("menu.threeJs3D"), "threejs", () => h(RocketOutlined), [
-    getItem(t("menu.threeJs3D.appPageFrame"), "threejsAppPageFrame"),
-    getItem(t("menu.threeJs3D.carShow"), "carShow"),
-    getItem(t("menu.threeJs3D.rubiksCube"), "rubiksCube"),
-    getItem(t("menu.threeJs3D.throwDice"), "throwDice"),
-    getItem(t("menu.threeJs3D.mapDisplay"), "mapDisplay"),
-    getItem(t("menu.threeJs3D.earthDisplay"), "earthDisplay"),
+  getItem(t('menu.threeJs3D'), 'threejs', () => h(RocketOutlined), [
+    getItem(t('menu.threeJs3D.appPageFrame'), 'threejsAppPageFrame'),
+    getItem(t('menu.threeJs3D.carShow'), 'carShow'),
+    getItem(t('menu.threeJs3D.rubiksCube'), 'rubiksCube'),
+    getItem(t('menu.threeJs3D.throwDice'), 'throwDice'),
+    getItem(t('menu.threeJs3D.mapDisplay'), 'mapDisplay'),
+    getItem(t('menu.threeJs3D.earthDisplay'), 'earthDisplay'),
   ]),
-  getItem(t("menu.AIApplication"), "AIApplication", () => h(FireOutlined), [
+  getItem(t('menu.AIApplication'), 'AIApplication', () => h(FireOutlined), [
     getItem(
-      t("menu.AIApplication.humanPostureDetection"),
-      "humanPostureDetection"
+      t('menu.AIApplication.humanPostureDetection'),
+      'humanPostureDetection'
     ),
     getItem(
-      t("menu.AIApplication.notBlockPeopleBarrage"),
-      "notBlockPeopleBarrage"
+      t('menu.AIApplication.notBlockPeopleBarrage'),
+      'notBlockPeopleBarrage'
     ),
   ]),
-  getItem(t("menu.imageProcessingTool"), "imageProcessingTool", () =>
+  getItem(t('menu.imageProcessingTool'), 'imageProcessingTool', () =>
     h(FileImageOutlined)
   ),
 ]);
@@ -149,7 +150,7 @@ const selectedKeys = computed(() => {
   const { path } = route;
   const result = [];
   if (path) {
-    const arr = path.split("/");
+    const arr = path.split('/');
     const key = arr[arr.length - 1];
     if (key) {
       result.push(key);
@@ -167,7 +168,7 @@ const onMenu = (options: { keyPath: string[] }) => {
   const routePath = keyPath.reduce((result, item) => {
     result = `${result}/${item}`;
     return result;
-  }, "");
+  }, '');
   router.push(routePath);
 };
 
@@ -180,11 +181,11 @@ watch([collapsed, containerRef], () => {
 });
 
 onMounted(() => {
-  window.addEventListener("resize", updateMenuWidth);
+  window.addEventListener('resize', updateMenuWidth);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("resize", updateMenuWidth);
+  window.removeEventListener('resize', updateMenuWidth);
 });
 </script>
 
@@ -216,7 +217,7 @@ onUnmounted(() => {
       </div>
 
       <div class="bottom">
-        <span v-show="!collapsed">{{ t("common.keepUpdating") }}</span>
+        <span v-show="!collapsed">{{ t('common.keepUpdating') }}</span>
       </div>
     </div>
   </div>
