@@ -1,23 +1,23 @@
+<script setup lang="ts">
 /**
  * 丰富动效
  */
-<script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import DynamicTime from './components/DynamicTime.vue';
-import FlopTime from './components/FlopTime/index.vue';
-import ChargingAnimation from './components/ChargingAnimation.vue';
-import ZongziLoading from './components/ZongziLoading.vue';
-import BoxReflect from './components/BoxReflect.vue';
-import TextAnimation from './components/TextAnimation.vue';
-import TextSearchlight from './components/TextSearchlight.vue';
-import DisplayTextInSmoke from './components/DisplayTextInSmoke.vue';
-import PlayVideoInText from './components/PlayVideoInText.vue';
-import WaveFont from './components/WaveFont.vue';
-import TextOutlineAnimation1 from './components/TextOutlineAnimation1.vue';
-import TextOutlineAnimation2 from './components/TextOutlineAnimation2.vue';
-import MobiusBand1 from './components/MobiusBand1.vue';
-import MobiusBand2 from './components/MobiusBand2.vue';
-import TankShaking from './components/TankShaking.vue';
+import useScrollToTop from "hooks/useScrollToTop";
+import DynamicTime from "./components/DynamicTime.vue";
+import FlopTime from "./components/FlopTime/index.vue";
+import ChargingAnimation from "./components/ChargingAnimation.vue";
+import ZongziLoading from "./components/ZongziLoading.vue";
+import BoxReflect from "./components/BoxReflect.vue";
+import TextAnimation from "./components/TextAnimation.vue";
+import TextSearchlight from "./components/TextSearchlight.vue";
+import DisplayTextInSmoke from "./components/DisplayTextInSmoke.vue";
+import PlayVideoInText from "./components/PlayVideoInText.vue";
+import WaveFont from "./components/WaveFont.vue";
+import TextOutlineAnimation1 from "./components/TextOutlineAnimation1.vue";
+import TextOutlineAnimation2 from "./components/TextOutlineAnimation2.vue";
+import MobiusBand1 from "./components/MobiusBand1.vue";
+import MobiusBand2 from "./components/MobiusBand2.vue";
+import TankShaking from "./components/TankShaking.vue";
 
 useScrollToTop();
 </script>

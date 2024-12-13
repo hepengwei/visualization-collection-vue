@@ -1,7 +1,9 @@
-/** * 生成阴影 */
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+/**
+ * 生成阴影
+ */
+import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 
 const minSideNum = -50;
 const maxSideNum = 50;
@@ -10,7 +12,7 @@ const defaultVerticalValue = 20;
 const defaultBlurLength = 10;
 const defaultSpreadSize = 0;
 const defaultBorderRadius = 20;
-const defaultShadowColor = '#224141';
+const defaultShadowColor = "#224141";
 
 const { t } = useI18n();
 const graphRef = ref<HTMLDivElement>();
@@ -21,7 +23,7 @@ const shadowSize = ref<number>(defaultSpreadSize); // 阴影大小
 const borderRadius = ref<number>(defaultBorderRadius); // 边框半价
 const shadowColor = ref<string>(defaultShadowColor); // 阴影颜色
 
-const boxShadowStr = ref<string>('');
+const boxShadowStr = ref<string>("");
 
 const onHorizontalValueChange = (value: number | null) => {
   horizontalValue.value = value || value === 0 ? value : defaultHorizontalValue;
@@ -59,7 +61,7 @@ watch(
   () => {
     if (graphRef.value) {
       const newBoxShadowStr = `${horizontalValue.value}px ${verticalValue.value}px ${blurLength.value}px ${shadowSize.value}px ${shadowColor.value}`;
-      graphRef.value.style.setProperty('--boxShadow', newBoxShadowStr);
+      graphRef.value.style.setProperty("--boxShadow", newBoxShadowStr);
       boxShadowStr.value = newBoxShadowStr;
     }
   },
@@ -82,7 +84,7 @@ watch(
           <div class="row">
             <div class="rowItem">
               <span class="label">
-                {{ t('page.cssDynamicEffect.generateShadow.horizontalOffset') }}
+                {{ t("page.cssDynamicEffect.generateShadow.horizontalOffset") }}
                 :
               </span>
               <a-slider
@@ -109,7 +111,7 @@ watch(
             </div>
             <div class="rowItem">
               <span class="label">
-                {{ t('page.cssDynamicEffect.generateShadow.verticalOffset') }}
+                {{ t("page.cssDynamicEffect.generateShadow.verticalOffset") }}
                 :
               </span>
               <a-slider
@@ -138,7 +140,7 @@ watch(
           <div class="row">
             <div class="rowItem">
               <span class="label">
-                {{ t('page.cssDynamicEffect.generateShadow.blurLength') }}
+                {{ t("page.cssDynamicEffect.generateShadow.blurLength") }}
                 :
               </span>
               <a-slider
@@ -165,7 +167,7 @@ watch(
             </div>
             <div class="rowItem">
               <span class="label">
-                {{ t('page.cssDynamicEffect.generateShadow.shadowSize') }}
+                {{ t("page.cssDynamicEffect.generateShadow.shadowSize") }}
                 :
               </span>
               <a-slider
@@ -194,7 +196,7 @@ watch(
           <div class="row">
             <div class="rowItem">
               <span class="label">
-                {{ t('page.cssDynamicEffect.generateShadow.borderRadius') }}
+                {{ t("page.cssDynamicEffect.generateShadow.borderRadius") }}
                 :
               </span>
               <a-slider
@@ -232,7 +234,7 @@ watch(
             </div> -->
           </div>
           <div class="codeBox">
-            <span>{{ '.box {' }}</span>
+            <span>{{ ".box {" }}</span>
             <span>
               &nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(135deg,
               #112437, #1d3450, #29588a, #116d6e, #5c8984, #47a992) fixed;
@@ -241,7 +243,7 @@ watch(
             <span>
               &nbsp;&nbsp;&nbsp;&nbsp;border-radius: {{ borderRadius }}px;
             </span>
-            <span>{{ '}' }}</span>
+            <span>{{ "}" }}</span>
           </div>
         </div>
       </div>

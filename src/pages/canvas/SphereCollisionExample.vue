@@ -1,12 +1,12 @@
+<script setup lang="ts">
 /**
  * sphere-collision库示例
  */
-<script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import SphereCollision from "sphere-collision";
 import type { SphereCollisionC, GlobuleOptions } from "sphere-collision/types";
-import ModuleTitle from '@/components/ModuleTitle.vue';
+import ModuleTitle from "@/components/ModuleTitle.vue";
 
 interface ExampleListItem {
   id: string;
@@ -328,7 +328,6 @@ const containerRef = ref<HTMLDivElement | null>(null);
 const contentRef = ref<HTMLDivElement | null>(null);
 const componentMounted = ref<boolean>(false);
 
-
 // 每一帧绘制所有球体之前执行的函数
 const beforeDrawGlobules = (sphereCollision: SphereCollisionC) => {
   const { ctx } = sphereCollision;
@@ -389,17 +388,15 @@ const positionList = computed(() => {
       left = leftRightSpace + (canvasWidth + leftRightSpace) * colIndex;
     }
     top =
-      marginTop +
-      topBottomSpace +
-      (canvasHeight + topBottomSpace) * rowIndex;
+      marginTop + topBottomSpace + (canvasHeight + topBottomSpace) * rowIndex;
 
     return { id: item.id, top, left };
-  })
-})
+  });
+});
 
 onMounted(() => {
   componentMounted.value = true;
-})
+});
 
 onUnmounted(() => {
   if (sphereCollisionList && sphereCollisionList.length > 0) {
@@ -407,27 +404,35 @@ onUnmounted(() => {
       sphereCollision && sphereCollision.stop();
     }
   }
-})
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-    minWidth: '1200px',
-    minHeight: '550px',
-    justifyContent: 'center',
-    backgroundImage: 'linear-gradient(135deg, #224141, #162a2a)',
-    position: 'relative'
-  }" ref="containerRef">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      minWidth: '1200px',
+      minHeight: '550px',
+      justifyContent: 'center',
+      backgroundImage: 'linear-gradient(135deg, #224141, #162a2a)',
+      position: 'relative',
+    }"
+    ref="containerRef"
+  >
     <ModuleTitle i18nTitle="page.canvasDynamicEffect.sphereCollisionExample" />
     <div v-if="componentMounted" ref="contentRef">
-      <canvas v-for="{ id, top, left } in positionList" :id="id" :key="id" :style="{
-        position: 'absolute',
-        top: `${top}px`,
-        left: `${left}px`,
-      }">
+      <canvas
+        v-for="{ id, top, left } in positionList"
+        :id="id"
+        :key="id"
+        :style="{
+          position: 'absolute',
+          top: `${top}px`,
+          left: `${left}px`,
+        }"
+      >
         {{ t("common.browserTooLow") }}
       </canvas>
     </div>

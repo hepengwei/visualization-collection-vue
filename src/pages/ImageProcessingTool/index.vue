@@ -1,12 +1,12 @@
+<script setup lang="ts">
 /**
  * 图片处理工具
  */
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import type { Ref } from 'vue';
-import { message } from 'ant-design-vue';
+import { ref, computed } from "vue";
+import type { Ref } from "vue";
+import { message } from "ant-design-vue";
 import { FolderAddOutlined } from "@ant-design/icons-vue";
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 import Tabs from "./components/Tabs.vue";
 import {
   fileOrBlobToDataURL,
@@ -16,14 +16,14 @@ import {
   exportToImage,
 } from "utils/fileUtil";
 import BasicOperation from "./components/BasicOperation.vue";
-import RectClip from './components/RectClip.vue';
-import RadiusClip from './components/RadiusClip.vue';
-import ChangeSize from './components/ChangeSize.vue';
-import ChangeBrightness from './components/ChangeBrightness.vue';
-import ChangeDiaphaneity from './components/ChangeDiaphaneity.vue';
-import AddWatermark from './components/AddWatermark.vue';
-import CoverWithMosaic from './components/CoverWithMosaic.vue';
-import Compression from './components/Compression.vue';
+import RectClip from "./components/RectClip.vue";
+import RadiusClip from "./components/RadiusClip.vue";
+import ChangeSize from "./components/ChangeSize.vue";
+import ChangeBrightness from "./components/ChangeBrightness.vue";
+import ChangeDiaphaneity from "./components/ChangeDiaphaneity.vue";
+import AddWatermark from "./components/AddWatermark.vue";
+import CoverWithMosaic from "./components/CoverWithMosaic.vue";
+import Compression from "./components/Compression.vue";
 
 export interface ImgInfo {
   name: string;
@@ -59,7 +59,7 @@ enum TabId {
 
 interface TabInfo {
   id: TabId;
-  label: string,
+  label: string;
   element: InstanceType<any>;
 }
 
@@ -140,23 +140,17 @@ const getImgInfo = (files: FileList) => {
               };
             } else {
               imgInfo.value = null;
-              message.error(
-                t("page.imageProcessingTool.parsingDataFailure")
-              );
+              message.error(t("page.imageProcessingTool.parsingDataFailure"));
             }
           };
           image.onerror = function () {
             imgInfo.value = null;
-            message.error(
-              t("page.imageProcessingTool.parsingDataFailure")
-            );
+            message.error(t("page.imageProcessingTool.parsingDataFailure"));
           };
           image.src = dataUrl;
         } else {
           imgInfo.value = null;
-          message.error(
-            t("page.imageProcessingTool.parsingDataFailure")
-          );
+          message.error(t("page.imageProcessingTool.parsingDataFailure"));
         }
       });
     };
@@ -208,7 +202,7 @@ const tabPageProps = computed<TabPageProps>(() => ({
   onDragOver,
   onDragLeave,
   onDrop,
-  onClear
+  onClear,
 }));
 
 const tabsList = computed<TabInfo[]>(() => [
@@ -265,21 +259,40 @@ const onTabsChange = (tabId: TabId) => {
   selectedTabId.value = tabId;
 };
 
-const showTabInfo = computed<TabInfo>(() => tabsList.value.filter((item: TabInfo) => item.id === selectedTabId.value)[0]);
-
+const showTabInfo = computed<TabInfo>(
+  () =>
+    tabsList.value.filter((item: TabInfo) => item.id === selectedTabId.value)[0]
+);
 </script>
 
 <template>
   <div class="imageProcessingTool-container">
     <div class="imageProcessingTool-content">
-      <Tabs class="tabs" :data="tabsList" :selectedTabId="selectedTabId" :onChange="onTabsChange" />
-      <div class="imgBox" :style="{ borderColor: imgDragOver ? primaryColor : primaryShallowColor, }"
-        @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop" v-if="!imgInfo">
+      <Tabs
+        class="tabs"
+        :data="tabsList"
+        :selectedTabId="selectedTabId"
+        :onChange="onTabsChange"
+      />
+      <div
+        class="imgBox"
+        :style="{
+          borderColor: imgDragOver ? primaryColor : primaryShallowColor,
+        }"
+        @dragover="onDragOver"
+        @dragleave="onDragLeave"
+        @drop="onDrop"
+        v-if="!imgInfo"
+      >
         <div class="emptyBox">
           <a-button type="primary" class="uploadBtn">
             <FolderAddOutlined />
             {{ t("common.uploadFile") }}
-            <input type="file" accept="image/jpg, image/jpeg, image/png" :onChange="onUploadChange" />
+            <input
+              type="file"
+              accept="image/jpg, image/jpeg, image/png"
+              :onChange="onUploadChange"
+            />
           </a-button>
           <p class="text">
             {{ t("common.dragTheFileHere") }}
@@ -291,12 +304,14 @@ const showTabInfo = computed<TabInfo>(() => tabsList.value.filter((item: TabInfo
       </div>
       <div class="extensionTip" v-if="!imgInfo">
         {{ t("page.imageProcessingTool.extensionTipFront") }}
-        <span @click="() => {
-          // @ts-ignore
-          window.open(
-            'https://github.com/hepengwei/processing-image-tool'
-          );
-        }">
+        <span
+          @click="
+            () => {
+              // @ts-ignore
+              window.open('https://github.com/hepengwei/processing-image-tool');
+            }
+          "
+        >
           &nbsp;processing-image-tool&nbsp;
         </span>
         {{ t("page.imageProcessingTool.extensionTipBehind") }}

@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 花卉绽放动画
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import Flower from "./flower";
 
 let canvasWidth = 600;
@@ -19,20 +19,16 @@ let frameId: number = 0;
 let pointer: typeof defaultPointer = defaultPointer;
 let flowerList: Flower[] = [];
 
-
 const { t } = useI18n();
 const boxRef = ref<HTMLDivElement>();
 const canvasRef = ref<HTMLCanvasElement>();
-
 
 const init = () => {
   layout = 0;
   if (boxRef.value && canvasRef.value) {
     boxRef.value.style.backgroundColor = "rgb(11, 11, 11)";
     resize();
-    ctxRef = canvasRef.value.getContext(
-      "2d"
-    ) as CanvasRenderingContext2D;
+    ctxRef = canvasRef.value.getContext("2d") as CanvasRenderingContext2D;
     ctxRef.fillStyle = "rgba(8,8,8,0.05)";
     ctxRef.fillRect(0, 0, canvasWidth, canvasHeight);
   }
@@ -88,8 +84,8 @@ const mouseMove = (e: MouseEvent) => {
       ctxRef.fillStyle = "rgba(8,8,8,0.05)";
       ctxRef.fillRect(0, 0, canvasWidth, canvasHeight);
     }
-  };
-}
+  }
+};
 
 onMounted(() => {
   init();
@@ -98,23 +94,26 @@ onMounted(() => {
   }
   play();
   window.addEventListener("resize", resize);
-})
+});
 
 onUnmounted(() => {
   frameId && cancelAnimationFrame(frameId);
   canvasRef.value &&
     canvasRef.value.removeEventListener("mousemove", mouseMove);
   window.removeEventListener("resize", resize);
-})
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-    display: 'flex'
-  }" ref="boxRef">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+    }"
+    ref="boxRef"
+  >
     <canvas ref="canvasRef">
       {{ t("common.browserTooLow") }}
     </canvas>

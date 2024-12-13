@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 代码背景墙
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 
 let canvasWidth = 600;
 let canvasHeight = 600;
@@ -24,9 +24,7 @@ const canvasRef = ref<HTMLCanvasElement>();
 const init = () => {
   if (boxRef.value && canvasRef.value) {
     resize();
-    ctxRef = canvasRef.value.getContext(
-      "2d"
-    ) as CanvasRenderingContext2D;
+    ctxRef = canvasRef.value.getContext("2d") as CanvasRenderingContext2D;
     ctxRef.font = "14px SourceHanSansCN-Regular";
   }
 };
@@ -36,12 +34,7 @@ const play = () => {
     ctxRef.clearRect(0, 0, canvasWidth, canvasHeight);
     for (let i = 0; i < canvasWidth; i += bl) {
       ctxRef.beginPath();
-      const gradient = ctxRef.createLinearGradient(
-        0,
-        0,
-        0,
-        canvasHeight
-      );
+      const gradient = ctxRef.createLinearGradient(0, 0, 0, canvasHeight);
       const s1 = 0.2 * Math.random();
       const s2 = 0.8 * Math.random() + 0.2;
       const step = 0.02 * Math.random();
@@ -56,8 +49,7 @@ const play = () => {
       ctxRef.fillStyle = gradient;
       for (let j = 0; j < canvasHeight; j += bl) {
         textObj[i + "-" + j] =
-          textObj[i + "-" + j] ||
-          text[Math.floor(Math.random() * text.length)];
+          textObj[i + "-" + j] || text[Math.floor(Math.random() * text.length)];
         ctxRef.fillText(textObj[i + "-" + j], i, j);
       }
       rates[i] += step;
@@ -96,29 +88,30 @@ const resize = () => {
   }
 };
 
-
 onMounted(() => {
   init();
   play();
 
   window.addEventListener("resize", resize);
-})
+});
 
 onUnmounted(() => {
   frameId && cancelAnimationFrame(frameId);
   window.removeEventListener("resize", resize);
-})
-
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    backgroundColor: '#000'
-  }" ref="boxRef">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      backgroundColor: '#000',
+    }"
+    ref="boxRef"
+  >
     <canvas ref="canvasRef">
       {{ t("common.browserTooLow") }}
     </canvas>
