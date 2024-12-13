@@ -1,13 +1,13 @@
+<script setup lang="ts">
 /**
  * 实用功能
  */
-<script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import ShearPlate from './components/ShearPlate.vue';
-import RecordedAudio from './components/RecordedAudio.vue';
-import RecordedVideo from './components/RecordedVideo.vue';
-import RecordedScreen from './components/RecordedScreen.vue';
-import TakeIDPhotos from './components/TakeIDPhotos.vue';
+import useScrollToTop from "hooks/useScrollToTop";
+import ShearPlate from "./components/ShearPlate.vue";
+import RecordedAudio from "./components/RecordedAudio.vue";
+import RecordedVideo from "./components/RecordedVideo.vue";
+import RecordedScreen from "./components/RecordedScreen.vue";
+import TakeIDPhotos from "./components/TakeIDPhotos.vue";
 
 useScrollToTop();
 </script>

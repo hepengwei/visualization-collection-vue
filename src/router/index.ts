@@ -11,6 +11,7 @@ import DynamicButtons from "pages/css/DynamicButtons/index.vue";
 import RichDynamicEffect from "pages/css/RichDynamicEffect/index.vue";
 import GenerateRegularPolygon from "pages/css/GenerateRegularPolygon/index.vue";
 import GenerateShadow from "pages/css/GenerateShadow/index.vue";
+// import GenerateScrollBar from "pages/css/GenerateScrollBar/index.vue";
 import SphereCollisionExample from "pages/canvas/SphereCollisionExample.vue";
 import DynamicClock from "pages/canvas/DynamicClock.vue";
 import Searchlight from "pages/canvas/Searchlight.vue";
@@ -83,9 +84,13 @@ const contentRoutes = [
         component: GenerateRegularPolygon,
       },
       {
-        path: '/css/generateShadow',
+        path: "/css/generateShadow",
         component: GenerateShadow,
       },
+      // {
+      //   path: "/css/generateScrollBar",
+      //   component: GenerateScrollBar,
+      // },
     ],
   },
   {

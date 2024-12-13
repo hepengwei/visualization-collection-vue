@@ -1,10 +1,10 @@
+<script setup lang="ts">
 /**
  * 动态时钟
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import ModuleTitle from '@/components/ModuleTitle.vue';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
+import ModuleTitle from "@/components/ModuleTitle.vue";
 
 const canvasWidth = 400;
 const canvasHeight = 400;
@@ -137,25 +137,26 @@ onMounted(() => {
       draw(ctx);
     }, 1000);
   }
-})
+});
 
 onUnmounted(() => {
   timer && clearInterval(timer);
-})
-
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundImage: 'linear-gradient(135deg, #224141, #162a2a)',
-    position: 'relative',
-  }">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundImage: 'linear-gradient(135deg, #224141, #162a2a)',
+      position: 'relative',
+    }"
+  >
     <ModuleTitle i18nTitle="page.canvasDynamicEffect.dynamicClock" />
     <canvas ref="canvasRef">
       {{ t("common.browserTooLow") }}

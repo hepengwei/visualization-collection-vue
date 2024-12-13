@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 消灭行星小游戏
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import SphereCollision from "sphere-collision";
 import type { SphereCollisionC, GlobuleC } from "sphere-collision/types";
 
@@ -180,8 +180,7 @@ const initGame = () => {
     }
     planetV = planetInitV;
     if (boxRef.value) {
-      const { offsetWidth, offsetHeight, offsetLeft, offsetTop } =
-        boxRef.value;
+      const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = boxRef.value;
       canvasWidth = offsetWidth;
       canvasHeight = offsetHeight;
       boxOffetLeft = offsetLeft;
@@ -219,7 +218,6 @@ const initGame = () => {
     );
   }
 };
-
 
 // 监听鼠标按下
 const onMouseDown = (e: MouseEvent) => {
@@ -260,11 +258,7 @@ const startGame = () => {
       timer = 0;
     }
     timer = window.setInterval(() => {
-      if (
-        gameStatus.value !== GameStaus.playing ||
-        !sphereCollisionRef
-      )
-        return;
+      if (gameStatus.value !== GameStaus.playing || !sphereCollisionRef) return;
       // 随机大小
       const radius = Math.random() * (35 - 15) + 15;
       // 随机颜色
@@ -330,7 +324,7 @@ const restartGame = () => {
 
 onMounted(() => {
   initGame();
-})
+});
 onUnmounted(() => {
   sphereCollisionRef?.stop();
   if (timer) {
@@ -339,30 +333,41 @@ onUnmounted(() => {
   if (incrementVTimer) {
     clearInterval(incrementVTimer);
   }
-})
+});
 </script>
 
 <template>
-  <div class="container" ref="boxRef" @mousedown="onMouseDown" :style="{
-    width: '100%',
-    height: '100%',
-    backgroundColor: [GameStaus.toPlay].includes(gameStatus)
-      ? '#000'
-      : 'transparent',
-  }">
+  <div
+    class="container"
+    ref="boxRef"
+    @mousedown="onMouseDown"
+    :style="{
+      width: '100%',
+      height: '100%',
+      backgroundColor: [GameStaus.toPlay].includes(gameStatus)
+        ? '#000'
+        : 'transparent',
+    }"
+  >
     <canvas id="myCanvas2">
       {{ t("common.browserTooLow") }}
     </canvas>
-    <button class="startBtn" v-if="gameStatus === GameStaus.toPlay" @click="startGame">
+    <button
+      class="startBtn"
+      v-if="gameStatus === GameStaus.toPlay"
+      @click="startGame"
+    >
       {{ t("page.canvasDynamicEffect.startGame") }}
     </button>
     <div class="scoreBox" v-else>
-      <span>
-        {{ t("page.canvasDynamicEffect.score") }}：
-      </span>
+      <span> {{ t("page.canvasDynamicEffect.score") }}： </span>
       <span class="score">{{ score }}</span>
     </div>
-    <div class="pauseBtn" v-if="[GameStaus.playing, GameStaus.pause].includes(gameStatus)" @click="pauseGame">
+    <div
+      class="pauseBtn"
+      v-if="[GameStaus.playing, GameStaus.pause].includes(gameStatus)"
+      @click="pauseGame"
+    >
       {{ t("page.canvasDynamicEffect.pause") }}
     </div>
     <div class="gamepause" v-if="gameStatus === GameStaus.pause">

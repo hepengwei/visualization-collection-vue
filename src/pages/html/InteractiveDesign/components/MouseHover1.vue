@@ -1,38 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import useCursorMove from 'hooks/useCursorMove';
+import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+import useCursorMove from "hooks/useCursorMove";
 import discuss from "images/html/discuss.jpg";
+import { ARTICLE_LIST } from "constants/common";
 
-interface Article {
-  name: string;
-  href: string;
-}
-
-const articles: Article[] = [
-  {
-    name: "两个跨域页面进行跳转传参的终极方案",
-    href: "https://juejin.cn/post/7134967869326458916",
-  },
-  {
-    name: "面试秘籍之手写系列",
-    href: "https://juejin.cn/post/7134975263707758606",
-  },
-  {
-    name: "一款将打包后的Chrome插件自动化加载到浏览器的webpack插件",
-    href: "https://juejin.cn/post/7134991167095062565",
-  },
-  {
-    name: "全网最全AutoIt3基础教程及实战案例",
-    href: "https://juejin.cn/post/7134952028870017060",
-  },
-];
 const cursorDefaultRadius = 10;
 
 const { t } = useI18n();
 const containerRef = ref<HTMLDivElement | null>(null);
 const cursorRef = ref<HTMLDivElement | null>(null);
-  const {
+const {
   showCursor,
   cursorSize,
   cursorBigRadius,
@@ -52,27 +30,55 @@ const onMouseLeaveItem = () => {
 
 <template>
   <div style="width: 100%">
-    <div class="container" @mouseenter="onMouseEnter" @mousemove="onMouseMove" @mouseleave="onMouseLeave"
-      ref="containerRef">
+    <div
+      class="container"
+      @mouseenter="onMouseEnter"
+      @mousemove="onMouseMove"
+      @mouseleave="onMouseLeave"
+      ref="containerRef"
+    >
       <div class="content">
-        <p class="title" @mouseenter="onMouseEnterItem" @mouseleave="onMouseLeaveItem">
+        <p
+          class="title"
+          @mouseenter="onMouseEnterItem"
+          @mouseleave="onMouseLeaveItem"
+        >
           {{ t("page.htmlVision.interactiveDesign.personalArticle") }}
         </p>
         <div class="bottom">
-          <img :src="discuss" alt="" @mouseenter="onMouseEnterItem" @mouseleave="onMouseLeaveItem" />
+          <img
+            :src="discuss"
+            alt=""
+            @mouseenter="onMouseEnterItem"
+            @mouseleave="onMouseLeaveItem"
+          />
           <div class="right">
-            <a v-for="(article, index) in articles" :key="index" :href="article.href" target="_blank"
-              @mouseenter="onMouseEnterItem" @mouseleave="onMouseLeaveItem">
+            <a
+              v-for="(article, index) in ARTICLE_LIST"
+              :key="index"
+              :href="article.href"
+              target="_blank"
+              @mouseenter="onMouseEnterItem"
+              @mouseleave="onMouseLeaveItem"
+            >
               {{ article.name }}
             </a>
           </div>
         </div>
       </div>
-      <div class="cursor" :style="{
-        visibility: showCursor ? 'visible' : 'hidden', width: `${cursorSize === 'big' ?
-          cursorBigRadius * 2 : cursorDefaultRadius * 2}px`, height: `${cursorSize === 'big' ? cursorBigRadius * 2 :
-            cursorDefaultRadius * 2}px`
-      }" ref="cursorRef" />
+      <div
+        class="cursor"
+        :style="{
+          visibility: showCursor ? 'visible' : 'hidden',
+          width: `${
+            cursorSize === 'big' ? cursorBigRadius * 2 : cursorDefaultRadius * 2
+          }px`,
+          height: `${
+            cursorSize === 'big' ? cursorBigRadius * 2 : cursorDefaultRadius * 2
+          }px`,
+        }"
+        ref="cursorRef"
+      />
     </div>
   </div>
 </template>
@@ -121,7 +127,7 @@ const onMouseLeaveItem = () => {
           }
 
           &:hover {
-            color: #5f82fd;
+            color: $globalPrimaryColor;
           }
         }
       }

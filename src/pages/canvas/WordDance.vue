@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 文字跳舞
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 
 const canvasWidth = 324;
 const canvasHeight = 570;
@@ -28,19 +28,8 @@ const init = () => {
 
 const play = () => {
   if (videoRef.value && ctxRef) {
-    ctxRef.drawImage(
-      videoRef.value,
-      0,
-      0,
-      canvasWidth,
-      canvasHeight
-    );
-    const imageData = ctxRef.getImageData(
-      0,
-      0,
-      canvasWidth,
-      canvasHeight
-    );
+    ctxRef.drawImage(videoRef.value, 0, 0, canvasWidth, canvasHeight);
+    const imageData = ctxRef.getImageData(0, 0, canvasWidth, canvasHeight);
     ctxRef.clearRect(0, 0, canvasWidth, canvasHeight);
     const { data, width, height } = imageData;
     for (let y = 0; y < height; y++) {
@@ -63,17 +52,27 @@ const play = () => {
 onMounted(() => {
   init();
   play();
-})
+});
 
 onUnmounted(() => {
   frameId && cancelAnimationFrame(frameId);
-})
+});
 </script>
 
 <template>
   <div class="container" ref="boxRef">
-    <video :muted="false" autoPlay preload="true" loop x5-video-player-fullscreen="true" x5-playsinline="true" playsInline
-      webkit-playsinline="true" crossOrigin="anonymous" ref="videoRef">
+    <video
+      :muted="false"
+      autoPlay
+      preload="true"
+      loop
+      x5-video-player-fullscreen="true"
+      x5-playsinline="true"
+      playsInline
+      webkit-playsinline="true"
+      crossOrigin="anonymous"
+      ref="videoRef"
+    >
       <source src="/dance.mp4" />
     </video>
     <canvas ref="canvasRef">

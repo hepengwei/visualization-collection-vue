@@ -1,25 +1,27 @@
-/** * 动效按钮 */
 <script setup lang="ts">
-import GridContent from 'components/GridContent/index.vue';
-import GridBox from 'components/GridContent/GridBox.vue';
-import TiltButton from './components/TiltButton.vue';
-import RotateBgButton from './components/RotateBgButton.vue';
-import IconMoveButton from './components/IconMoveButton.vue';
-import NeonButton from './components/NeonButton.vue';
-import BorderAnimationButton from './components/BorderAnimationButton.vue';
-import BorderAnimationButton2 from './components/BorderAnimationButton2.vue';
-import TranslateBgButton from './components/TranslateBgButton.vue';
-import RoundedGradientButton from './components/RoundedGradientButton.vue';
-import MirrorSideButton from './components/MirrorSideButton.vue';
-import ShakeButton from './components/ShakeButton.vue';
-import Skew3DButton from './components/Skew3DButton.vue';
-import HoverCircleButton from './components/HoverCircleButton.vue';
-import PunkEffectButton from './components/PunkEffectButton.vue';
-import PunkEffectButton2 from './components/PunkEffectButton2.vue';
-import BirdButton from './components/BirdButton.vue';
-import ObliqueLineButton from './components/ObliqueLineButton.vue';
-import LightningBorderButton from './components/LightningBorderButton.vue';
-import FirewormButton from './components/FirewormButton.vue';
+/**
+ * 动效按钮
+ */
+import GridContent from "components/GridContent/index.vue";
+import GridBox from "components/GridContent/GridBox.vue";
+import TiltButton from "./components/TiltButton.vue";
+import RotateBgButton from "./components/RotateBgButton.vue";
+import IconMoveButton from "./components/IconMoveButton.vue";
+import NeonButton from "./components/NeonButton.vue";
+import BorderAnimationButton from "./components/BorderAnimationButton.vue";
+import BorderAnimationButton2 from "./components/BorderAnimationButton2.vue";
+import TranslateBgButton from "./components/TranslateBgButton.vue";
+import RoundedGradientButton from "./components/RoundedGradientButton.vue";
+import MirrorSideButton from "./components/MirrorSideButton.vue";
+import ShakeButton from "./components/ShakeButton.vue";
+import Skew3DButton from "./components/Skew3DButton.vue";
+import HoverCircleButton from "./components/HoverCircleButton.vue";
+import PunkEffectButton from "./components/PunkEffectButton.vue";
+import PunkEffectButton2 from "./components/PunkEffectButton2.vue";
+import BirdButton from "./components/BirdButton.vue";
+import ObliqueLineButton from "./components/ObliqueLineButton.vue";
+import LightningBorderButton from "./components/LightningBorderButton.vue";
+import FirewormButton from "./components/FirewormButton.vue";
 
 const rowSpace = 4;
 const colSpace = 4;

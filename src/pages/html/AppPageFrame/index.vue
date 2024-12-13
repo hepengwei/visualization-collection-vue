@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, } from 'vue';
-import type { Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useDebounceFn } from '@vueuse/core';
+/**
+ * 应用页面框架
+ */
+import { ref, watch, onMounted, onUnmounted } from "vue";
+import type { Ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useDebounceFn } from "@vueuse/core";
 import Swiper from "swiper";
-import { useGlobalContext } from 'hooks/useGlobalContext';
-import type { GlobalContext } from 'hooks/useGlobalContext';
+import { useGlobalContext } from "hooks/useGlobalContext";
+import type { GlobalContext } from "hooks/useGlobalContext";
 import Page1 from "./components/Page1.vue";
 import Page2 from "./components/Page2.vue";
 import Page3 from "./components/Page3.vue";
@@ -92,73 +95,67 @@ const moveBottom = () => {
 };
 
 // 切换页面(除了首页)
-const switchPage = useDebounceFn(
-  (type: SwitchPageType) => {
-    if (swiper) {
-      switch (type) {
-        case SwitchPageType.next:
-          swiper.slideNext();
-          break;
-        case SwitchPageType.prev:
-          swiper.slidePrev();
-          break;
-        default:
-          break;
+const switchPage = useDebounceFn((type: SwitchPageType) => {
+  if (swiper) {
+    switch (type) {
+      case SwitchPageType.next:
+        swiper.slideNext();
+        break;
+      case SwitchPageType.prev:
+        swiper.slidePrev();
+        break;
+      default:
+        break;
+    }
+    const containerNode = containerRef.value as HTMLDivElement;
+    const currentPageIndex = swiper.realIndex;
+    if (currentPageIndex <= 0) {
+      if (containerNode.scrollTop !== containerHeight.value - innerHeadHeight) {
+        isOwnScroll = true;
+        containerNode.scrollTop = containerHeight.value - innerHeadHeight;
+        scrollTop.value = containerHeight.value - innerHeadHeight;
       }
-      const containerNode = containerRef.value as HTMLDivElement;
-      const currentPageIndex = swiper.realIndex;
-      if (currentPageIndex <= 0) {
-        if (containerNode.scrollTop !== containerHeight.value - innerHeadHeight) {
-          isOwnScroll = true;
-          containerNode.scrollTop = containerHeight.value - innerHeadHeight;
-          scrollTop.value = containerHeight.value - innerHeadHeight;
-        }
-      } else {
-        const newScrollTop =
-          (containerHeight.value - innerHeadHeight) * (currentPageIndex + 1);
-        if (containerNode.scrollTop !== newScrollTop) {
-          isOwnScroll = true;
-          containerNode.scrollTop = newScrollTop;
-          scrollTop.value = newScrollTop;
-        }
+    } else {
+      const newScrollTop =
+        (containerHeight.value - innerHeadHeight) * (currentPageIndex + 1);
+      if (containerNode.scrollTop !== newScrollTop) {
+        isOwnScroll = true;
+        containerNode.scrollTop = newScrollTop;
+        scrollTop.value = newScrollTop;
       }
     }
-  },
-  100
-);
+  }
+}, 100);
 
-const onScrollCapture = useDebounceFn(
-  (e: any) => {
-    if (isOwnScroll) {
-      isOwnScroll = false;
-      return;
-    }
-    if (isScroll) return;
-    if (e.target.className === "container") {
-      if (swiper) {
-        if (e.target.scrollTop > containerHeight.value - innerHeadHeight) {
-          if (e.target.scrollTop > scrollTop.value) {
-            switchPage(SwitchPageType.next);
-          } else if (e.target.scrollTop < scrollTop.value) {
-            switchPage(SwitchPageType.prev);
-          }
-        } else {
-          if (
-            e.target.scrollTop > scrollTop.value &&
-            scrollTop.value < containerHeight.value - innerHeadHeight
-          ) {
-            moveTop();
-          } else if (e.target.scrollTop < scrollTop.value) {
-            moveBottom();
-          }
+const onScrollCapture = useDebounceFn((e: any) => {
+  if (isOwnScroll) {
+    isOwnScroll = false;
+    return;
+  }
+  if (isScroll) return;
+  if (e.target.className === "container") {
+    if (swiper) {
+      if (e.target.scrollTop > containerHeight.value - innerHeadHeight) {
+        if (e.target.scrollTop > scrollTop.value) {
+          switchPage(SwitchPageType.next);
+        } else if (e.target.scrollTop < scrollTop.value) {
+          switchPage(SwitchPageType.prev);
         }
       } else {
-        scrollTop.value = e.target.scrollTop;
+        if (
+          e.target.scrollTop > scrollTop.value &&
+          scrollTop.value < containerHeight.value - innerHeadHeight
+        ) {
+          moveTop();
+        } else if (e.target.scrollTop < scrollTop.value) {
+          moveBottom();
+        }
       }
+    } else {
+      scrollTop.value = e.target.scrollTop;
     }
-  },
-  100
-);
+  }
+}, 100);
 
 const scrollTo = (anchor: string) => {
   const containerNode = containerRef.value as HTMLDivElement;
@@ -184,7 +181,8 @@ const scrollTo = (anchor: string) => {
       }
       break;
     case "LastPage":
-      const lastPageTop = (containerHeight.value - innerHeadHeight) * (pageNum - 1);
+      const lastPageTop =
+        (containerHeight.value - innerHeadHeight) * (pageNum - 1);
       if (scrollTop.value !== lastPageTop) {
         isOwnScroll = true;
         containerNode.scrollTop = lastPageTop;
@@ -205,13 +203,18 @@ const onResize = () => {
   }
 };
 
-watch([resizeMark, globalContext.value.headHeight, containerRef], () => {
-  if (containerRef.value) {
-    const newContainerHeight = document.body.clientHeight - globalContext.value.headHeight;
-    containerHeight.value = newContainerHeight
-    allPageHeight.value = (newContainerHeight - innerHeadHeight) * pageNum;
-  }
-}, { immediate: true })
+watch(
+  [resizeMark, globalContext.value.headHeight, containerRef],
+  () => {
+    if (containerRef.value) {
+      const newContainerHeight =
+        document.body.clientHeight - globalContext.value.headHeight;
+      containerHeight.value = newContainerHeight;
+      allPageHeight.value = (newContainerHeight - innerHeadHeight) * pageNum;
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   swiper = new Swiper(`.swiper`, {
@@ -226,28 +229,41 @@ onMounted(() => {
     on: {
       slideChange: function () {
         // @ts-ignore
-        showPageIndex.value = this.activeIndex + 1
+        showPageIndex.value = this.activeIndex + 1;
       },
     },
   });
   // 监听屏幕变化事件
   window.addEventListener("resize", onResize);
-})
+});
 
 onUnmounted(() => {
   window.removeEventListener("resize", onResize);
   frameId && window.cancelAnimationFrame(frameId);
-})
-
+});
 </script>
 
 <template>
   <div class="container" @scrollCapture="onScrollCapture" ref="containerRef">
-    <div class="content" :style="allPageHeight ? { height: `${allPageHeight}px` } : {}" ref="contentRef">
-      <div class="firstPage" :style="containerHeight ? { height: `${containerHeight}px` } : {}">
+    <div
+      class="content"
+      :style="allPageHeight ? { height: `${allPageHeight}px` } : {}"
+      ref="contentRef"
+    >
+      <div
+        class="firstPage"
+        :style="containerHeight ? { height: `${containerHeight}px` } : {}"
+      >
         <Page1 :showPageIndex="showPageIndex" />
       </div>
-      <div class="swiper" :style="containerHeight ? { height: `${containerHeight - innerHeadHeight}px` } : {}">
+      <div
+        class="swiper"
+        :style="
+          containerHeight
+            ? { height: `${containerHeight - innerHeadHeight}px` }
+            : {}
+        "
+      >
         <div class="swiper-wrapper">
           <div class="swiper-slide">
             <Page2 :showPageIndex="showPageIndex" />
@@ -264,14 +280,21 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div class="head" :style="scrollTop >= containerHeight - innerHeadHeight
-      ? {
-        borderBottom: '1px solid #999',
-        left: `${globalContext.menuWidth}px`,
-        width: `calc(100% - ${globalContext.menuWidth}px)`,
-      }
-      : { left: `${globalContext.menuWidth}px`, width: `calc(100% - ${globalContext.menuWidth}px)` }">
-
+    <div
+      class="head"
+      :style="
+        scrollTop >= containerHeight - innerHeadHeight
+          ? {
+              borderBottom: '1px solid #999',
+              left: `${globalContext.menuWidth}px`,
+              width: `calc(100% - ${globalContext.menuWidth}px)`,
+            }
+          : {
+              left: `${globalContext.menuWidth}px`,
+              width: `calc(100% - ${globalContext.menuWidth}px)`,
+            }
+      "
+    >
       <div class="left">
         <div class="logo">L</div>
         <span class="appName">App Name</span>

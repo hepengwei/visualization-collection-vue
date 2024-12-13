@@ -1,11 +1,15 @@
+<script setup lang="ts">
 /**
  * 球体碰撞交互效果
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import SphereCollision from "sphere-collision";
-import type { SphereCollisionC, GlobuleC, GlobuleOptions } from "sphere-collision/types";
+import type {
+  SphereCollisionC,
+  GlobuleC,
+  GlobuleOptions,
+} from "sphere-collision/types";
 import bubble from "images/canvas/bubble.png";
 
 let canvasWidth = 0; // 画布宽度
@@ -63,14 +67,14 @@ const startAnimation = () => {
       (canvasWidth -
         oneRowGlobuleNum * 2 * globuleRadius -
         (oneRowGlobuleNum - 1) * globuleHorizontalMargin) /
-      2 +
+        2 +
       globuleRadius;
     // 计算出第一个小球所在的y位置
     const firstGlobuleY =
       (canvasHeight -
         rowNum * 2 * globuleRadius -
         (rowNum - 1) * globuleVerticalMargin) /
-      2 +
+        2 +
       globuleRadius;
 
     // 实例出所有小球,并保存到数组中
@@ -105,12 +109,10 @@ const startAnimation = () => {
     }
 
     // 实例化SphereCollision对象
-    sphereCollisionRef = new SphereCollision(
-      ctx,
-      canvas,
-      globuleOptionsList,
-      { monitorMousePos: true, beforeDrawGlobules }
-    );
+    sphereCollisionRef = new SphereCollision(ctx, canvas, globuleOptionsList, {
+      monitorMousePos: true,
+      beforeDrawGlobules,
+    });
 
     // 开使执行动画
     sphereCollisionRef?.start();
@@ -127,19 +129,22 @@ onMounted(() => {
     canvasHeight = 600;
   }
   startAnimation();
-})
+});
 
 onUnmounted(() => {
   sphereCollisionRef?.stop();
-})
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-  }" ref="boxRef">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+    }"
+    ref="boxRef"
+  >
     <canvas id="globuleInteractionCanvas">
       {{ t("common.browserTooLow") }}
     </canvas>

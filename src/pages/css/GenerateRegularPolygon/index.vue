@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 生成正多边形
  */
-<script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 
 const minSideNum = 3;
 const maxSideNum = 20;
@@ -19,23 +19,31 @@ const onSideChange = (value: number | null) => {
 };
 
 const onRotationChange = (value: number | null) => {
-  rotation.value = value || 0
+  rotation.value = value || 0;
 };
 
-watch([n, rotation, graphRef], () => {
-  if (graphRef.value) {
-    let points = "";
-    for (let i = 0; i < n.value; i++) {
-      const deg = (rotation.value / 180) * Math.PI;
-      let x = (50 + 50 * Math.cos((2 * Math.PI * i) / n.value + deg)).toFixed(2);
-      let y = (50 + 50 * Math.sin((2 * Math.PI * i) / n.value + deg)).toFixed(2);
-      points += `${x}%  ${y}%, `;
+watch(
+  [n, rotation, graphRef],
+  () => {
+    if (graphRef.value) {
+      let points = "";
+      for (let i = 0; i < n.value; i++) {
+        const deg = (rotation.value / 180) * Math.PI;
+        let x = (50 + 50 * Math.cos((2 * Math.PI * i) / n.value + deg)).toFixed(
+          2
+        );
+        let y = (50 + 50 * Math.sin((2 * Math.PI * i) / n.value + deg)).toFixed(
+          2
+        );
+        points += `${x}%  ${y}%, `;
+      }
+      points = points.slice(0, -2);
+      graphRef.value.style.setProperty("--points", points);
+      polygonStr.value = points;
     }
-    points = points.slice(0, -2);
-    graphRef.value.style.setProperty("--points", points);
-    polygonStr.value = points;
-  }
-}, { immediate: true })
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -48,31 +56,59 @@ watch([n, rotation, graphRef], () => {
         <div class="bottom">
           <div class="row">
             <span class="label">
-              {{ t("page.cssDynamicEffect.generateRegularPolygon.numberOfSides") }}
+              {{
+                t("page.cssDynamicEffect.generateRegularPolygon.numberOfSides")
+              }}
               :
             </span>
-            <a-slider :style="{
-              display: 'flex',
-              flex: 1,
-              marginLeft: '10px',
-              marginRight: '16px',
-            }" :min="minSideNum" :max="maxSideNum" :step="1" :value="n" :onChange="onSideChange" />
-            <a-input-number style="width: 80px" :min="minSideNum" :max="maxSideNum" :precision="0" :value="n"
-              :onChange="onSideChange" />
+            <a-slider
+              :style="{
+                display: 'flex',
+                flex: 1,
+                marginLeft: '10px',
+                marginRight: '16px',
+              }"
+              :min="minSideNum"
+              :max="maxSideNum"
+              :step="1"
+              :value="n"
+              :onChange="onSideChange"
+            />
+            <a-input-number
+              style="width: 80px"
+              :min="minSideNum"
+              :max="maxSideNum"
+              :precision="0"
+              :value="n"
+              :onChange="onSideChange"
+            />
           </div>
           <div class="row">
             <span class="label">
               {{ t("page.cssDynamicEffect.generateRegularPolygon.rotation") }}
               :
             </span>
-            <a-slider :style="{
-              display: 'flex',
-              flex: 1,
-              marginLeft: '10px',
-              marginRight: '16px',
-            }" :min="0" :max="360" :step="1" :value="rotation" :onChange="onRotationChange" />
-            <a-input-number style="width: 80px" :min="0" :max="360" :precision="0" :value="rotation"
-              :onChange="onRotationChange" />
+            <a-slider
+              :style="{
+                display: 'flex',
+                flex: 1,
+                marginLeft: '10px',
+                marginRight: '16px',
+              }"
+              :min="0"
+              :max="360"
+              :step="1"
+              :value="rotation"
+              :onChange="onRotationChange"
+            />
+            <a-input-number
+              style="width: 80px"
+              :min="0"
+              :max="360"
+              :precision="0"
+              :value="rotation"
+              :onChange="onRotationChange"
+            />
           </div>
           <div class="codeBox">
             <span>{{ ".box {" }}</span>
@@ -118,13 +154,16 @@ watch([n, rotation, graphRef], () => {
         box-sizing: border-box;
         width: $boxWidth - 2 * $boxPadding;
         height: $boxWidth - 2 * $boxPadding;
-        background: linear-gradient(135deg,
+        background: linear-gradient(
+            135deg,
             #112437,
             #1d3450,
             #29588a,
             #116d6e,
             #5c8984,
-            #47a992) fixed;
+            #47a992
+          )
+          fixed;
         clip-path: polygon(var(--points));
       }
     }

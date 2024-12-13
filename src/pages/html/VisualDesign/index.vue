@@ -1,5 +1,7 @@
-/** * 视觉设计 */
 <script setup lang="ts">
+/**
+ * 视觉设计
+ */
 import useScrollToTop from "hooks/useScrollToTop";
 import GridContent from "components/GridContent/index.vue";
 import GridBox from "components/GridContent/GridBox.vue";
