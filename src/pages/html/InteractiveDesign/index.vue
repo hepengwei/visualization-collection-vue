@@ -8,6 +8,7 @@ import CropImage from "./components/CropImage.vue";
 import DragShopping from "./components/DragShopping.vue";
 import MouseHover1 from "./components/MouseHover1.vue";
 import MouseHover2 from "./components/MouseHover2.vue";
+import MouseHover3 from "./components/MouseHover3/index.vue";
 import SlideButtonTab from "./components/SlideButtonTab.vue";
 import FlipBook from "./components/FlipBook.vue";
 import Switchs from "./components/Switchs/index.vue";
@@ -28,6 +29,7 @@ const boxList = [
   { element: DragShopping },
   { element: MouseHover1 },
   { element: MouseHover2 },
+  { element: MouseHover3 },
   { element: SlideButtonTab },
   { element: FlipBook },
   { element: Switchs },
