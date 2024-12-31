@@ -8,7 +8,7 @@ import GridBox from "components/GridContent/GridBox.vue";
 
 const rowSpace = 8;
 const colSpace = 8;
-const gridboxList: number[] = new Array(29).fill(0);
+const gridboxList: number[] = new Array(34).fill(0);
 
 useScrollToTop();
 </script>
@@ -714,6 +714,46 @@ useScrollToTop();
       radial-gradient($r at 100% 100%, $g) calc(-1 * $size) calc(-1 * $size),
       radial-gradient($size at 100% 100%, $g) $color2;
     background-size: calc(2 * $r) calc(2 * $r);
+  }
+
+  .bg30 {
+    @include bg;
+    background-image: repeating-radial-gradient(#f8f1f1ee 88%, #963fdd 90%);
+    background-size: 50px 50px;
+  }
+
+  .bg31 {
+    @include bg;
+    background: linear-gradient(
+        45deg,
+        transparent 33.33%,
+        rgba(57, 144, 179, 0.1) 33.33%,
+        rgba(0, 0, 0, 0.1) 66.66%,
+        transparent 66.66%
+      ),
+      lightblue;
+    background-size: 20px 20px;
+  }
+
+  .bg32 {
+    @include bg;
+    background-image: repeating-radial-gradient(#f8f1f1ee 87%, #3fa7b4 90%);
+    background-size: 50px 50px;
+  }
+
+  .bg33 {
+    @include bg;
+    background: repeating-radial-gradient(red 55%, white 56%);
+  }
+
+  .bg34 {
+    @include bg;
+    background-image: repeating-radial-gradient(
+      #e2d1d1 50%,
+      #e7d2d2ee 70%,
+      #f5c7a1 95%
+    );
+    background-size: 50px 50px;
   }
 }
 </style>
