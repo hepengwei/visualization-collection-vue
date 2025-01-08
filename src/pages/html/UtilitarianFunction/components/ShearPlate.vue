@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { message } from 'ant-design-vue';
+import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { message } from "ant-design-vue";
 import { getImgInfo, fileOrBlobToDataURL } from "utils/fileUtil";
 import type { ImgInfo } from "utils/fileUtil";
+import { saveTextToClip } from "utils/util";
 
 const { t } = useI18n();
 const inputText = ref<string>("");
@@ -15,21 +16,10 @@ const textAreaRef = ref<HTMLTextAreaElement>();
 
 const onSaveTextToClip = () => {
   if (!inputText.value) {
-    message.warning(
-      t("page.htmlVision.utilitarianFunction.pleaseEnterText")
-    );
+    message.warning(t("page.htmlVision.utilitarianFunction.pleaseEnterText"));
     return;
   }
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(inputText.value);
-  } else {
-    const input = document.createElement("input");
-    input.setAttribute("value", inputText.value);
-    document.body.appendChild(input);
-    input.select();
-    document.execCommand("copy");
-    document.body.removeChild(input);
-  }
+  saveTextToClip(inputText.value);
   message.success(t("common.saveSuccessfully"));
 };
 
@@ -143,24 +133,42 @@ const onPaste = (e: any) => {
             <div class="text">
               {{ t("page.htmlVision.utilitarianFunction.saveTextToClipboard") }}
             </div>
-            <a-textarea :rows="8" :placeholder="t('common.pleaseEnterText')" :maxLength="300" v-model:value="inputText" />
+            <a-textarea
+              :rows="8"
+              :placeholder="t('common.pleaseEnterText')"
+              :maxLength="300"
+              v-model:value="inputText"
+            />
             <div class="btns">
               <a-button type="primary" @click="onSaveTextToClip">
                 {{ t("common.save") }}
               </a-button>
-              <a-button ghost @click="() => {
-                inputText = '';
-                clipText = '';
-              }">
+              <a-button
+                ghost
+                @click="
+                  () => {
+                    inputText = '';
+                    clipText = '';
+                  }
+                "
+              >
                 {{ t("common.clear") }}
               </a-button>
             </div>
           </div>
           <div class="inputBox">
             <div class="text">
-              {{ t("page.htmlVision.utilitarianFunction.getsTextFromClipboard") }}
+              {{
+                t("page.htmlVision.utilitarianFunction.getsTextFromClipboard")
+              }}
             </div>
-            <a-textarea :rows="8" :placeholder="t('common.getText')" :maxLength="300" disabled :value="clipText" />
+            <a-textarea
+              :rows="8"
+              :placeholder="t('common.getText')"
+              :maxLength="300"
+              disabled
+              :value="clipText"
+            />
             <div class="btns">
               <a-button type="primary" @click="onGetTextFromClip">
                 {{ t("common.get") }}
@@ -171,9 +179,17 @@ const onPaste = (e: any) => {
         <div class="box">
           <div class="inputBox">
             <div class="text">
-              {{ t("page.htmlVision.utilitarianFunction.saveImageToClipboard") }} </div>
-            <div class="imageBox" :style="{ borderColor: imgDragOver ? 'green' : '#ccc' }
-              " @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
+              {{
+                t("page.htmlVision.utilitarianFunction.saveImageToClipboard")
+              }}
+            </div>
+            <div
+              class="imageBox"
+              :style="{ borderColor: imgDragOver ? 'green' : '#ccc' }"
+              @dragover="onDragOver"
+              @dragleave="onDragLeave"
+              @drop="onDrop"
+            >
               <div class="imgBox" v-if="!!imgInfo">
                 <img :src="imgInfo.imgUrl" alt="" />
               </div>
@@ -181,30 +197,55 @@ const onPaste = (e: any) => {
                 <a-button type="primary" class="uploadBtn">
                   <FolderAddOutlined />
                   {{ t("common.uploadFile") }}
-                  <input type="file" accept="image/jpg, image/jpeg, image/png" :onChange="onUploadChange" />
+                  <input
+                    type="file"
+                    accept="image/jpg, image/jpeg, image/png"
+                    :onChange="onUploadChange"
+                  />
                 </a-button>
                 <p class="text">
-                  {{ t("common.dragTheFileHere") }}</p>
+                  {{ t("common.dragTheFileHere") }}
+                </p>
                 <p class="tips">
-                  {{ t("common.supportedImageType") }} </p>
+                  {{ t("common.supportedImageType") }}
+                </p>
               </div>
             </div>
             <div class="btns">
               <a-button type="primary" @click="onSaveImageToClip">
                 {{ t("common.save") }}
               </a-button>
-              <a-button ghost @click="() => { imgInfo = null; clipImgUrl = '' }">
+              <a-button
+                ghost
+                @click="
+                  () => {
+                    imgInfo = null;
+                    clipImgUrl = '';
+                  }
+                "
+              >
                 {{ t("common.clear") }}
               </a-button>
             </div>
           </div>
           <div class="inputBox">
             <div class="text">
-              {{ t("page.htmlVision.utilitarianFunction.getImageFromClipboard") }}
+              {{
+                t("page.htmlVision.utilitarianFunction.getImageFromClipboard")
+              }}
             </div>
             <div class="imageBox">
-              <a-textarea class="textArea" :placeholder="t('page.htmlVision.utilitarianFunction.pasteTheImage')" :rows="8
-                " :maxLength="300" readOnly ref="textAreaRef" :onPaste="onPaste" />
+              <a-textarea
+                class="textArea"
+                :placeholder="
+                  t('page.htmlVision.utilitarianFunction.pasteTheImage')
+                "
+                :rows="8"
+                :maxLength="300"
+                readOnly
+                ref="textAreaRef"
+                :onPaste="onPaste"
+              />
               <div class="imgBox" v-if="!!clipImgUrl">
                 <img :src="clipImgUrl" alt="" />
               </div>
