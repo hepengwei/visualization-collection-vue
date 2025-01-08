@@ -96,3 +96,22 @@ export const textAddLineBreak = (text: string, rowStrLength: number) => {
   }
   return result;
 };
+
+
+/**
+ * 保存文本到剪切板
+ * @param {string} text 文本
+ */
+export const saveTextToClip = (text: string) => {
+  if (!text) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+  } else {
+    const input = document.createElement("input");
+    input.setAttribute("value", text);
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    document.body.removeChild(input);
+  }
+};

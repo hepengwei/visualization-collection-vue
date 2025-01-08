@@ -2,13 +2,20 @@
 /**
  * 背景图案
  */
+import { message } from "ant-design-vue";
+import { CopyOutlined } from "@ant-design/icons-vue";
+import { useI18n } from "vue-i18n";
 import useScrollToTop from "hooks/useScrollToTop";
 import GridContent from "components/GridContent/index.vue";
 import GridBox from "components/GridContent/GridBox.vue";
+import { saveTextToClip } from "utils/util";
+import textCodeList from "./code";
 
 const rowSpace = 8;
 const colSpace = 8;
 const gridboxList: number[] = new Array(34).fill(0);
+
+const { t } = useI18n();
 
 useScrollToTop();
 </script>
@@ -28,6 +35,23 @@ useScrollToTop();
       >
         <div class="box">
           <div :class="`bg${index + 1}`" />
+          <div class="hoverBg">
+            <a-tooltip :title="t('common.copyCode')">
+              <div
+                class="copyBtn"
+                @click="
+                  () => {
+                    if (textCodeList[index]) {
+                      saveTextToClip(textCodeList[index]);
+                      message.success(t('common.copySuccess'));
+                    }
+                  }
+                "
+              >
+                <CopyOutlined />
+              </div>
+            </a-tooltip>
+          </div>
         </div>
       </GridBox>
     </GridContent>
@@ -51,6 +75,41 @@ useScrollToTop();
     justify-content: center;
     border: 3px solid #35a2fd44;
     overflow: hidden;
+    position: relative;
+
+    .hoverBg {
+      visibility: hidden;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      inset: 0;
+      background-color: #11111190;
+
+      .copyBtn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: $globalPrimaryColor2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        :deep(svg) {
+          width: 26px;
+          height: 26px;
+        }
+      }
+    }
+
+    &:hover {
+      .hoverBg {
+        visibility: visible;
+      }
+    }
   }
 
   @mixin bg {
