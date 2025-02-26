@@ -68,6 +68,10 @@ const items: Ref<ItemType[]> = computed(() => [
     ),
     getItem(t("menu.cssDynamicEffect.generateShadow"), "generateShadow"),
     // getItem(t("menu.cssDynamicEffect.generateScrollBar"), "generateScrollBar"),
+    getItem(
+      t("menu.cssDynamicEffect.elevatorNavigation"),
+      "elevatorNavigation"
+    ),
   ]),
   getItem(
     t("menu.canvasDynamicEffect"),
