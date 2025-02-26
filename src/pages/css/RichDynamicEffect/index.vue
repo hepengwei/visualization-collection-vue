@@ -17,6 +17,8 @@ import TextOutlineAnimation1 from "./components/TextOutlineAnimation1.vue";
 import TextOutlineAnimation2 from "./components/TextOutlineAnimation2.vue";
 import MobiusBand1 from "./components/MobiusBand1.vue";
 import MobiusBand2 from "./components/MobiusBand2.vue";
+import LongRainbowGlass from "./components/LongRainbowGlass.vue";
+import RadarScan from "./components/RadarScan.vue";
 import TankShaking from "./components/TankShaking.vue";
 
 useScrollToTop();
@@ -72,6 +74,14 @@ useScrollToTop();
       </div>
       <div class="box">
         <MobiusBand2 />
+      </div>
+    </div>
+    <div class="multipleColumnsBox">
+      <div class="box">
+        <LongRainbowGlass />
+      </div>
+      <div class="box">
+        <RadarScan />
       </div>
     </div>
     <div class="box">
