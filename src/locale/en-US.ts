@@ -255,6 +255,10 @@ const en_US = {
     "Mobius loop bar dynamic effect",
   "page.cssDynamicEffect.richDynamicEffect.mobiusRingsCircleDots":
     "Mobius loop circle dots dynamic effect",
+  "page.cssDynamicEffect.richDynamicEffect.longRainbowGlass":
+    "Long rainbow glass dynamic effect",
+  "page.cssDynamicEffect.richDynamicEffect.radarScan":
+    "Radar scan dynamic effect",
   "page.cssDynamicEffect.richDynamicEffect.tankShaking":
     "Tank shaking dynamic effect",
 
