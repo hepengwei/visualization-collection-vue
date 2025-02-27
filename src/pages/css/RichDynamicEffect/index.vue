@@ -12,7 +12,8 @@ import TextAnimation from "./components/TextAnimation.vue";
 import TextSearchlight from "./components/TextSearchlight.vue";
 import DisplayTextInSmoke from "./components/DisplayTextInSmoke.vue";
 import PlayVideoInText from "./components/PlayVideoInText.vue";
-import WaveFont from "./components/WaveFont.vue";
+import WavyText from "./components/WavyText.vue";
+import RippleText from "./components/RippleText.vue";
 import TextOutlineAnimation1 from "./components/TextOutlineAnimation1.vue";
 import TextOutlineAnimation2 from "./components/TextOutlineAnimation2.vue";
 import MobiusBand1 from "./components/MobiusBand1.vue";
@@ -57,8 +58,13 @@ useScrollToTop();
     <div class="box">
       <PlayVideoInText />
     </div>
-    <div class="box">
-      <WaveFont />
+    <div class="multipleColumnsBox">
+      <div class="box">
+        <WavyText />
+      </div>
+      <div class="box">
+        <RippleText />
+      </div>
     </div>
     <div class="multipleColumnsBox">
       <div class="box">
