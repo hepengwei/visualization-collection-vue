@@ -31,7 +31,7 @@
     "gsap": "^3.12.2",
     "lodash-es": "^4.17.21",
     "pako": "^2.1.0",
-    "particles.js": "^2.0.0",
+    "particles.js-es": "^1.0.7",
     "rambda": "^8.1.0",
     "sphere-collision": "^1.1.11",
     "swiper": "^9.4.1",
