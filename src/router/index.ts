@@ -20,6 +20,7 @@ import GlobuleInteraction from "pages/canvas/GlobuleInteraction.vue";
 import KillPlanetGame from "pages/canvas/KillPlanetGame.vue";
 import FreeFallingBody from "pages/canvas/FreeFallingBody.vue";
 import CountDown from "pages/canvas/CountDown/index.vue";
+import ParticlesBg from "pages/canvas/ParticlesBg/index.vue";
 import RippleFloatOnTheWater from "pages/canvas/RippleFloatOnTheWater/index.vue";
 import FlowerBloom from "pages/canvas/FlowerBloom/index.vue";
 import CodeBgWall from "pages/canvas/CodeBgWall.vue";
@@ -128,6 +129,10 @@ const contentRoutes = [
       {
         path: "/canvas/countDown",
         component: CountDown,
+      },
+      {
+        path: "/canvas/particlesBg",
+        component: ParticlesBg,
       },
       {
         path: "/canvas/rippleFloatOnTheWater",

@@ -27,7 +27,7 @@ declare module "vue-i18n";
 
 declare module "sphere-collision";
 
-declare module "particles.js";
+declare module "particles.js-es";
 
 declare module "typed.js";
 

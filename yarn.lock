@@ -2284,10 +2284,10 @@ pako@^2.1.0:
   resolved "https://registry.yarnpkg.com/pako/-/pako-2.1.0.tgz#266cc37f98c7d883545d11335c00fbd4062c9a86"
   integrity sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==
 
-particles.js@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/particles.js/-/particles.js-2.0.0.tgz#21386c4328d6c7f96780a201e96eedfc09c736f6"
-  integrity sha512-8e0JIqkRbMMPlFBnF9f+92hX1s07jdkd3tqB8uHE9L+cwGGjIYjQM7QLgt0FQ5MZp6SFFYYDm/Y48pqK3ZvJOQ==
+particles.js-es@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/particles.js-es/-/particles.js-es-1.0.7.tgz#363d29c0b61554eccc5661bfb18afb5006190400"
+  integrity sha512-HHMZrT+mBRVuG/p5H5krnkyDzi88/Pnj2r2Znr9WPfJo7+khc9myNr3s/1s85TZ937O6w9s5YJtt051WXzx+Tg==
 
 pascalcase@^0.1.1:
   version "0.1.1"
