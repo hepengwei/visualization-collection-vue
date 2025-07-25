@@ -10,6 +10,9 @@ import UtilitarianFunction from "pages/html/UtilitarianFunction/index.vue";
 import DynamicButtons from "pages/css/DynamicButtons/index.vue";
 import RichDynamicEffect from "pages/css/RichDynamicEffect/index.vue";
 import GenerateRegularPolygon from "pages/css/GenerateRegularPolygon/index.vue";
+import GenerateShadow from "pages/css/GenerateShadow/index.vue";
+// import GenerateScrollBar from "pages/css/GenerateScrollBar/index.vue";
+import ElevatorNavigation from "pages/css/ElevatorNavigation/index.vue";
 import SphereCollisionExample from "pages/canvas/SphereCollisionExample.vue";
 import DynamicClock from "pages/canvas/DynamicClock.vue";
 import Searchlight from "pages/canvas/Searchlight.vue";
@@ -17,6 +20,7 @@ import GlobuleInteraction from "pages/canvas/GlobuleInteraction.vue";
 import KillPlanetGame from "pages/canvas/KillPlanetGame.vue";
 import FreeFallingBody from "pages/canvas/FreeFallingBody.vue";
 import CountDown from "pages/canvas/CountDown/index.vue";
+import ParticlesBg from "pages/canvas/ParticlesBg/index.vue";
 import RippleFloatOnTheWater from "pages/canvas/RippleFloatOnTheWater/index.vue";
 import FlowerBloom from "pages/canvas/FlowerBloom/index.vue";
 import CodeBgWall from "pages/canvas/CodeBgWall.vue";
@@ -81,6 +85,18 @@ const contentRoutes = [
         path: "/css/generateRegularPolygon",
         component: GenerateRegularPolygon,
       },
+      {
+        path: "/css/generateShadow",
+        component: GenerateShadow,
+      },
+      // {
+      //   path: "/css/generateScrollBar",
+      //   component: GenerateScrollBar,
+      // },
+      {
+        path: "/css/elevatorNavigation",
+        component: ElevatorNavigation,
+      },
     ],
   },
   {
@@ -113,6 +129,10 @@ const contentRoutes = [
       {
         path: "/canvas/countDown",
         component: CountDown,
+      },
+      {
+        path: "/canvas/particlesBg",
+        component: ParticlesBg,
       },
       {
         path: "/canvas/rippleFloatOnTheWater",

@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 探照灯效果
  */
-<script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import SphereCollision from "sphere-collision";
 import type { SphereCollisionC, GlobuleC } from "sphere-collision/types";
 
@@ -114,24 +114,35 @@ onMounted(() => {
 
     sphereCollision2?.start();
   }
-})
+});
 
 onUnmounted(() => {
   sphereCollision1?.stop();
   sphereCollision2?.stop();
-})
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box', width: '100%', height: '100%', display: 'flex', justifyContent: 'center',
-    alignItems: 'center', minWidth: '1200px', backgroundImage: 'linear-gradient(135deg, #224141, #162a2a)',
-    position: 'relative'
-  }">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minWidth: '1200px',
+      backgroundImage: 'linear-gradient(135deg, #224141, #162a2a)',
+      position: 'relative',
+    }"
+  >
     <canvas id="searchlightCanvas" :style="{ marginTop: `${marginTop}px` }">
       {{ t("common.browserTooLow") }}
     </canvas>
-    <canvas id="searchlightCanvas2" :style="{ marginLeft: '50px', marginTop: `${marginTop}px` }">
+    <canvas
+      id="searchlightCanvas2"
+      :style="{ marginLeft: '50px', marginTop: `${marginTop}px` }"
+    >
       {{ t("common.browserTooLow") }}
     </canvas>
   </div>

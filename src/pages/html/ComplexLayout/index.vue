@@ -1,13 +1,11 @@
+<script setup lang="ts">
 /**
  * 复杂布局
  */
-<script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import LineCombination from './components/LineCombination.vue';
+import useScrollToTop from "hooks/useScrollToTop";
+import LineCombination from "./components/LineCombination.vue";
 
-const boxList = [
-  { element: LineCombination },
-];
+const boxList = [{ element: LineCombination }];
 
 useScrollToTop();
 </script>

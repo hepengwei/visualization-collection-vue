@@ -66,6 +66,12 @@ const items: Ref<ItemType[]> = computed(() => [
       t("menu.cssDynamicEffect.generateRegularPolygon"),
       "generateRegularPolygon"
     ),
+    getItem(t("menu.cssDynamicEffect.generateShadow"), "generateShadow"),
+    // getItem(t("menu.cssDynamicEffect.generateScrollBar"), "generateScrollBar"),
+    getItem(
+      t("menu.cssDynamicEffect.elevatorNavigation"),
+      "elevatorNavigation"
+    ),
   ]),
   getItem(
     t("menu.canvasDynamicEffect"),
@@ -93,6 +99,10 @@ const items: Ref<ItemType[]> = computed(() => [
       getItem(
         t("menu.canvasDynamicEffect.coolCountdownAnimation"),
         "countDown"
+      ),
+      getItem(
+        t("menu.canvasDynamicEffect.dynamicParticleBackground"),
+        "particlesBg"
       ),
       getItem(
         t("menu.canvasDynamicEffect.rippleEffect"),

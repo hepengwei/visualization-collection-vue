@@ -1,11 +1,15 @@
+<script setup lang="ts">
 /**
  * 炫酷倒计时动画
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import SphereCollision from "sphere-collision";
-import type { SphereCollisionC, GlobuleOptions, GlobuleC } from "sphere-collision/types";
+import type {
+  SphereCollisionC,
+  GlobuleOptions,
+  GlobuleC,
+} from "sphere-collision/types";
 import digit from "./digit";
 
 const canvasBgColor = "#111111"; // 画布背景颜色
@@ -43,9 +47,7 @@ endTime.setTime(endTime.getTime() + 3600 * 1000);
 //返回当前时间距结束时间的时长,即应显示的时间
 const getCurrentShowTimeSeconds = () => {
   const curTime = new Date();
-  const ret = Math.round(
-    (endTime.getTime() - curTime.getTime()) / 1000
-  );
+  const ret = Math.round((endTime.getTime() - curTime.getTime()) / 1000);
   return ret >= 0 ? ret : 0;
 };
 
@@ -178,8 +180,7 @@ const addBalls = (x: number, y: number, num: number) => {
             collisionLossV,
             moveLossV,
           };
-          const globule =
-            sphereCollisionRef.createGlobule(globuleOptions);
+          const globule = sphereCollisionRef.createGlobule(globuleOptions);
           globuleList.push(globule);
         }
       }
@@ -192,9 +193,7 @@ const update = () => {
   const nextShowTimeSeconds = getCurrentShowTimeSeconds(); //获得要显示的时间
 
   const nextHours = Math.floor(nextShowTimeSeconds / 3600);
-  const nextMinutes = Math.floor(
-    (nextShowTimeSeconds - nextHours * 3600) / 60
-  );
+  const nextMinutes = Math.floor((nextShowTimeSeconds - nextHours * 3600) / 60);
   const nextSeconds = nextShowTimeSeconds % 60;
 
   const curHours = Math.floor(curShowTimeSeconds / 3600);
@@ -300,15 +299,10 @@ const startAnimation = () => {
     const globuleOptionList = createTimeGlobuleOpitons();
 
     // 实例化SphereCollision对象
-    sphereCollisionRef = new SphereCollision(
-      ctx,
-      canvas,
-      globuleOptionList,
-      {
-        beforeDrawGlobules,
-        afterDrawGlobules,
-      }
-    );
+    sphereCollisionRef = new SphereCollision(ctx, canvas, globuleOptionList, {
+      beforeDrawGlobules,
+      afterDrawGlobules,
+    });
 
     // 开使执行动画
     sphereCollisionRef?.start();
@@ -330,19 +324,22 @@ onMounted(() => {
   marginTop = Math.round(canvasHeight / 8);
 
   startAnimation();
-})
+});
 
 onUnmounted(() => {
   sphereCollisionRef?.stop();
-})
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-  }" ref="boxRef">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+    }"
+    ref="boxRef"
+  >
     <canvas id="myCanvas">
       {{ t("common.browserTooLow") }}
     </canvas>

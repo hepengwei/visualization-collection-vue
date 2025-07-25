@@ -1,5 +1,7 @@
-/** * 视觉设计 */
 <script setup lang="ts">
+/**
+ * 视觉设计
+ */
 import useScrollToTop from "hooks/useScrollToTop";
 import GridContent from "components/GridContent/index.vue";
 import GridBox from "components/GridContent/GridBox.vue";
@@ -27,13 +29,14 @@ import HorseRaceLamp from "./components/HorseRaceLamp.vue";
 import HarmonyLogo from "./components/HarmonyLogo.vue";
 import Preserve3D from "./components/Preserve3D.vue";
 import RotateAndBgFixed from "./components/RotateAndBgFixed.vue";
-import HexagonalMesh from "./components/HexagonalMesh.vue";
 // import HexagonalRadar from './components/HexagonalRadar.vue';
 import HoverEnlargement from "./components/HoverEnlargement.vue";
-import ActivityCountDown from "./components/ActivityCountDown.vue";
+import ConicGradientRing from "./components/ConicGradientRing.vue";
 import GlassDesign1 from "./components/GlassDesign1.vue";
 import GlassDesign2 from "./components/GlassDesign2.vue";
 import Ribbon from "./components/Ribbon.vue";
+import ActivityCountDown from "./components/ActivityCountDown.vue";
+import HexagonalMesh from "./components/HexagonalMesh.vue";
 
 const rowSpace = 4;
 const colSpace = 4;
@@ -62,13 +65,14 @@ const gridboxList = [
   { element: HarmonyLogo },
   { element: Preserve3D },
   { element: RotateAndBgFixed },
-  { element: HexagonalMesh },
   // { element: HexagonalRadar },
   { element: HoverEnlargement },
-  { element: ActivityCountDown },
-  { element: Ribbon },
+  { element: ConicGradientRing },
   { element: GlassDesign1 },
   { element: GlassDesign2 },
+  { element: Ribbon },
+  { element: ActivityCountDown },
+  { element: HexagonalMesh },
 ];
 
 useScrollToTop();

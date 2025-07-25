@@ -1,23 +1,26 @@
+<script setup lang="ts">
 /**
  * 丰富动效
  */
-<script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import DynamicTime from './components/DynamicTime.vue';
-import FlopTime from './components/FlopTime/index.vue';
-import ChargingAnimation from './components/ChargingAnimation.vue';
-import ZongziLoading from './components/ZongziLoading.vue';
-import BoxReflect from './components/BoxReflect.vue';
-import TextAnimation from './components/TextAnimation.vue';
-import TextSearchlight from './components/TextSearchlight.vue';
-import DisplayTextInSmoke from './components/DisplayTextInSmoke.vue';
-import PlayVideoInText from './components/PlayVideoInText.vue';
-import WaveFont from './components/WaveFont.vue';
-import TextOutlineAnimation1 from './components/TextOutlineAnimation1.vue';
-import TextOutlineAnimation2 from './components/TextOutlineAnimation2.vue';
-import MobiusBand1 from './components/MobiusBand1.vue';
-import MobiusBand2 from './components/MobiusBand2.vue';
-import TankShaking from './components/TankShaking.vue';
+import useScrollToTop from "hooks/useScrollToTop";
+import DynamicTime from "./components/DynamicTime.vue";
+import FlopTime from "./components/FlopTime/index.vue";
+import ChargingAnimation from "./components/ChargingAnimation.vue";
+import ZongziLoading from "./components/ZongziLoading.vue";
+import BoxReflect from "./components/BoxReflect.vue";
+import TextAnimation from "./components/TextAnimation.vue";
+import TextSearchlight from "./components/TextSearchlight.vue";
+import DisplayTextInSmoke from "./components/DisplayTextInSmoke.vue";
+import PlayVideoInText from "./components/PlayVideoInText.vue";
+import WavyText from "./components/WavyText.vue";
+import RippleText from "./components/RippleText.vue";
+import TextOutlineAnimation1 from "./components/TextOutlineAnimation1.vue";
+import TextOutlineAnimation2 from "./components/TextOutlineAnimation2.vue";
+import MobiusBand1 from "./components/MobiusBand1.vue";
+import MobiusBand2 from "./components/MobiusBand2.vue";
+import LongRainbowGlass from "./components/LongRainbowGlass.vue";
+import RadarScan from "./components/RadarScan.vue";
+import TankShaking from "./components/TankShaking.vue";
 
 useScrollToTop();
 </script>
@@ -55,8 +58,13 @@ useScrollToTop();
     <div class="box">
       <PlayVideoInText />
     </div>
-    <div class="box">
-      <WaveFont />
+    <div class="multipleColumnsBox">
+      <div class="box">
+        <WavyText />
+      </div>
+      <div class="box">
+        <RippleText />
+      </div>
     </div>
     <div class="multipleColumnsBox">
       <div class="box">
@@ -72,6 +80,14 @@ useScrollToTop();
       </div>
       <div class="box">
         <MobiusBand2 />
+      </div>
+    </div>
+    <div class="multipleColumnsBox">
+      <div class="box">
+        <LongRainbowGlass />
+      </div>
+      <div class="box">
+        <RadarScan />
       </div>
     </div>
     <div class="box">

@@ -1,31 +1,37 @@
+<script setup lang="ts">
 /**
  * 交互设计
  */
-<script setup lang="ts">
-import useScrollToTop from 'hooks/useScrollToTop';
-import MagnifyingGlass from './components/MagnifyingGlass.vue';
-import CropImage from './components/CropImage.vue';
-import DragShopping from './components/DragShopping.vue';
-import MouseHover from './components/MouseHover.vue';
-import SlideButtonTab from './components/SlideButtonTab.vue';
-import FlipBook from './components/FlipBook.vue';
-import Switchs from './components/Switchs/index.vue';
-import PeopleAnimation from './components/PeopleAnimation/index.vue';
-import TweakCube from './components/TweakCube.vue';
+import useScrollToTop from "hooks/useScrollToTop";
+import MagnifyingGlass from "./components/MagnifyingGlass.vue";
+import CropImage from "./components/CropImage.vue";
+import DragShopping from "./components/DragShopping.vue";
+import MouseHover1 from "./components/MouseHover1.vue";
+import MouseHover2 from "./components/MouseHover2.vue";
+import MouseHover3 from "./components/MouseHover3/index.vue";
+import MouseHover4 from "./components/MouseHover4/index.vue";
+import SlideButtonTab from "./components/SlideButtonTab.vue";
+import FlipBook from "./components/FlipBook.vue";
+import Switchs from "./components/Switchs/index.vue";
+import PeopleAnimation from "./components/PeopleAnimation/index.vue";
+import TweakCube from "./components/TweakCube.vue";
 // import Preserve3dBox from './components/Preserve3dBox.vue';
-import OrientationSenseCard from './components/OrientationSenseCard.vue';
-import HexagonalMesh1 from './components/HexagonalMesh1.vue';
-import HexagonalMesh2 from './components/HexagonalMesh2.vue';
-import HexagonalMesh3 from './components/HexagonalMesh3.vue';
-import IconScroll from './components/IconScroll.vue';
+import OrientationSenseCard from "./components/OrientationSenseCard.vue";
+import HexagonalMesh1 from "./components/HexagonalMesh1.vue";
+import HexagonalMesh2 from "./components/HexagonalMesh2.vue";
+import HexagonalMesh3 from "./components/HexagonalMesh3.vue";
+import IconScroll from "./components/IconScroll.vue";
 // import WipeSwitchover from './components/WipeSwitchover.vue';
-import AutoCompletePunctuation from './components/AutoCompletePunctuation.vue';
+import AutoCompletePunctuation from "./components/AutoCompletePunctuation.vue";
 
 const boxList = [
   { element: MagnifyingGlass },
   { element: CropImage },
   { element: DragShopping },
-  { element: MouseHover },
+  { element: MouseHover1 },
+  { element: MouseHover2 },
+  { element: MouseHover3 },
+  { element: MouseHover4 },
   { element: SlideButtonTab },
   { element: FlipBook },
   { element: Switchs },

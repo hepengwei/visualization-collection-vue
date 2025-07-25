@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 水波荡漾效果
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import WaterRipple from "./waterRipple";
 import waterBg from "images/canvas/water.png";
 
@@ -42,22 +42,24 @@ onMounted(() => {
 
     waterRipple.addMousemove();
   }
-})
+});
 
 onUnmounted(() => {
   timer && clearInterval(timer);
   waterRipple?.stop();
-})
+});
 </script>
 
-
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-    display: 'flex'
-  }" ref="boxRef">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+    }"
+    ref="boxRef"
+  >
     <canvas ref="canvasRef">
       {{ t("common.browserTooLow") }}
     </canvas>

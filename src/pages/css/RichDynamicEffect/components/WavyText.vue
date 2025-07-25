@@ -14,7 +14,7 @@ import ModuleTitle from "components/ModuleTitle.vue";
 
 <style scoped lang="scss">
 .container {
-  height: 600px;
+  height: 400px;
   display: flex;
   flex: 1;
   position: relative;
@@ -24,8 +24,9 @@ import ModuleTitle from "components/ModuleTitle.vue";
     position: absolute;
     top: calc(50% + 20px);
     left: 50%;
-    font-size: 22vw;
+    font-size: 160px;
     font-weight: 600;
+    font-family: "SourceHanSansCN-Bold";
     transform: translate(-50%, -50%);
   }
 

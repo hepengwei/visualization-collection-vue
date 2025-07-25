@@ -1,10 +1,10 @@
+<script setup lang="ts">
 /**
  * 人体姿态检测
  */
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { message } from 'ant-design-vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted } from "vue";
+import { message } from "ant-design-vue";
+import { useI18n } from "vue-i18n";
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-webgl";
@@ -26,9 +26,7 @@ let timer = 0;
 const { t } = useI18n();
 const videoRef = ref<HTMLVideoElement | null>(null);
 
-const videoStatus = ref<VideoStatus>(
-  VideoStatus.ready
-);
+const videoStatus = ref<VideoStatus>(VideoStatus.ready);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 
 // 画点
@@ -66,12 +64,7 @@ const detectPose = async () => {
     if (!videoRef.value.srcObject) return;
     // 将视频每一帧绘制到画布上
     ctxRef.drawImage(videoRef.value, 0, 0, videoWidth, videoHeight);
-    const imageData = ctxRef.getImageData(
-      0,
-      0,
-      videoWidth,
-      videoHeight
-    );
+    const imageData = ctxRef.getImageData(0, 0, videoWidth, videoHeight);
 
     // 获取检测结果
     const poses = await detector.estimatePoses(imageData, {
@@ -88,13 +81,7 @@ const detectPose = async () => {
     pointList.forEach(({ x, y, score }: any) => {
       if (score > 0.5) {
         // 画点
-        drawPoint(
-          x,
-          y,
-          6,
-          "#f00000",
-          ctxRef as CanvasRenderingContext2D
-        );
+        drawPoint(x, y, 6, "#f00000", ctxRef as CanvasRenderingContext2D);
       }
     });
 
@@ -186,24 +173,18 @@ const onStartOrEnd = async () => {
         })
         .catch((e) => {
           if (e.message && e.message.includes("not found")) {
-            message.error(
-              t("common.deviceNotFound")
-            );
+            message.error(t("common.deviceNotFound"));
           } else if (
             e.message &&
             e.message.includes("Invalid architecture full")
           ) {
             message.error(e.message);
           } else {
-            message.error(
-              t("common.impowerOpenCamera")
-            );
+            message.error(t("common.impowerOpenCamera"));
           }
         });
     } else {
-      message.error(
-        t("common.notSupportGetUserMedia")
-      );
+      message.error(t("common.notSupportGetUserMedia"));
     }
   }
 };
@@ -222,18 +203,31 @@ onMounted(() => init());
 <template>
   <div class="container">
     <ModuleTitle i18nTitle="page.AIApplication.humanPostureDetection" />
-    <div class="content" :style="{ width: `${videoWidth}px`, height: `${videoHeight}px` }">
-      <video :style="{ width: `${videoWidth}px`, height: `${videoHeight}px` }" muted autoPlay
-        x5-video-player-fullscreen="true" x5-playsinline="true" playsInline webkit-playsinline="true"
-        crossOrigin="anonymous" ref="videoRef"></video>
+    <div
+      class="content"
+      :style="{ width: `${videoWidth}px`, height: `${videoHeight}px` }"
+    >
+      <video
+        :style="{ width: `${videoWidth}px`, height: `${videoHeight}px` }"
+        muted
+        autoPlay
+        x5-video-player-fullscreen="true"
+        x5-playsinline="true"
+        playsInline
+        webkit-playsinline="true"
+        crossOrigin="anonymous"
+        ref="videoRef"
+      ></video>
       <canvas ref="canvasRef">
         {{ t("common.browserTooLow") }}
       </canvas>
     </div>
     <a-button type="primary" @click="onStartOrEnd">
-      {{ videoStatus === VideoStatus.inRecording
-        ? t("common.end")
-        : t("common.start") }}
+      {{
+        videoStatus === VideoStatus.inRecording
+          ? t("common.end")
+          : t("common.start")
+      }}
     </a-button>
   </div>
 </template>

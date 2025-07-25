@@ -85,7 +85,8 @@ const en_US = {
   "common.checkout": "Checkout",
   "common.moduleTitle": "Module Title",
   "common.customizeContent": "Customize content",
-  "common.ad.btnText": "Experience right away",
+  "common.copyCode": "Copy code",
+  "common.copySuccess": "Copy successfully",
 
   // 菜单
   "menu.htmlVision": "Html Vision",
@@ -99,6 +100,9 @@ const en_US = {
   "menu.cssDynamicEffect.dynamicEffectButton": "Dynamic Effect Button",
   "menu.cssDynamicEffect.richDynamicEffect": "Rich Dynamic Effect",
   "menu.cssDynamicEffect.generateRegularPolygon": "Generate Regular Polygon",
+  "menu.cssDynamicEffect.generateShadow": "Generate Shadow",
+  "menu.cssDynamicEffect.generateScrollBar": "Generate Scroll Bar",
+  "menu.cssDynamicEffect.elevatorNavigation": "Elevator Navigation",
   "menu.cssDynamicEffect.musicVisualization": "Music Visualization",
   "menu.canvasDynamicEffect": "Canvas Dynamic Effect",
   "menu.canvasDynamicEffect.sphereCollisionExample": "sphere-collision Example",
@@ -244,6 +248,8 @@ const en_US = {
     "Searchlight text dynamic effect",
   "page.cssDynamicEffect.richDynamicEffect.wavyText":
     "Wavy text dynamic effect",
+  "page.cssDynamicEffect.richDynamicEffect.rippleText":
+    "Ripple text dynamic effect",
   "page.cssDynamicEffect.richDynamicEffect.textLineDisplay":
     "Text line display dynamic effect",
   "page.cssDynamicEffect.richDynamicEffect.textLineLoop":
@@ -252,11 +258,40 @@ const en_US = {
     "Mobius loop bar dynamic effect",
   "page.cssDynamicEffect.richDynamicEffect.mobiusRingsCircleDots":
     "Mobius loop circle dots dynamic effect",
+  "page.cssDynamicEffect.richDynamicEffect.longRainbowGlass":
+    "Long rainbow glass dynamic effect",
+  "page.cssDynamicEffect.richDynamicEffect.radarScan":
+    "Radar scan dynamic effect",
   "page.cssDynamicEffect.richDynamicEffect.tankShaking":
     "Tank shaking dynamic effect",
+
+  // Css动效-生成正多边形页
   "page.cssDynamicEffect.generateRegularPolygon.numberOfSides":
     "Number of sides",
   "page.cssDynamicEffect.generateRegularPolygon.rotation": "Rotation",
+
+  // Css动效-生成阴影页
+  "page.cssDynamicEffect.generateShadow.horizontalOffset": "Horizontal Offset",
+  "page.cssDynamicEffect.generateShadow.verticalOffset": "Vertical Offset",
+  "page.cssDynamicEffect.generateShadow.blurLength": "Blur Length",
+  "page.cssDynamicEffect.generateShadow.shadowSize": "Shadow Size",
+  "page.cssDynamicEffect.generateShadow.borderRadius": "Border Radius",
+  "page.cssDynamicEffect.generateShadow.shadowColor": "Shadow Color",
+
+  // Css动效-生成滚动条页
+  "page.cssDynamicEffect.generateScrollBar.scrollBarWidth": "Vertical Width",
+  "page.cssDynamicEffect.generateScrollBar.scrollBarHeight":
+    "Horizontal Height",
+  "page.cssDynamicEffect.generateScrollBar.scrollBarBgColor":
+    "Background Color",
+  "page.cssDynamicEffect.generateScrollBar.slidingBlockBgColor":
+    "Sliding Block Background Color",
+  "page.cssDynamicEffect.generateScrollBar.slidingBlockRadius":
+    "Sliding Block Radius",
+  "page.cssDynamicEffect.generateScrollBar.slidingBlockHoverBgColor":
+    "Sliding Block Hover Background Color",
+  "page.cssDynamicEffect.generateScrollBar.rightBottomBgColor":
+    "Right Bottom Background Color",
 
   // Canvas动效
   "page.canvasDynamicEffect.sphereCollisionExample": "sphere-collision example",
@@ -346,9 +381,9 @@ const en_US = {
     "Whether to retain the original dimension",
 
   // 视频处理工具页
-  "page.videoProcessingTool.tip":
-    "The tool processing video will be very slow, because it is a pure front-end implementation, the correct approach is to upload the file to the background for processing, here is only to provide a pure front-end video processing solution.",
-  "page.videoProcessingTool.generatingVideo": "Work hard at generating video",
+  // 'page.videoProcessingTool.tip':
+  //   'The tool processing video will be very slow, because it is a pure front-end implementation, the correct approach is to upload the file to the background for processing, here is only to provide a pure front-end video processing solution.',
+  // 'page.videoProcessingTool.generatingVideo': 'Work hard at generating video',
 
   // Html视觉-应用页面框架页
   "page.htmlVision.applicationPageFrame.secondPage": "Second Page",

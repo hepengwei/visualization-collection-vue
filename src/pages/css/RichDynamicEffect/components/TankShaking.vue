@@ -20,14 +20,13 @@ import ModuleTitle from 'components/ModuleTitle.vue';
 <style scoped lang="scss">
 .container {
   width: 100%;
-  height: 380px;
+  height: 500px;
   display: flex;
   justify-content: center;
-  padding-top: 120px;
+  padding-top: 200px;
   position: relative;
 
   $bottleWidth: 200px;
-
   .content {
     display: flex;
     flex-direction: column;
@@ -83,7 +82,7 @@ import ModuleTitle from 'components/ModuleTitle.vue';
 
     .bottleBottom {
       position: absolute;
-      top: calc(100% - 66px);
+      top: calc(100% - 106px);
       left: 50%;
       width: $bottleWidth;
       height: 30px;

@@ -1,9 +1,9 @@
+<script setup lang="ts">
 /**
  * 球体自由落体交互效果
  */
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import SphereCollision from "sphere-collision";
 import type { SphereCollisionC, GlobuleOptions } from "sphere-collision/types";
 import basketball from "images/canvas/basketball.png";
@@ -61,7 +61,6 @@ const { t } = useI18n();
 const boxRef = ref<HTMLDivElement>();
 let sphereCollisionRef: SphereCollisionC | null = null;
 
-
 // 每一帧绘制所有球体之前执行的函数
 const beforeDrawGlobules = (sphereCollision: SphereCollisionC) => {
   const { ctx } = sphereCollision;
@@ -118,19 +117,22 @@ onMounted(() => {
     canvasHeight = 600;
   }
   startAnimation();
-})
+});
 
 onUnmounted(() => {
   sphereCollisionRef?.stop();
-})
+});
 </script>
 
 <template>
-  <div :style="{
-    boxSizing: 'border-box',
-    width: '100%',
-    height: '100%',
-  }" ref="boxRef">
+  <div
+    :style="{
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+    }"
+    ref="boxRef"
+  >
     <canvas id="myCanvas">
       {{ t("common.browserTooLow") }}
     </canvas>

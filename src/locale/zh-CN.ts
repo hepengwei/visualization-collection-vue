@@ -78,7 +78,8 @@ const zh_CN = {
   "common.checkout": "校验",
   "common.moduleTitle": "模块标题",
   "common.customizeContent": "自定义内容",
-  "common.ad.btnText": "马上体验",
+  "common.copyCode": "复制代码",
+  "common.copySuccess": "复制成功",
 
   // 菜单
   "menu.htmlVision": "Html视觉",
@@ -92,6 +93,9 @@ const zh_CN = {
   "menu.cssDynamicEffect.dynamicEffectButton": "动效按钮",
   "menu.cssDynamicEffect.richDynamicEffect": "丰富动效",
   "menu.cssDynamicEffect.generateRegularPolygon": "生成正多边形",
+  "menu.cssDynamicEffect.generateShadow": "生成阴影",
+  "menu.cssDynamicEffect.generateScrollBar": "生成滚动条",
+  "menu.cssDynamicEffect.elevatorNavigation": "电梯导航",
   "menu.cssDynamicEffect.musicVisualization": "音乐可视化",
   "menu.canvasDynamicEffect": "Canvas动效",
   "menu.canvasDynamicEffect.sphereCollisionExample": "sphere-collision库示例",
@@ -212,15 +216,38 @@ const zh_CN = {
   "page.cssDynamicEffect.richDynamicEffect.luminousText": "发光文字动效",
   "page.cssDynamicEffect.richDynamicEffect.searchlightText": "探照灯文字动效",
   "page.cssDynamicEffect.richDynamicEffect.wavyText": "波浪文字动效",
+  "page.cssDynamicEffect.richDynamicEffect.rippleText": "涟漪文字动效",
   "page.cssDynamicEffect.richDynamicEffect.textLineDisplay": "文字线条显示动效",
   "page.cssDynamicEffect.richDynamicEffect.textLineLoop": "文字线条循环动效",
   "page.cssDynamicEffect.richDynamicEffect.mobiusLoopBar":
     "莫比乌斯环循环条动效",
   "page.cssDynamicEffect.richDynamicEffect.mobiusRingsCircleDots":
     "莫比乌斯环循环圆点动效",
+  "page.cssDynamicEffect.richDynamicEffect.longRainbowGlass": "长虹玻璃动效",
+  "page.cssDynamicEffect.richDynamicEffect.radarScan": "雷达扫描动效",
   "page.cssDynamicEffect.richDynamicEffect.tankShaking": "水罐摇晃动效",
+
+  // Css动效-生成正多边形页
   "page.cssDynamicEffect.generateRegularPolygon.numberOfSides": "边数",
   "page.cssDynamicEffect.generateRegularPolygon.rotation": "旋转",
+
+  // Css动效-生成阴影页
+  "page.cssDynamicEffect.generateShadow.horizontalOffset": "水平偏移",
+  "page.cssDynamicEffect.generateShadow.verticalOffset": "垂直偏移",
+  "page.cssDynamicEffect.generateShadow.blurLength": "模糊程度",
+  "page.cssDynamicEffect.generateShadow.shadowSize": "阴影大小",
+  "page.cssDynamicEffect.generateShadow.borderRadius": "边框半径",
+  "page.cssDynamicEffect.generateShadow.shadowColor": "阴影颜色",
+
+  // Css动效-生成滚动条页
+  "page.cssDynamicEffect.generateScrollBar.scrollBarWidth": "纵向滚动条宽度",
+  "page.cssDynamicEffect.generateScrollBar.scrollBarHeight": "横向滚动条高度",
+  "page.cssDynamicEffect.generateScrollBar.scrollBarBgColor": "滚动条背景色",
+  "page.cssDynamicEffect.generateScrollBar.slidingBlockBgColor": "滑块背景色",
+  "page.cssDynamicEffect.generateScrollBar.slidingBlockRadius": "滑块圆角",
+  "page.cssDynamicEffect.generateScrollBar.slidingBlockHoverBgColor":
+    "滑块Hover背景色",
+  "page.cssDynamicEffect.generateScrollBar.rightBottomBgColor": "右下角背景色",
 
   // Canvas动效
   "page.canvasDynamicEffect.sphereCollisionExample": "sphere-collision库示例",
@@ -300,9 +327,9 @@ const zh_CN = {
   "page.imageProcessingTool.WhetherRetainOriginalDimension": "是否保留原尺寸",
 
   // 视频处理工具页
-  "page.videoProcessingTool.tip":
-    "该工具处理视频会非常慢，因为是纯前端实现的，正确做法还是将文件上传到后台进行处理，这里只是提供一种纯前端实现视频处理的解决方案。",
-  "page.videoProcessingTool.generatingVideo": "努力生成视频中",
+  // 'page.videoProcessingTool.tip':
+  //   '该工具处理视频会非常慢，因为是纯前端实现的，正确做法还是将文件上传到后台进行处理，这里只是提供一种纯前端实现视频处理的解决方案。',
+  // 'page.videoProcessingTool.generatingVideo': '努力生成视频中',
 
   // Html视觉-应用页面框架页
   "page.htmlVision.applicationPageFrame.secondPage": "第二页",
