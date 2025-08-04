@@ -91,7 +91,23 @@ const getBaseOptions = () => {
           width: 4,
         },
         areaStyle: {
-          color: "rgba(124,81,237,0.1)",
+          color: {
+						type: "linear",
+						x: 0.5,
+						y: 0,
+						x2: 0.5,
+						y2: 1,
+						colorStops: [
+							{
+								offset: 0,
+								color: "rgba(124,81,237,0.2)", // 0%处的颜色
+							},
+							{
+								offset: 1,
+								color: "rgba(124,81,237, 0)", // 100%处的颜色
+							},
+						],
+					},
         },
       },
     ],
