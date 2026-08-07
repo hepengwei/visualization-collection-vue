@@ -3,7 +3,17 @@
  * 3阶魔方
  */
 import { ref, onUnmounted, Ref, watch } from "vue";
-import * as THREE from "three";
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  MeshPhysicalMaterial,
+  Mesh,
+  Color,
+  Group,
+  Matrix4,
+  DirectionalLight,
+} from "three";
 // @ts-ignore
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry";
 // @ts-ignore
@@ -26,23 +36,23 @@ const rotatePIDuration = 1.5; // 魔方其中一面旋转180度所需的时间�
 const rotateInterval = 1500; // 魔方其中一面旋转的时间间隔
 const cameraInitPosition = { x: 20, y: 50, z: 50 };
 const lightInitPositionList = [
-  { x: 100, y: 100, z: -100, intensity: 1 },
-  { x: -100, y: 100, z: -100, intensity: 1 },
-  { x: 100, y: -50, z: -100, intensity: 1 },
-  { x: -100, y: -50, z: -100, intensity: 1 },
-  { x: 50, y: 100, z: 30, intensity: 20 },
-  { x: -100, y: 100, z: 100, intensity: 1 },
-  { x: 100, y: -50, z: 100, intensity: 1 },
-  { x: -100, y: -50, z: 100, intensity: 1 },
-  { x: 0, y: 50, z: 20, intensity: 1 },
-  { x: 0, y: -50, z: 20, intensity: 1 },
+  { x: 100, y: 100, z: -100, intensity: 1 * Math.PI },
+  { x: -100, y: 100, z: -100, intensity: 1 * Math.PI },
+  { x: 100, y: -50, z: -100, intensity: 1 * Math.PI },
+  { x: -100, y: -50, z: -100, intensity: 1 * Math.PI },
+  { x: 50, y: 100, z: 30, intensity: 20 * Math.PI },
+  { x: -100, y: 100, z: 100, intensity: 1 * Math.PI },
+  { x: 100, y: -50, z: 100, intensity: 1 * Math.PI },
+  { x: -100, y: -50, z: 100, intensity: 1 * Math.PI },
+  { x: 0, y: 50, z: 20, intensity: 1 * Math.PI },
+  { x: 0, y: -50, z: 20, intensity: 1 * Math.PI },
 ];
 
-const lightList: THREE.DirectionalLight[] = []; // 存放所有平行光源
-let cubeList: THREE.Mesh[] = []; // 存放魔方的27个小块对象
+const lightList: DirectionalLight[] = []; // 存放所有平行光源
+let cubeList: Mesh[] = []; // 存放魔方的27个小块对象
 let controls: OrbitControls | null = null;
-let rubiksCubeGroup: THREE.Group | null = null;
-let planeGroup: THREE.Group | null = null;
+let rubiksCubeGroup: Group | null = null;
+let planeGroup: Group | null = null;
 let gsapAnimation: gsap.core.Tween | null = null;
 let timer: number = 0;
 
@@ -62,8 +72,8 @@ const rotatePlane = (whichPlane: WhichPlane, angle: number) => {
   const position2RubiksCube = position2RubiksCubeList[whichPlane];
   if (!position2RubiksCube || !angle || !rubiksCubeGroup) return;
   // 找到这一个面中所有的小块对象
-  const planeOldCubeList: THREE.Mesh[] = [];
-  const planeCubeList: THREE.Mesh[] = [];
+  const planeOldCubeList: Mesh[] = [];
+  const planeCubeList: Mesh[] = [];
   const planeCubeOldPositionList: { x: number; y: number; z: number }[] = [];
   for (let i = 0, l = position2RubiksCube.length; i < l; i++) {
     const { x, y, z } = position2RubiksCube[i];
@@ -104,14 +114,14 @@ const rotatePlane = (whichPlane: WhichPlane, angle: number) => {
 
   const centerCube = planeCubeList[4];
   // 创建一个planeGroup，用于添加这一面的9个小块
-  planeGroup = new THREE.Group();
+  planeGroup = new Group();
   planeGroup.position.set(
     centerCube.position.x,
     centerCube.position.y,
     centerCube.position.z
   );
   // 根据该面之前的小块进行克隆，并添加到planeGroup中
-  planeCubeList.forEach((cube: THREE.Mesh) => {
+  planeCubeList.forEach((cube: Mesh) => {
     const newCube = cube.clone();
     const { x, y, z } = newCube.position;
     newCube.position.set(
@@ -124,9 +134,9 @@ const rotatePlane = (whichPlane: WhichPlane, angle: number) => {
   // 将planeGroup添加到rubiksCubeGroup中
   rubiksCubeGroup.add(planeGroup);
   // 将rubiksCubeGroup中原来的该面的9个小块删除
-  planeCubeList.forEach((cube: THREE.Mesh) => {
+  planeCubeList.forEach((cube: Mesh) => {
     rubiksCubeGroup?.remove(cube);
-    cubeList = cubeList.filter((item: THREE.Mesh) => item.id !== cube.id);
+    cubeList = cubeList.filter((item: Mesh) => item.id !== cube.id);
   });
 
   // 将这一面进行旋转
@@ -140,11 +150,11 @@ const rotatePlane = (whichPlane: WhichPlane, angle: number) => {
         const toAngle = options.angle;
         if (planeGroup) {
           // @ts-ignore
-          const newMatrix = new THREE.Matrix4()[
+          const newMatrix = new Matrix4()[
             `makeRotation${rotationAxis.toUpperCase()}`
           ](toAngle);
           const { x, y, z } = planeGroup.position;
-          newMatrix.multiply(new THREE.Matrix4().makeTranslation(x, y, z));
+          newMatrix.multiply(new Matrix4().makeTranslation(x, y, z));
           planeGroup.matrix = newMatrix;
           // 使用矩阵更新模型的信息
           planeGroup.matrix.decompose(
@@ -191,12 +201,12 @@ const rotatePlane = (whichPlane: WhichPlane, angle: number) => {
 };
 
 const initializeHandle = (
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer
 ) => {
   if (containerRef.value && scene) {
-    scene.background = new THREE.Color("#121212");
+    scene.background = new Color("#121212");
     camera.position.set(
       cameraInitPosition.x,
       cameraInitPosition.y,
@@ -209,7 +219,7 @@ const initializeHandle = (
     // 添加所有灯光
     lightInitPositionList.forEach((item) => {
       const { x, y, z, intensity } = item;
-      const light = new THREE.DirectionalLight(0xebf5ee, intensity);
+      const light = new DirectionalLight(0xebf5ee, intensity);
       light.position.set(x, y, z);
       light.lookAt(0, 0, 0);
       light.shadow.camera.near = 10;
@@ -226,7 +236,7 @@ const initializeHandle = (
 
   // 创建魔方
   // 创建一个group放魔方的27个小块
-  rubiksCubeGroup = new THREE.Group();
+  rubiksCubeGroup = new Group();
   rubiksCubeGroup.position.set(0, 0, 0);
 
   // 创建几何体
@@ -238,7 +248,7 @@ const initializeHandle = (
     cubeBevelRadius
   );
   // 创建材质
-  const cubeMaterial = new THREE.MeshPhysicalMaterial({
+  const cubeMaterial = new MeshPhysicalMaterial({
     color: 0x010101,
     metalness: 0.4, // 金属度
     roughness: 0.2, // 粗糙度
@@ -250,7 +260,7 @@ const initializeHandle = (
   // 循环创建出27个小块，并添加到group中
   for (let i = 0, l = initPositionList.length; i < l; i++) {
     const { x, y, z } = initPositionList[i];
-    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    const cube = new Mesh(cubeGeometry, cubeMaterial);
     cube.position.set(
       x * (cubeSize + cubeMargin),
       y * (cubeSize + cubeMargin),

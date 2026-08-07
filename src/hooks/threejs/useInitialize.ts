@@ -1,31 +1,37 @@
-import { ref, onMounted, onUnmounted } from "vue";
-import type { Ref } from "vue";
-import * as THREE from "three";
+import { ref, Ref, onMounted, onUnmounted } from "vue";
+import { Scene, PerspectiveCamera, WebGLRenderer, SRGBColorSpace } from "three";
 
 type Handle = (
-  scene: THREE.Scene,
-  cameraRef: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  scene: Scene,
+  cameraRef: PerspectiveCamera,
+  renderer: WebGLRenderer,
 ) => void;
 
 const useInitialize = (
   conatinerRef: Ref<HTMLDivElement | null>,
   initializeHandle?: Handle | null,
   resizeHandle?: Handle | null,
-  renderHandle?: Handle | null
+  renderHandle?: Handle | null,
 ) => {
-  let scene: THREE.Scene | null = null;
-  let camera: THREE.PerspectiveCamera | null = null;
-  let renderer: THREE.WebGLRenderer | null = null;
+  let scene: Scene | null = null;
+  let camera: PerspectiveCamera | null = null;
+  let renderer: WebGLRenderer | null = null;
   let frameId = 0;
-  const sceneRef = ref<THREE.Scene | null>(null);
-  const cameraRef = ref<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = ref<THREE.WebGLRenderer | null>(null);
+  const sceneRef = ref<Scene | null>(null);
+  const cameraRef = ref<PerspectiveCamera | null>(null);
+  const rendererRef = ref<WebGLRenderer | null>(null);
 
   const render = () => {
     if (scene && camera && renderer) {
-      renderHandle && renderHandle(scene, camera, renderer);
-      renderer.render(scene, camera);
+      if (renderHandle) {
+        const hasRender: boolean | void = renderHandle(scene, camera, renderer);
+        // @ts-ignore
+        if (!hasRender) {
+          renderer.render(scene, camera);
+        }
+      } else {
+        renderer.render(scene, camera);
+      }
       frameId = window.requestAnimationFrame(render);
     }
   };
@@ -35,24 +41,26 @@ const useInitialize = (
       const { clientWidth, clientHeight } = conatinerRef.value;
 
       // 创建场景
-      scene = new THREE.Scene();
+      scene = new Scene();
       sceneRef.value = scene;
 
       // 创建相机
-      camera = new THREE.PerspectiveCamera(
+      camera = new PerspectiveCamera(
         75,
         clientWidth / clientHeight,
-        0.1,
-        1000
+        0.01,
+        1000,
       );
       camera.position.set(0, 0, 10);
       cameraRef.value = camera;
 
       // 创建渲染器
-      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer = new WebGLRenderer({ antialias: true });
+      rendererRef.value = renderer;
       renderer.setSize(clientWidth, clientHeight);
       renderer.setPixelRatio(window.devicePixelRatio);
-      rendererRef.value = renderer;
+      renderer.shadowMap.enabled = true;
+      renderer.outputColorSpace = SRGBColorSpace;
 
       // 将Canvas插入到页面
       conatinerRef.value.append(renderer.domElement);
@@ -60,7 +68,7 @@ const useInitialize = (
       // 渲染
       render();
 
-      initializeHandle && initializeHandle(scene, camera, renderer);
+      initializeHandle?.(scene, camera, renderer);
     }
   };
 
@@ -77,7 +85,7 @@ const useInitialize = (
       // 设置渲染器的像素比
       renderer.setPixelRatio(window.devicePixelRatio);
 
-      resizeHandle && resizeHandle(scene, camera, renderer);
+      resizeHandle?.(scene, camera, renderer);
     }
   };
 
@@ -92,9 +100,9 @@ const useInitialize = (
   });
 
   const result: {
-    sceneRef: Ref<THREE.Scene | null>;
-    cameraRef: Ref<THREE.PerspectiveCamera | null>;
-    rendererRef: Ref<THREE.WebGLRenderer | null>;
+    sceneRef: Ref<Scene | null>;
+    cameraRef: Ref<PerspectiveCamera | null>;
+    rendererRef: Ref<WebGLRenderer | null>;
     resize: () => void;
   } = {
     sceneRef,

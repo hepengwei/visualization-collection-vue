@@ -4,7 +4,17 @@
  */
 import { ref, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import * as THREE from "three";
+import {
+  Scene,
+  PerspectiveCamera,
+  Material,
+  MeshPhysicalMaterial,
+  Mesh,
+  Color,
+  GridHelper,
+  WebGLRenderer,
+  DirectionalLight,
+} from "three";
 // @ts-ignore
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 // @ts-ignore
@@ -15,11 +25,11 @@ import useInitialize from "hooks/threejs/useInitialize";
 import { loadGlb } from "utils/threejsUtil";
 
 interface CarComponent {
-  carWheels: THREE.Mesh[];
-  carFront?: THREE.Mesh;
-  carBody?: THREE.Mesh;
-  carHood?: THREE.Mesh;
-  carGlass?: THREE.Mesh;
+  carWheels: Mesh[];
+  carFront?: Mesh;
+  carBody?: Mesh;
+  carHood?: Mesh;
+  carGlass?: Mesh;
 }
 
 const colorList = ["red", "blue", "green", "gray", "orange", "purple"];
@@ -27,13 +37,13 @@ const carComponent: CarComponent = { carWheels: [] };
 
 // 创建车子各零件的材质
 // 轮毂材质
-const wheelMeterial = new THREE.MeshPhysicalMaterial({
+const wheelMeterial = new MeshPhysicalMaterial({
   color: 0xff0000,
   metalness: 1, // 金属度
   roughness: 0.1, // 粗糙度
 });
 // 前脸材质
-const frontMeterial = new THREE.MeshPhysicalMaterial({
+const frontMeterial = new MeshPhysicalMaterial({
   color: 0xff0000,
   metalness: 1, // 金属度
   roughness: 0.5, // 粗糙度
@@ -41,7 +51,7 @@ const frontMeterial = new THREE.MeshPhysicalMaterial({
   clearcoatRoughness: 0.1, // 轻漆粗糙度
 });
 // 车身材质
-const bodyMeterial = new THREE.MeshPhysicalMaterial({
+const bodyMeterial = new MeshPhysicalMaterial({
   color: 0xff0000,
   metalness: 1, // 金属度
   roughness: 0.5, // 粗糙度
@@ -49,7 +59,7 @@ const bodyMeterial = new THREE.MeshPhysicalMaterial({
   clearcoatRoughness: 0.1, // 轻漆粗糙度
 });
 // 引擎盖材质
-const hoodMeterial = new THREE.MeshPhysicalMaterial({
+const hoodMeterial = new MeshPhysicalMaterial({
   color: 0xff0000,
   metalness: 1, // 金属度
   roughness: 0.5, // 粗糙度
@@ -57,7 +67,7 @@ const hoodMeterial = new THREE.MeshPhysicalMaterial({
   clearcoatRoughness: 0.1, // 轻漆粗糙度
 });
 // 挡风玻璃材质
-const glassMeterial = new THREE.MeshPhysicalMaterial({
+const glassMeterial = new MeshPhysicalMaterial({
   color: 0xffffff,
   metalness: 0, // 金属度
   roughness: 0, // 粗糙度
@@ -98,12 +108,12 @@ const glassMaterialList = [
 ];
 
 const initializeHandle = (
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer
 ) => {
   if (containerRef.value) {
-    scene.background = new THREE.Color("#ddd");
+    scene.background = new Color("#ddd");
     camera.position.set(0, 2, 4);
     renderer.setClearColor("#000");
 
@@ -112,9 +122,9 @@ const initializeHandle = (
     controls.autoRotate = true;
 
     // 添加网格地面
-    const gridHelper = new THREE.GridHelper(15, 15);
-    (gridHelper.material as THREE.Material).opacity = 0.2;
-    (gridHelper.material as THREE.Material).transparent = true;
+    const gridHelper = new GridHelper(15, 15);
+    (gridHelper.material as Material).opacity = 0.2;
+    (gridHelper.material as Material).transparent = true;
     scene.add(gridHelper);
 
     loadGlb("/model/bmw.glb").then((gltf: GLTF) => {
@@ -152,31 +162,31 @@ const initializeHandle = (
     });
 
     // 添加灯光
-    const light1 = new THREE.DirectionalLight(0xffffff, 1);
+    const light1 = new DirectionalLight(0xffffff, 1 * Math.PI);
     light1.position.set(0, 0, 10);
     scene.add(light1);
-    const light2 = new THREE.DirectionalLight(0xffffff, 1);
+    const light2 = new DirectionalLight(0xffffff, 1 * Math.PI);
     light2.position.set(0, 0, -10);
     scene.add(light2);
-    const light3 = new THREE.DirectionalLight(0xffffff, 1);
+    const light3 = new DirectionalLight(0xffffff, 1 * Math.PI);
     light3.position.set(10, 0, 0);
     scene.add(light3);
-    const light4 = new THREE.DirectionalLight(0xffffff, 1);
+    const light4 = new DirectionalLight(0xffffff, 1 * Math.PI);
     light4.position.set(-10, 0, 0);
     scene.add(light4);
-    const light5 = new THREE.DirectionalLight(0xffffff, 1);
+    const light5 = new DirectionalLight(0xffffff, 1 * Math.PI);
     light5.position.set(0, 10, 0);
     scene.add(light5);
-    const light6 = new THREE.DirectionalLight(0xffffff, 0.3);
+    const light6 = new DirectionalLight(0xffffff, 0.3 * Math.PI);
     light6.position.set(5, 10, 0);
     scene.add(light6);
-    const light7 = new THREE.DirectionalLight(0xffffff, 0.3);
+    const light7 = new DirectionalLight(0xffffff, 0.3 * Math.PI);
     light7.position.set(0, 10, 5);
     scene.add(light7);
-    const light8 = new THREE.DirectionalLight(0xffffff, 0.3);
+    const light8 = new DirectionalLight(0xffffff, 0.3 * Math.PI);
     light7.position.set(0, 10, -5);
     scene.add(light8);
-    const light9 = new THREE.DirectionalLight(0xffffff, 0.3);
+    const light9 = new DirectionalLight(0xffffff, 0.3 * Math.PI);
     light9.position.set(-5, 10, 0);
     scene.add(light9);
   }
@@ -241,13 +251,8 @@ watch(
       <div class="itemBox">
         <p>{{ t("page.threeJs3D.bodyColor") }}</p>
         <div class="selectBox">
-          <div
-            v-for="color in colorList"
-            :key="color"
-            class="btn"
-            :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectBodyColor(color)"
-          ></div>
+          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectBodyColor(color)"></div>
         </div>
       </div>
       <div class="itemBox">
@@ -255,13 +260,8 @@ watch(
           {{ t("page.threeJs3D.anteriorFaceColor") }}
         </p>
         <div class="selectBox">
-          <div
-            v-for="color in colorList"
-            :key="color"
-            class="btn"
-            :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectFrontColor(color)"
-          ></div>
+          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectFrontColor(color)"></div>
         </div>
       </div>
       <div class="itemBox">
@@ -269,13 +269,8 @@ watch(
           {{ t("page.threeJs3D.hoodColor") }}
         </p>
         <div class="selectBox">
-          <div
-            v-for="color in colorList"
-            :key="color"
-            class="btn"
-            :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectHoodColor(color)"
-          ></div>
+          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectHoodColor(color)"></div>
         </div>
       </div>
       <div class="itemBox">
@@ -283,26 +278,16 @@ watch(
           {{ t("page.threeJs3D.hubColor") }}
         </p>
         <div class="selectBox">
-          <div
-            v-for="color in colorList"
-            :key="color"
-            class="btn"
-            :style="{ border: 'none', backgroundColor: color }"
-            @click="() => selectWheelColor(color)"
-          ></div>
+          <div v-for="color in colorList" :key="color" class="btn" :style="{ border: 'none', backgroundColor: color }"
+            @click="() => selectWheelColor(color)"></div>
         </div>
       </div>
       <div class="itemBox">
         <p>{{ t("page.threeJs3D.filmMaterial") }}</p>
         <div class="selectBox">
-          <div
-            v-for="item in filmMaterialList"
-            :key="item.key"
-            class="textBtn"
-            @click="
-              () => selectFilmMaterial(item.clearcoatRoughness, item.roughness)
-            "
-          >
+          <div v-for="item in filmMaterialList" :key="item.key" class="textBtn" @click="
+            () => selectFilmMaterial(item.clearcoatRoughness, item.roughness)
+          ">
             {{ item.name }}
           </div>
         </div>
@@ -312,12 +297,8 @@ watch(
           {{ t("page.threeJs3D.windshieldMaterial") }}
         </p>
         <div class="selectBox">
-          <div
-            v-for="item in glassMaterialList"
-            :key="item.key"
-            class="textBtn"
-            @click="() => selectGlassMaterial(item.transmission)"
-          >
+          <div v-for="item in glassMaterialList" :key="item.key" class="textBtn"
+            @click="() => selectGlassMaterial(item.transmission)">
             {{ item.name }}
           </div>
         </div>

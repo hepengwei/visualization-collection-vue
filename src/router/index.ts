@@ -33,6 +33,7 @@ import RubiksCube from "pages/threejs/RubiksCube/index.vue";
 import ThrowDice from "pages/threejs/ThrowDice.vue";
 import MapDisplay from "pages/threejs/MapDisplay.vue";
 import EarthDisplay from "pages/threejs/EarthDisplay/index.vue";
+import HouseDisplay from "pages/threejs/HouseDisplay/index.vue";
 import HumanPostureDetection from "pages/AIApplication/HumanPostureDetection.vue";
 import NotBlockPeopleBarrage from "pages/AIApplication/NotBlockPeopleBarrage.vue";
 import ImageProcessingTool from "pages/ImageProcessingTool/index.vue";
@@ -203,6 +204,10 @@ const contentRoutes = [
       {
         path: "/threejs/earthDisplay",
         component: EarthDisplay,
+      },
+      {
+        path: "/threejs/houseDisplay",
+        component: HouseDisplay,
       },
     ],
   },

@@ -123,6 +123,7 @@ const zh_CN = {
   "menu.threeJs3D.throwDice": "投骰子",
   "menu.threeJs3D.mapDisplay": "地图展示",
   "menu.threeJs3D.earthDisplay": "地球展示",
+  "menu.threeJs3D.houseDisplay": "房屋展示",
   "menu.AIApplication": "人工智能应用",
   "menu.AIApplication.humanPostureDetection": "人体姿态检测",
   "menu.AIApplication.notBlockPeopleBarrage": "不挡人像的弹幕",
@@ -136,16 +137,6 @@ const zh_CN = {
   "menu.imageProcessingTool.addWatermark": "添加水印",
   "menu.imageProcessingTool.coverWithMosaics": "打马赛克",
   "menu.imageProcessingTool.imageCompression": "图片压缩",
-  "menu.videoProcessingTool": "视频处理工具",
-  "menu.videoProcessingTool.basicOperation": "基础操作",
-  "menu.videoProcessingTool.modifyTheSize": "修改尺寸",
-  "menu.videoProcessingTool.clipping": "裁剪",
-  "menu.videoProcessingTool.combine": "合并",
-  "menu.videoProcessingTool.varyingVelocity": "变速",
-  "menu.videoProcessingTool.addWatermark": "添加水印",
-  "menu.videoProcessingTool.generateGIF": "生成GIF图",
-  "menu.videoProcessingTool.AIGenerateSubtitles": "AI生成字幕",
-  "menu.videoProcessingTool.addAudio": "添加音频",
 
   // Html视觉-视觉设计页
   "page.htmlVision.visualDesign.displaysCustomRows":
@@ -325,11 +316,6 @@ const zh_CN = {
   "page.imageProcessingTool.filletRadius": "圆角半径",
   "page.imageProcessingTool.clippedAndConvertedToPng": "裁剪后转成PNG格式",
   "page.imageProcessingTool.WhetherRetainOriginalDimension": "是否保留原尺寸",
-
-  // 视频处理工具页
-  // 'page.videoProcessingTool.tip':
-  //   '该工具处理视频会非常慢，因为是纯前端实现的，正确做法还是将文件上传到后台进行处理，这里只是提供一种纯前端实现视频处理的解决方案。',
-  // 'page.videoProcessingTool.generatingVideo': '努力生成视频中',
 
   // Html视觉-应用页面框架页
   "page.htmlVision.applicationPageFrame.secondPage": "第二页",
