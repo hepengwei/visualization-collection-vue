@@ -134,6 +134,7 @@ const en_US = {
   "menu.threeJs3D.throwDice": "Throw Dice",
   "menu.threeJs3D.mapDisplay": "Map Display",
   "menu.threeJs3D.earthDisplay": "Earth Display",
+  "menu.threeJs3D.houseDisplay": "House Display",
   "menu.AIApplication": "AI Application",
   "menu.AIApplication.humanPostureDetection": "Human Posture Detection",
   "menu.AIApplication.notBlockPeopleBarrage":
@@ -148,16 +149,6 @@ const en_US = {
   "menu.imageProcessingTool.addWatermark": "Add Watermark",
   "menu.imageProcessingTool.coverWithMosaics": "Cover With Mosaics",
   "menu.imageProcessingTool.imageCompression": "Image Compression",
-  "menu.videoProcessingTool": "Video Processing Tool",
-  "menu.videoProcessingTool.basicOperation": "Basic Operation",
-  "menu.videoProcessingTool.modifyTheSize": "Modify The Size",
-  "menu.videoProcessingTool.clipping": "Clipping",
-  "menu.videoProcessingTool.combine": "Combine",
-  "menu.videoProcessingTool.varyingVelocity": "Varying Velocity",
-  "menu.videoProcessingTool.addWatermark": "Add Watermark",
-  "menu.videoProcessingTool.generateGIF": "Generate GIF",
-  "menu.videoProcessingTool.AIGenerateSubtitles": "AI Generated Subtitles",
-  "menu.videoProcessingTool.addAudio": "Add Audio",
 
   // Html视觉-视觉设计页
   "page.htmlVision.visualDesign.displaysCustomRows":
@@ -379,11 +370,6 @@ const en_US = {
     "Clipped and converted to PNG format",
   "page.imageProcessingTool.WhetherRetainOriginalDimension":
     "Whether to retain the original dimension",
-
-  // 视频处理工具页
-  // 'page.videoProcessingTool.tip':
-  //   'The tool processing video will be very slow, because it is a pure front-end implementation, the correct approach is to upload the file to the background for processing, here is only to provide a pure front-end video processing solution.',
-  // 'page.videoProcessingTool.generatingVideo': 'Work hard at generating video',
 
   // Html视觉-应用页面框架页
   "page.htmlVision.applicationPageFrame.secondPage": "Second Page",

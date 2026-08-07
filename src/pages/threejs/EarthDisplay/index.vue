@@ -7,6 +7,7 @@ import { useI18n } from "vue-i18n";
 import { AppstoreOutlined } from "@ant-design/icons-vue";
 import {
   Scene,
+  PerspectiveCamera,
   BufferGeometry,
   SphereGeometry,
   PlaneGeometry,
@@ -19,6 +20,7 @@ import {
   Points,
   Sprite,
   BufferAttribute,
+  WebGLRenderer,
   Color,
   Object3D,
   Texture,
@@ -368,9 +370,9 @@ const addFlyLine = () => {
 };
 
 const initializeHandle = (
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer
 ) => {
   if (containerRef.value) {
     resourceManager = new ResourceManager(resourceList, () => {
@@ -417,8 +419,8 @@ const renderHandle = () => {
     ) {
       (mesh.material as Material).opacity = Math.min(
         1 -
-          ((newScale - fluctuatingApertureSize) / fluctuatingApertureSize) *
-            0.3,
+        ((newScale - fluctuatingApertureSize) / fluctuatingApertureSize) *
+        0.3,
         0
       ); // 透明度在0~1之间逐渐减小
     } else {
@@ -516,9 +518,11 @@ onUnmounted(() => {
     right: 20px;
     z-index: 2;
     cursor: pointer;
+
     :deep(svg) {
       width: 32px;
       height: 32px;
+
       path {
         fill: #00c6c6;
       }
@@ -541,9 +545,11 @@ onUnmounted(() => {
       width: 100%;
       height: 61px;
     }
+
     $marginTop: 20px;
     $lineWidth: 120px;
     $lineHeight: 4px;
+
     .topBg {
       position: absolute;
       top: $marginTop;
@@ -552,6 +558,7 @@ onUnmounted(() => {
       width: 100%;
       height: 61px;
     }
+
     .shine {
       position: absolute;
       top: $marginTop + 31px;
@@ -561,6 +568,7 @@ onUnmounted(() => {
       height: 55px;
       margin: 0 auto;
     }
+
     .leftLine {
       position: absolute;
       top: calc($marginTop - calc($lineHeight / 2));
@@ -570,6 +578,7 @@ onUnmounted(() => {
       border-radius: calc($lineHeight / 2);
       background-image: linear-gradient(to left, #b5eff6, #008f8f, #003d3d);
     }
+
     .rightLine {
       position: absolute;
       top: calc($marginTop - calc($lineHeight / 2) + 1px);
@@ -579,6 +588,7 @@ onUnmounted(() => {
       border-radius: calc($lineHeight / 2);
       background-image: linear-gradient(to right, #b5eff6, #008f8f, #003d3d);
     }
+
     .title {
       position: absolute;
       top: 16px;
@@ -588,25 +598,25 @@ onUnmounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
+
       span {
         text-align: center;
         font-size: 32px;
         font-weight: 600;
         font-family: "SourceHanSansCN-Bold" !important;
-        background-image: linear-gradient(
-          to right,
-          #003d3d,
-          #008f8f,
-          #00cfcf,
-          #008f8f,
-          #003d3d
-        );
+        background-image: linear-gradient(to right,
+            #003d3d,
+            #008f8f,
+            #00cfcf,
+            #008f8f,
+            #003d3d);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
       }
     }
   }
+
   .leftBox {
     position: absolute;
     left: 0;
@@ -620,11 +630,13 @@ onUnmounted(() => {
       width: 100%;
       height: 40%;
       padding: 20px;
+
       &:last-child {
         height: 60%;
       }
     }
   }
+
   .rightBox {
     position: absolute;
     right: 0;
@@ -638,11 +650,13 @@ onUnmounted(() => {
       width: 100%;
       height: 40%;
       padding: 14px;
+
       &:last-child {
         height: 60%;
       }
     }
   }
+
   .tooltip {
     position: absolute;
     padding: 10px 20px;

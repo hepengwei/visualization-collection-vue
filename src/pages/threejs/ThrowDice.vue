@@ -5,7 +5,20 @@
 import { ref, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { message } from "ant-design-vue";
-import * as THREE from "three";
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  PlaneGeometry,
+  MeshStandardMaterial,
+  ShadowMaterial,
+  CanvasTexture,
+  Mesh,
+  Vector3,
+  Color,
+  AmbientLight,
+  PointLight,
+} from "three";
 // @ts-ignore
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry";
 // @ts-ignore
@@ -25,7 +38,7 @@ const floorY = -60; // 地板的y位置
 const maxDistance = 1000; // 轨道控制器的最远距离
 
 let controls: OrbitControls | null = null;
-let diceList: { mesh: THREE.Mesh; body: CANNON.Body }[] = []; // 存放所有骰子对象
+let diceList: { mesh: Mesh; body: CANNON.Body }[] = []; // 存放所有骰子对象
 let physicsWorld: CANNON.World | null = null;
 let isStillMoving: boolean = false;
 
@@ -35,16 +48,16 @@ const containerRef = ref<HTMLDivElement | null>(null);
 const diceNum = ref<number | null>(1); // 投骰子的个数
 
 // 创建并添加地板
-const createFloor = (scene: THREE.Scene) => {
-  const floor: THREE.Mesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(300, 300),
-    new THREE.ShadowMaterial({
+const createFloor = (scene: Scene) => {
+  const floor: Mesh = new Mesh(
+    new PlaneGeometry(300, 300),
+    new ShadowMaterial({
       opacity: 0.1,
     })
   );
   floor.receiveShadow = true;
   floor.position.y = floorY;
-  floor.quaternion.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), Math.PI * 0.5);
+  floor.quaternion.setFromAxisAngle(new Vector3(-1, 0, 0), Math.PI * 0.5);
   scene.add(floor);
 
   const floorBody = new CANNON.Body({
@@ -140,38 +153,38 @@ const diceGeometry: RoundedBoxGeometry = new RoundedBoxGeometry(
 );
 
 // 骰子材质
-const materialList: THREE.MeshStandardMaterial[] = [
-  new THREE.MeshStandardMaterial({
-    map: new THREE.CanvasTexture(getDiceDotNumCanvas(1)),
+const materialList: MeshStandardMaterial[] = [
+  new MeshStandardMaterial({
+    map: new CanvasTexture(getDiceDotNumCanvas(1)),
     color: "#ffffff",
   }), // 右面
-  new THREE.MeshStandardMaterial({
-    map: new THREE.CanvasTexture(getDiceDotNumCanvas(6)),
+  new MeshStandardMaterial({
+    map: new CanvasTexture(getDiceDotNumCanvas(6)),
     color: "#ffffff",
   }), // 左面
-  new THREE.MeshStandardMaterial({
-    map: new THREE.CanvasTexture(getDiceDotNumCanvas(3)),
+  new MeshStandardMaterial({
+    map: new CanvasTexture(getDiceDotNumCanvas(3)),
     color: "#ffffff",
   }), // 上面
-  new THREE.MeshStandardMaterial({
-    map: new THREE.CanvasTexture(getDiceDotNumCanvas(4)),
+  new MeshStandardMaterial({
+    map: new CanvasTexture(getDiceDotNumCanvas(4)),
     color: "#ffffff",
   }), // 下面
-  new THREE.MeshStandardMaterial({
-    map: new THREE.CanvasTexture(getDiceDotNumCanvas(5)),
+  new MeshStandardMaterial({
+    map: new CanvasTexture(getDiceDotNumCanvas(5)),
     color: "#ffffff",
   }), // 后面
-  new THREE.MeshStandardMaterial({
-    map: new THREE.CanvasTexture(getDiceDotNumCanvas(2)),
+  new MeshStandardMaterial({
+    map: new CanvasTexture(getDiceDotNumCanvas(2)),
     color: "#ffffff",
   }), // 前面
 ];
 
 // 创建并添加所有骰子
-const createDice = (scene: THREE.Scene) => {
+const createDice = (scene: Scene) => {
   for (let i = 0; i < maxDiceNum; i++) {
     // 创建骰子
-    const dice = new THREE.Mesh(diceGeometry, materialList);
+    const dice = new Mesh(diceGeometry, materialList);
     dice.castShadow = true;
     // 添加到场景中
     scene.add(dice);
@@ -196,7 +209,7 @@ const throwDice = () => {
   }
   isStillMoving = true;
   diceList.forEach(
-    (item: { mesh: THREE.Mesh; body: CANNON.Body }, index: number) => {
+    (item: { mesh: Mesh; body: CANNON.Body }, index: number) => {
       if (index <= (diceNum.value as number) - 1) {
         let x = 10;
         let y = 24;
@@ -246,12 +259,12 @@ const createPhysicsWorld = () => {
 };
 
 const initializeHandle = (
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer
 ) => {
   if (containerRef.value) {
-    scene.background = new THREE.Color("#224141");
+    scene.background = new Color("#224141");
     camera.position.set(
       cameraInitPosition.x,
       cameraInitPosition.y,
@@ -262,11 +275,11 @@ const initializeHandle = (
     renderer.shadowMap.enabled = true;
 
     // 添加环境光
-    const light = new THREE.AmbientLight(0xffffff, 0.5);
+    const light = new AmbientLight(0xffffff, 0.5 * Math.PI);
     scene.add(light);
 
     // 添加右上角灯光
-    const rightTopLight = new THREE.PointLight(0xffffff, 1);
+    const rightTopLight = new PointLight(0xffffff, 1.5 * Math.PI);
     rightTopLight.position.set(100, 200, -10);
     rightTopLight.castShadow = true;
     rightTopLight.shadow.camera.near = 5;
@@ -324,15 +337,9 @@ watch(
     </div>
     <div class="numBox">
       <span>{{ t("page.threeJs3D.diceNum") }}：</span>
-      <a-input-number
-        :min="1"
-        :max="maxDiceNum"
-        :precision="0"
-        :value="diceNum"
-        :onChange="(value: number | null)=>{
-            diceNum = value;
-          }"
-      />
+      <a-input-number :min="1" :max="maxDiceNum" :precision="0" :value="diceNum" :onChange="(value: number | null) => {
+        diceNum = value;
+      }" />
     </div>
   </div>
 </template>
@@ -368,6 +375,7 @@ watch(
     align-items: center;
     justify-content: center;
     z-index: 1;
+
     .btn_inner {
       display: flex;
       flex: 1;
@@ -380,6 +388,7 @@ watch(
 
       background-color: #1a6840;
       cursor: pointer;
+
       &:active {
         background-color: #6a9c89;
       }
@@ -394,12 +403,15 @@ watch(
     align-items: center;
     font-size: 18px;
     z-index: 1;
+
     :deep(.ant-input-number) {
       width: 120px !important;
       height: 45px !important;
+
       .ant-input-number-input-wrap {
         height: 45px !important;
         line-height: 45px !important;
+
         input {
           width: 120px;
           height: 45px !important;

@@ -5,7 +5,25 @@
 import { ref, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { AppstoreOutlined } from "@ant-design/icons-vue";
-import * as THREE from "three";
+import {
+  Scene,
+  PerspectiveCamera,
+  Texture,
+  TextureLoader,
+  BufferGeometry,
+  ExtrudeGeometry,
+  MeshBasicMaterial,
+  LineBasicMaterial,
+  Line,
+  Mesh,
+  Object3D,
+  Raycaster,
+  WebGLRenderer,
+  FileLoader,
+  Vector3,
+  Vector2,
+  Shape,
+} from "three";
 // @ts-ignore
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { geoMercator } from "d3-geo";
@@ -25,10 +43,10 @@ const mapColor = "#008170"; // 地图表面颜色
 const mapSideColor = "#1AACAC"; // 地图侧面颜色
 const mapHoverColor = "#005B41"; // hover后的地图表面颜色
 
-const raycaster: THREE.Raycaster = new THREE.Raycaster(); // 射线对象
+const raycaster: Raycaster = new Raycaster(); // 射线对象
 let controls: OrbitControls | null = null;
-let map: THREE.Object3D | null = null; // 3D地图对象
-let mouse: THREE.Vector2 | null = null;
+let map: Object3D | null = null; // 3D地图对象
+let mouse: Vector2 | null = null;
 let lastPick: any = null;
 let showMainPage: boolean = true;
 
@@ -74,9 +92,9 @@ const showOrHideMainPage = () => {
 };
 
 // 创建地图对象并添加到场景中
-const createMap = (data: Record<string, any>, scene: THREE.Scene) => {
+const createMap = (data: Record<string, any>, scene: Scene) => {
   // 初始化一个地图对象
-  map = new THREE.Object3D();
+  map = new Object3D();
   // 墨卡托投影转换
   const projection = geoMercator()
     .center([104.0, 37.5])
@@ -90,16 +108,16 @@ const createMap = (data: Record<string, any>, scene: THREE.Scene) => {
       geometry: { type: string; coordinates: any[] };
     }) => {
       // 创建一个省份3D对象
-      const province = new THREE.Object3D();
+      const province = new Object3D();
       // 每个的 坐标 数组
       const { coordinates } = elem.geometry;
       // 循环坐标数组
       coordinates.forEach((multiPolygon: any[]) => {
         multiPolygon.forEach((polygon) => {
-          const shape = new THREE.Shape();
+          const shape = new Shape();
 
           // 给每个省的边界画线
-          const lineGeometry = new THREE.BufferGeometry();
+          const lineGeometry = new BufferGeometry();
           const pointsArray = [];
           for (let i = 0; i < polygon.length; i++) {
             const [x, y] = projection(polygon[i]);
@@ -108,7 +126,7 @@ const createMap = (data: Record<string, any>, scene: THREE.Scene) => {
             } else {
               shape.lineTo(x, -y);
             }
-            pointsArray.push(new THREE.Vector3(x, -y, mapDepth));
+            pointsArray.push(new Vector3(x, -y, mapDepth));
           }
           lineGeometry.setFromPoints(pointsArray);
 
@@ -120,23 +138,23 @@ const createMap = (data: Record<string, any>, scene: THREE.Scene) => {
             bevelOffset: 0,
             bevelSegments: 1,
           };
-          const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-          const material1 = new THREE.MeshBasicMaterial({
+          const geometry = new ExtrudeGeometry(shape, extrudeSettings);
+          const material1 = new MeshBasicMaterial({
             color: mapColor,
             transparent: true,
             opacity: 0.92,
           });
-          const material2 = new THREE.MeshBasicMaterial({
+          const material2 = new MeshBasicMaterial({
             color: mapSideColor,
             transparent: true,
             opacity: 0.92,
           });
 
-          const mesh = new THREE.Mesh(geometry, [material1, material2]);
-          const lineMaterial = new THREE.LineBasicMaterial({
+          const mesh = new Mesh(geometry, [material1, material2]);
+          const lineMaterial = new LineBasicMaterial({
             color: "white",
           });
-          const line = new THREE.Line(lineGeometry, lineMaterial);
+          const line = new Line(lineGeometry, lineMaterial);
           // 将省份的属性 加进来
           // @ts-ignore
           province.properties = elem.properties;
@@ -153,8 +171,8 @@ const createMap = (data: Record<string, any>, scene: THREE.Scene) => {
 };
 
 // 加载地图数据
-const loadMapData = (scene: THREE.Scene) => {
-  const loader = new THREE.FileLoader();
+const loadMapData = (scene: Scene) => {
+  const loader = new FileLoader();
   loader.load("./public/json/ChinaMap.json", (data: string | ArrayBuffer) => {
     const jsondata = JSON.parse(data as string);
     createMap(jsondata, scene);
@@ -164,40 +182,38 @@ const loadMapData = (scene: THREE.Scene) => {
 const onMouseMove = (e: any) => {
   if (tooltipRef.value) {
     if (!mouse) {
-      mouse = new THREE.Vector2();
+      mouse = new Vector2();
     }
     const { clientX, clientY } = e;
-    if (new THREE.Vector2())
+    if (new Vector2())
       mouse.x =
         ((clientX - globalContext.value.menuWidth) /
           (window.innerWidth - globalContext.value.menuWidth)) *
-          2 -
+        2 -
         1;
     mouse.y =
       -(
         (clientY - globalContext.value.headHeight) /
         (window.innerHeight - globalContext.value.headHeight)
       ) *
-        2 +
+      2 +
       1;
 
-    tooltipRef.value.style.left = `${
-      clientX - globalContext.value.menuWidth + 4
-    }px`;
-    tooltipRef.value.style.top = `${
-      clientY - globalContext.value.headHeight + 4
-    }px`;
+    tooltipRef.value.style.left = `${clientX - globalContext.value.menuWidth + 4
+      }px`;
+    tooltipRef.value.style.top = `${clientY - globalContext.value.headHeight + 4
+      }px`;
   }
 };
 
 const initializeHandle = (
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer
 ) => {
   if (containerRef.value) {
     // 添加背景图
-    new THREE.TextureLoader().load(pageBg, (t: THREE.Texture) => {
+    new TextureLoader().load(pageBg, (t: Texture) => {
       // @ts-ignore
       t.colorSpace = "srgb"; // 设置标准色
       scene.background = t;
@@ -229,7 +245,7 @@ const showTip = () => {
   }
 };
 
-const renderHandle = (scene: THREE.Scene, camera: THREE.PerspectiveCamera) => {
+const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
   if (map && mouse) {
     // 恢复上一次清空的
     if (lastPick) {
@@ -241,7 +257,7 @@ const renderHandle = (scene: THREE.Scene, camera: THREE.PerspectiveCamera) => {
     }
     lastPick = null;
     // 通过摄像机和鼠标位置更新射线
-    raycaster.setFromCamera(mouse as THREE.Vector2, camera);
+    raycaster.setFromCamera(mouse as Vector2, camera);
     // 算出射线 与当场景相交的对象有那些
     const intersects = raycaster.intersectObjects(scene.children, true);
     lastPick = intersects.find(
@@ -329,9 +345,11 @@ watch(
     right: 20px;
     z-index: 2;
     cursor: pointer;
+
     :deep(svg) {
       width: 32px;
       height: 32px;
+
       path {
         fill: #00c6c6;
       }
@@ -354,9 +372,11 @@ watch(
       width: 100%;
       height: 61px;
     }
+
     $marginTop: 20px;
     $lineWidth: 120px;
     $lineHeight: 4px;
+
     .topBg {
       position: absolute;
       top: $marginTop;
@@ -365,6 +385,7 @@ watch(
       width: 100%;
       height: 61px;
     }
+
     .shine {
       position: absolute;
       top: $marginTop + 31px;
@@ -374,6 +395,7 @@ watch(
       height: 55px;
       margin: 0 auto;
     }
+
     .leftLine {
       position: absolute;
       top: calc($marginTop - calc($lineHeight / 2));
@@ -383,6 +405,7 @@ watch(
       border-radius: calc($lineHeight / 2);
       background-image: linear-gradient(to left, #b5eff6, #008f8f, #003d3d);
     }
+
     .rightLine {
       position: absolute;
       top: calc($marginTop - calc($lineHeight / 2) + 1px);
@@ -392,6 +415,7 @@ watch(
       border-radius: calc($lineHeight / 2);
       background-image: linear-gradient(to right, #b5eff6, #008f8f, #003d3d);
     }
+
     .title {
       position: absolute;
       top: 16px;
@@ -401,25 +425,25 @@ watch(
       display: flex;
       align-items: center;
       justify-content: center;
+
       span {
         text-align: center;
         font-size: 32px;
         font-weight: 600;
         font-family: "SourceHanSansCN-Bold" !important;
-        background-image: linear-gradient(
-          to right,
-          #003d3d,
-          #008f8f,
-          #00cfcf,
-          #008f8f,
-          #003d3d
-        );
+        background-image: linear-gradient(to right,
+            #003d3d,
+            #008f8f,
+            #00cfcf,
+            #008f8f,
+            #003d3d);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
       }
     }
   }
+
   .leftBox {
     position: absolute;
     left: 0;
@@ -433,11 +457,13 @@ watch(
       width: 100%;
       height: 40%;
       padding: 20px;
+
       &:last-child {
         height: 60%;
       }
     }
   }
+
   .rightBox {
     position: absolute;
     right: 0;
@@ -451,11 +477,13 @@ watch(
       width: 100%;
       height: 40%;
       padding: 14px;
+
       &:last-child {
         height: 60%;
       }
     }
   }
+
   .tooltip {
     position: absolute;
     padding: 10px 20px;

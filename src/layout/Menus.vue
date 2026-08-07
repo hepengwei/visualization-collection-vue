@@ -130,6 +130,7 @@ const items: Ref<ItemType[]> = computed(() => [
     getItem(t("menu.threeJs3D.throwDice"), "throwDice"),
     getItem(t("menu.threeJs3D.mapDisplay"), "mapDisplay"),
     getItem(t("menu.threeJs3D.earthDisplay"), "earthDisplay"),
+    getItem(t("menu.threeJs3D.houseDisplay"), "houseDisplay"),
   ]),
   getItem(t("menu.AIApplication"), "AIApplication", () => h(FireOutlined), [
     getItem(
@@ -203,25 +204,14 @@ onUnmounted(() => {
     <div class="container" ref="containerRef">
       <div class="topBox">
         <div class="top">
-          <a-button
-            type="primary"
-            style="margin-bottom: 16px"
-            @click="toggleCollapsed"
-          >
+          <a-button type="primary" style="margin-bottom: 16px" @click="toggleCollapsed">
             <MenuUnfoldOutlined v-if="collapsed" />
             <MenuFoldOutlined v-else />
           </a-button>
         </div>
 
-        <a-menu
-          v-model:openKeys="openKeys"
-          :selectedKeys="selectedKeys"
-          mode="inline"
-          theme="dark"
-          :inlineCollapsed="collapsed"
-          :items="items"
-          @click="onMenu"
-        >
+        <a-menu v-model:openKeys="openKeys" :selectedKeys="selectedKeys" mode="inline" theme="dark"
+          :inlineCollapsed="collapsed" :items="items" @click="onMenu">
         </a-menu>
       </div>
 
