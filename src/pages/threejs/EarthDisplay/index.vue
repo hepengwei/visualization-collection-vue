@@ -40,7 +40,7 @@ import useMoveTo from "hooks/useMoveTo";
 import Border2 from "components/LargeScreenBorder/Border2.vue";
 import luminousPointData from "./luminousPointData";
 import { getTextWidth } from "utils/util";
-import { lon2xyz, distoryObject } from "utils/threejsUtil";
+import { lon2xyz } from "utils/threejsUtil";
 import { flyArc } from "./flyLine";
 import pageBg from "images/threejs/pageBg.png";
 import topBg from "images/threejs/topBg.png";
@@ -442,7 +442,7 @@ const renderHandle = () => {
   controlsRef.value?.update();
 };
 
-const { sceneRef, resize } = useInitialize(
+const { resize } = useInitialize(
   containerRef,
   initializeHandle,
   null,
@@ -455,10 +455,6 @@ watch(
     resize();
   }
 );
-
-onUnmounted(() => {
-  distoryObject(earthObjRef.value, sceneRef.value);
-});
 </script>
 
 <template>
