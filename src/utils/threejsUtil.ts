@@ -20,7 +20,7 @@ export const loadGlb: (url: string) => Promise<GLTF> = (url) => {
       undefined,
       (error: Error) => {
         reject(error);
-      }
+      },
     );
   });
 };
@@ -34,7 +34,7 @@ export const loadGlb: (url: string) => Promise<GLTF> = (url) => {
 export const lon2xyz = (
   radius: number,
   longitude: number,
-  latitude: number
+  latitude: number,
 ): Vector3 => {
   let lon = (longitude * Math.PI) / 180; // 转弧度值
   const lat = (latitude * Math.PI) / 180; // 转弧度值
@@ -50,28 +50,52 @@ export const lon2xyz = (
 };
 
 /**
- * @description: 销毁物体对象
- * @param {object} THREE.Object3D 销毁的物体
- * @param {parent} THREE.Object3D 销毁的物体的父级，从父级移除物体
+ * @description: 销毁three.js场景中的所有GPU资源对象
+ * @param {scene} Scene 销毁的物体
+ * @param {renderer} WebGLRenderer 销毁的物体
  * @return {void}
  */
-export const distoryObject = (
-  object: Object3D | null,
-  parent: Object3D | Scene | null
+export const disposeThreeJsScene = (
+  scene: Scene | null,
+  renderer: WebGLRenderer | null,
 ) => {
-  if (object && parent) {
-    parent.remove(object);
-    const children = object.children as THREE.Mesh[];
-    if (!children) return;
-    children.forEach(({ geometry, material, children }) => {
-      geometry?.dispose();
-      if (Array.isArray(material)) {
-        material.forEach((m) => m?.dispose());
-      } else {
-        material?.dispose();
+  if (scene) {
+    // 先收集所有Mesh对象和InstancedMesh对象，避免在遍历过程中修改树结构
+    const objects: Object3D[] = [];
+    scene.traverse((obj) => {
+      if ((obj as Mesh | InstancedMesh).isMesh) {
+        objects.push(obj);
       }
-      if (children.length)
-        children.forEach((item) => distoryObject(item, object));
     });
+
+    // 逐个销毁对象
+    objects.forEach((obj: Object3D) => {
+      // Geometry
+      ((obj as Mesh | InstancedMesh).geometry as BufferGeometry)?.dispose();
+
+      // Material(s)
+      const mats = Array.isArray((obj as Mesh | InstancedMesh).material)
+        ? (obj as Mesh | InstancedMesh).material
+        : [(obj as Mesh | InstancedMesh).material];
+
+      (mats as Material[]).forEach((mat: Material) => {
+        // Texture
+        Object.values(mat).forEach((value) => {
+          if (value && value.isTexture) {
+            value.dispose();
+          }
+        });
+        mat.dispose();
+      });
+    });
+
+    scene.clear();
   }
+
+  renderer?.dispose();
+  renderer?.forceContextLoss?.();
+  renderer?.domElement?.remove();
+
+  renderer = null;
+  scene = null;
 };

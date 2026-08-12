@@ -1,5 +1,20 @@
 import { ref, Ref, onMounted, onUnmounted } from "vue";
-import { Scene, PerspectiveCamera, WebGLRenderer, SRGBColorSpace } from "three";
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  SRGBColorSpace,
+  BufferGeometry,
+  Texture,
+  Material,
+} from "three";
+import { disposeThreeJsScene } from "utils/threejsUtil";
+
+export type AssetManager = {
+  geometries: Map<string, BufferGeometry>;
+  textures: Map<string, Texture>;
+  materials: Map<string, Material>;
+};
 
 type Handle = (
   scene: Scene,
@@ -7,15 +22,27 @@ type Handle = (
   renderer: WebGLRenderer,
 ) => void;
 
+type InitializeHandle = (
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer,
+  assetManager: AssetManager,
+) => boolean | void;
+
 const useInitialize = (
   conatinerRef: Ref<HTMLDivElement | null>,
-  initializeHandle?: Handle | null,
+  initializeHandle?: InitializeHandle | null,
   resizeHandle?: Handle | null,
   renderHandle?: Handle | null,
 ) => {
   let scene: Scene | null = null;
   let camera: PerspectiveCamera | null = null;
   let renderer: WebGLRenderer | null = null;
+  const assetManager: AssetManager = {
+    geometries: new Map(),
+    textures: new Map(),
+    materials: new Map(),
+  };
   let frameId = 0;
   const sceneRef = ref<Scene | null>(null);
   const cameraRef = ref<PerspectiveCamera | null>(null);
@@ -68,7 +95,7 @@ const useInitialize = (
       // 渲染
       render();
 
-      initializeHandle?.(scene, camera, renderer);
+      initializeHandle?.(scene, camera, renderer, assetManager);
     }
   };
 
@@ -97,6 +124,8 @@ const useInitialize = (
   onUnmounted(() => {
     frameId && window.cancelAnimationFrame(frameId);
     window.removeEventListener("resize", onResize);
+    // 销毁three.js场景中的所有GPU资源对象，防止内存泄漏
+    disposeThreeJsScene(scene, renderer);
   });
 
   const result: {

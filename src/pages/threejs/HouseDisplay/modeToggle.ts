@@ -53,7 +53,7 @@ const collisionObjects: Object3D[] = [];
 export const useModeToggle = (
   containerRef: Ref<HTMLDivElement | null>,
   globalContext: Ref<GlobalContext>,
-  currentIntersectedRef: ShallowRef<Object3D | null>,
+  mouseRaycasterIntersectedRef: ShallowRef<Object3D | null>,
   orbitControlsRef: ShallowRef<OrbitControls | null>,
   tvVideoRef?: Ref<HTMLVideoElement | null>,
   onClickTVScreen?: (video?: HTMLVideoElement | null) => void,
@@ -89,12 +89,12 @@ export const useModeToggle = (
 
   const onMouseClick = () => {
     // 优先处理电视屏幕后手机屏幕的点击（任何模式下都可以点击电视和手机）
-    if (currentIntersectedRef.value) {
-      if (currentIntersectedRef.value.name === "电视屏幕") {
+    if (mouseRaycasterIntersectedRef.value) {
+      if (mouseRaycasterIntersectedRef.value.name === "电视屏幕") {
         onClickTVScreen?.(tvVideoRef?.value);
         return; // 点击了电视就不处理其他逻辑
       }
-      if (currentIntersectedRef.value.name === "手机屏幕") {
+      if (mouseRaycasterIntersectedRef.value.name === "手机屏幕") {
         onClickPhoneScreen?.(phoneVideoRef?.value);
         return; // 点击了手机就不处理其他逻辑
       }

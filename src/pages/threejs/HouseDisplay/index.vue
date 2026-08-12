@@ -28,11 +28,19 @@ import { CSS2DRenderer, CSS2DObject } from "three/examples/jsm/renderers/CSS2DRe
 import { useGlobalContext } from "hooks/useGlobalContext";
 import type { GlobalContext } from "hooks/useGlobalContext";
 import useInitialize from "hooks/threejs/useInitialize";
-import { useModeToggle, initModeToggle, modeToggleAnimationRender, pointerControlsMoveRender, handleModeToggle } from './modeToggle';
+import type { AssetManager } from 'hooks/threejs/useInitialize';
+import {
+  useModeToggle,
+  initModeToggle,
+  modeToggleAnimationRender,
+  pointerControlsMoveRender,
+  handleModeToggle
+} from './modeToggle';
 import addLighting from "./addLighting";
 import addHouseStructure from './addHouseStructure';
 import add3dModel from "./add3dModel";
 import addCeiling from "./addCeiling";
+import { addCeilingLamp, allCeilingLampsVisibleToggle, dynamicOptimizationLampLightRender } from './addCeilingLamp';
 import { onClickTVScreen } from './addTVScreen';
 import { onClickPhoneScreen } from './addPhoneScreen';
 import { addCrosshair, resizeCrosshair, crosshairRender, createOutlinePass } from './addCrosshair';
@@ -53,12 +61,13 @@ const tvScreenRef = shallowRef<Mesh | null>(null); // 电视屏幕
 const phoneVideoRef = ref<HTMLVideoElement | null>(null); // 手机屏幕播放的视频
 const phoneScreenRef = shallowRef<Mesh | null>(null); // 手机屏幕
 const outlinePassRef = shallowRef<OutlinePass | null>(null);
-const currentIntersectedRef = shallowRef<Object3D | null>(null); // 当前鼠标射线命中的物体
+const pointerControlsIntersetObjectsRef = shallowRef<Object3D[]>([]); // 第一人称控制器可接受的碰撞检测对象列表
 const ceilingGroupRef = shallowRef<Group | null>(null); // 房屋天花板
 const labelRendererRef = shallowRef<CSS2DRenderer | null>(null); // 鼠标准星渲染器
 const raycasterRef = shallowRef<Raycaster | null>(null); // 鼠标准星射线
 const reticleRef = shallowRef<CSS2DObject | null>(null); // 鼠标准星对象
-const intersectObjectsRef = shallowRef<Object3D[]>([]); // 鼠标射线可接受的检测对象列表
+const mouseRaycasterIntersectObjectsRef = shallowRef<Object3D[]>([]); // 鼠标射线可接受的检测对象列表
+const mouseRaycasterIntersectedRef = shallowRef<Object3D | null>(null); // 当前鼠标射线命中的物体
 
 const {
   viewModeRef,
@@ -69,10 +78,23 @@ const {
   animationStartTimeRef,
   animationDurationRef,
   prevTimeRef,
-} = useModeToggle(containerRef, globalContext, currentIntersectedRef, orbitControlsRef, tvVideoRef, onClickTVScreen, phoneVideoRef, onClickPhoneScreen);
+} = useModeToggle(
+  containerRef,
+  globalContext,
+  mouseRaycasterIntersectedRef,
+  orbitControlsRef,
+  tvVideoRef,
+  onClickTVScreen,
+  phoneVideoRef,
+  onClickPhoneScreen
+);
 
-const initializeHandle = (scene: Scene, camera: PerspectiveCamera,
-  renderer: WebGLRenderer) => {
+const initializeHandle = (
+  scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer,
+  assetManager: AssetManager
+) => {
   if (containerRef.value && scene) {
     sceneRef.value = scene;
     cameraRef.value = camera;
@@ -101,13 +123,24 @@ const initializeHandle = (scene: Scene, camera: PerspectiveCamera,
     addLighting(scene);
 
     // 创建并显示地板、墙体和玻璃窗
-    addHouseStructure(scene, false);
+    addHouseStructure(scene, assetManager, pointerControlsIntersetObjectsRef, false);
 
     // 加载并显示电视墙、沙发、床等模型
-    add3dModel(scene, tvVideoRef.value, tvScreenRef, phoneVideoRef.value, phoneScreenRef, intersectObjectsRef);
+    add3dModel(
+      scene,
+      assetManager,
+      tvVideoRef.value,
+      tvScreenRef,
+      phoneVideoRef.value,
+      phoneScreenRef,
+      mouseRaycasterIntersectObjectsRef
+    );
 
     // 添加天花板（初始隐藏在天空中）
-    addCeiling(scene, ceilingGroupRef);
+    addCeiling(scene, assetManager, ceilingGroupRef);
+
+    // 添加所有房间吊灯
+    addCeilingLamp(scene, assetManager);
 
     // 初始化整体/漫游模式切换相关
     initModeToggle(
@@ -120,6 +153,7 @@ const initializeHandle = (scene: Scene, camera: PerspectiveCamera,
       viewModeRef,
       orbitControlsRef,
       animationStartTimeRef,
+      allCeilingLampsVisibleToggle,
     );
 
     // 添加鼠标准星
@@ -153,7 +187,18 @@ const initializeHandle = (scene: Scene, camera: PerspectiveCamera,
    */
 const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
   // 模式切换动画过程渲染
-  modeToggleAnimationRender(camera, animatingRef, viewModeRef, orbitControlsRef, pointerControlsRef, initialCameraPosition, initialCameraTarget, ceilingGroupRef, animationStartTimeRef, animationDurationRef)
+  modeToggleAnimationRender(camera,
+    animatingRef,
+    viewModeRef,
+    orbitControlsRef,
+    pointerControlsRef,
+    initialCameraPosition,
+    initialCameraTarget,
+    ceilingGroupRef,
+    animationStartTimeRef,
+    animationDurationRef,
+    allCeilingLampsVisibleToggle
+  )
 
   // 整体模式下更新轨道控制器
   if (viewModeRef.value === 'overview' && orbitControlsRef.value && !animatingRef.value) {
@@ -162,6 +207,9 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
 
   // 漫游模式下第一人称控制器和摄像机移动过程渲染
   pointerControlsMoveRender(camera, animatingRef, viewModeRef, pointerControlsRef, prevTimeRef)
+
+  // 漫游模式下，实时计算距离摄像机最近的n个吊灯，打开吊灯光源，其他则关闭（客厅和餐厅吊灯除外）
+  dynamicOptimizationLampLightRender(camera, animatingRef, viewModeRef);
 
   // 鼠标准星渲染
   crosshairRender(
@@ -172,9 +220,9 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
     reticleRef.value,
     viewModeRef,
     mousePositionRef,
-    intersectObjectsRef,
+    mouseRaycasterIntersectObjectsRef,
     outlinePassRef.value,
-    currentIntersectedRef
+    mouseRaycasterIntersectedRef
   );
 
   // Bloom效果渲染
@@ -182,6 +230,7 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
   bloomComposerRef.value?.render();
   camera.layers.enableAll();
   mainComposerRef.value?.render();
+
   return true;
 };
 
@@ -202,7 +251,14 @@ watch(
 );
 
 const onToggleViewMode = (e: any) => {
-  handleModeToggle(e, animatingRef, viewModeRef, orbitControlsRef, animationStartTimeRef)
+  handleModeToggle(
+    e,
+    animatingRef,
+    viewModeRef,
+    orbitControlsRef,
+    animationStartTimeRef,
+    allCeilingLampsVisibleToggle
+  )
 }
 </script>
 
