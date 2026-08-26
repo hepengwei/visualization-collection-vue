@@ -23,7 +23,7 @@ export type ViewMode = "overview" | "roaming";
 // 漫游模式配置参数
 const ROAMING_CONFIG = {
   cameraHeight: 2.6, // 相机离地板的高度（米）
-  moveSpeed: 40, // WASD移动速度
+  moveSpeed: 20, // WASD移动速度
   gravity: 9.8 * 3, // 重力加速度
   friction: 0.8, // 摩擦系数（0-1，越小摩擦越大，惯性越小）
   collisionDistance: 0.5, // 碰撞检测距离（米）
@@ -55,10 +55,17 @@ export const useModeToggle = (
   globalContext: Ref<GlobalContext>,
   mouseRaycasterIntersectedRef: ShallowRef<Object3D | null>,
   orbitControlsRef: ShallowRef<OrbitControls | null>,
+  onClickDoor?: (door: Mesh) => void,
+  onClickGroundGlassDoor?: (groundGlassDoor: Group) => void,
   tvVideoRef?: Ref<HTMLVideoElement | null>,
   onClickTVScreen?: (video?: HTMLVideoElement | null) => void,
   phoneVideoRef?: Ref<HTMLVideoElement | null>,
   onClickPhoneScreen?: (video?: HTMLVideoElement | null) => void,
+  lampListRef?: Ref<Group[]>,
+  onClickCeilingLampSwitch?: (
+    ceilingLampSwitch: Group,
+    lampList?: Group[],
+  ) => void,
 ) => {
   // 模式状态: 'overview' 整体模式, 'roaming' 漫游模式
   const viewModeRef = ref<ViewMode>("overview");
@@ -88,15 +95,34 @@ export const useModeToggle = (
   };
 
   const onMouseClick = () => {
-    // 优先处理电视屏幕后手机屏幕的点击（任何模式下都可以点击电视和手机）
+    // 优先处理可交互物体的点击
+
     if (mouseRaycasterIntersectedRef.value) {
-      if (mouseRaycasterIntersectedRef.value.name === "电视屏幕") {
-        onClickTVScreen?.(tvVideoRef?.value);
-        return; // 点击了电视就不处理其他逻辑
+      const { name } = mouseRaycasterIntersectedRef.value;
+      if (name === "门板") {
+        onClickDoor?.(mouseRaycasterIntersectedRef.value as Mesh);
+        return; // 点击了房门就不处理其他逻辑
       }
-      if (mouseRaycasterIntersectedRef.value.name === "手机屏幕") {
+      if (name === "磨砂玻璃门") {
+        onClickGroundGlassDoor?.(mouseRaycasterIntersectedRef.value as Group);
+        return;
+      }
+      if (name.endsWith("吊灯开关")) {
+        if (viewModeRef.value === "roaming") {
+          onClickCeilingLampSwitch?.(
+            mouseRaycasterIntersectedRef.value as Group,
+            lampListRef?.value,
+          );
+          return;
+        }
+      }
+      if (name === "电视屏幕") {
+        onClickTVScreen?.(tvVideoRef?.value);
+        return;
+      }
+      if (name === "手机屏幕") {
         onClickPhoneScreen?.(phoneVideoRef?.value);
-        return; // 点击了手机就不处理其他逻辑
+        return;
       }
     }
 
@@ -152,7 +178,13 @@ export const initModeToggle = (
   viewModeRef: Ref<ViewMode>,
   orbitControlsRef: ShallowRef<OrbitControls | null>,
   animationStartTimeRef: Ref<number>,
-  allCeilingLampsVisibleToggle?: (visible: boolean) => void,
+  lampList: Group[],
+  lampSwitchList: Group[],
+  allCeilingLampsVisibleToggle?: (
+    lampList: Group[],
+    lampSwitchList: Group[],
+    visible: boolean,
+  ) => void,
 ) => {
   // ===== 第一人称控制器(用于漫游模式) =====
   // 使用容器元素而不是renderer.domElement，避免与OrbitControls冲突
@@ -224,6 +256,8 @@ export const initModeToggle = (
           viewModeRef,
           orbitControlsRef,
           animationStartTimeRef,
+          lampList,
+          lampSwitchList,
           allCeilingLampsVisibleToggle,
         );
         break;
@@ -265,7 +299,13 @@ export const modeToggleAnimationRender = (
   ceilingGroupRef: ShallowRef<Group | null>,
   animationStartTimeRef: Ref<number>,
   animationDurationRef: Ref<number>,
-  allCeilingLampsVisibleToggle?: (visible: boolean) => void,
+  lampList: Group[],
+  lampSwitchList: Group[],
+  allCeilingLampsVisibleToggle?: (
+    lampList: Group[],
+    lampSwitchList: Group[],
+    visible: boolean,
+  ) => void,
 ) => {
   // 处理相机动画
   if (animatingRef.value) {
@@ -348,7 +388,7 @@ export const modeToggleAnimationRender = (
       // 动画结束后的控制器状态确认
       if (currentMode === "roaming") {
         // 将所有吊灯显示出来
-        allCeilingLampsVisibleToggle?.(true);
+        allCeilingLampsVisibleToggle?.(lampList, lampSwitchList, true);
         // 确保轨道控制器完全禁用
         if (orbitControlsRef.value) {
           orbitControlsRef.value.enabled = false;
@@ -394,6 +434,7 @@ export const pointerControlsMoveRender = (
   animatingRef: Ref<boolean>,
   viewModeRef: Ref<ViewMode>,
   pointerControlsRef: ShallowRef<PointerLockControls | null>,
+  pointerControlsIntersetObjects: Object3D[],
   prevTimeRef: Ref<number>,
 ) => {
   if (
@@ -427,29 +468,31 @@ export const pointerControlsMoveRender = (
     pointerControlsRef.value.moveRight(-velocity.x * delta);
     pointerControlsRef.value.moveForward(-velocity.z * delta);
 
-    // 碰撞检测,使用射线检测进行碰撞
-    const raycaster = new Raycaster();
-
-    // 检测四个方向
-    const directions = [
-      new Vector3(1, 0, 0), // 右
-      new Vector3(-1, 0, 0), // 左
-      new Vector3(0, 0, 1), // 前
-      new Vector3(0, 0, -1), // 后
-    ];
-
+    // 碰撞检测：基于实际移动方向动态检测
     const cameraPosition = camera.position;
-    let hasCollision = false;
-    for (const dir of directions) {
-      raycaster.set(cameraPosition, dir);
-      const intersections = raycaster.intersectObjects(collisionObjects, false);
+    const moveVector = new Vector3().subVectors(cameraPosition, oldPosition);
 
+    let hasCollision = false;
+
+    // 如果有实际移动，沿移动方向检测碰撞
+    if (moveVector.lengthSq() > 0.0001) {
+      const raycaster = new Raycaster();
+      const moveDirection = moveVector.clone().normalize();
+
+      // 从旧位置沿移动方向发射射线
+      raycaster.set(oldPosition, moveDirection);
+      const intersections = raycaster.intersectObjects(
+        pointerControlsIntersetObjects,
+        true,
+      );
+
+      // 检查是否会在移动过程中碰撞
       if (
         intersections.length > 0 &&
-        intersections[0].distance < ROAMING_CONFIG.collisionDistance
+        intersections[0].distance <
+          moveVector.length() + ROAMING_CONFIG.collisionDistance
       ) {
         hasCollision = true;
-        break;
       }
     }
 
@@ -483,7 +526,13 @@ export const handleModeToggle = (
   viewModeRef: Ref<ViewMode>,
   orbitControlsRef: ShallowRef<OrbitControls | null>,
   animationStartTimeRef: Ref<number>,
-  allCeilingLampsVisibleToggle?: (visible: boolean) => void,
+  lampList: Group[],
+  lampSwitchList: Group[],
+  allCeilingLampsVisibleToggle?: (
+    lampList: Group[],
+    lampSwitchList: Group[],
+    visible: boolean,
+  ) => void,
 ) => {
   //   e?.currentTarget?.blur(); // 点击后立即失焦，避免按下空格或回车键时触发点击事件（由于HTML标准的可访问性特性的存在）
   e?.stopPropagation(); // 阻止事件冒泡
@@ -512,7 +561,7 @@ export const handleModeToggle = (
     // 切换到整体模式
     console.log("返回整体模式，退出指针锁定并重置状态");
     // 将所有吊灯隐藏
-    allCeilingLampsVisibleToggle?.(false);
+    allCeilingLampsVisibleToggle?.(lampList, lampSwitchList, false);
     // 重置移动状态
     moveState = {
       forward: false,

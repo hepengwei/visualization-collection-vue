@@ -8,17 +8,12 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   Vector3,
-  Vector2,
-  Color,
   Mesh,
   Raycaster,
   Object3D,
   Group,
 } from "three";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 // @ts-ignore
@@ -29,21 +24,27 @@ import { useGlobalContext } from "hooks/useGlobalContext";
 import type { GlobalContext } from "hooks/useGlobalContext";
 import useInitialize from "hooks/threejs/useInitialize";
 import type { AssetManager } from 'hooks/threejs/useInitialize';
+import useDualComposer from './function/useDualComposer';
+import { generateSkyTexture, initAssetManager } from './utils';
 import {
   useModeToggle,
   initModeToggle,
   modeToggleAnimationRender,
   pointerControlsMoveRender,
   handleModeToggle
-} from './modeToggle';
-import addLighting from "./addLighting";
-import addHouseStructure from './addHouseStructure';
-import add3dModel from "./add3dModel";
-import addCeiling from "./addCeiling";
-import { addCeilingLamp, allCeilingLampsVisibleToggle, dynamicOptimizationLampLightRender } from './addCeilingLamp';
-import { onClickTVScreen } from './addTVScreen';
-import { onClickPhoneScreen } from './addPhoneScreen';
-import { addCrosshair, resizeCrosshair, crosshairRender, createOutlinePass } from './addCrosshair';
+} from './function/modeToggle';
+import addLighting from "./function/addLighting";
+import addHouseStructure from './goods/addHouseStructure';
+import { addDoor, onClickDoor, doorAnimationRender } from "./goods/addDoor";
+import { addGroundGlassDoor, onClickGroundGlassDoor, groundGlassDoorAnimationRender } from './goods/addGroundGlassDoor';
+import add3dModel from "./goods/add3dModel";
+import addCeiling from "./goods/addCeiling";
+import { addCeilingLamp, allCeilingLampsVisibleToggle, dynamicOptimizationLampLightRender } from './goods/addCeilingLamp';
+import { onClickCeilingLampSwitch } from './goods/addCeilingLampSwitch';
+import { onClickTVScreen } from './goods/addTVScreen';
+import { onClickPhoneScreen } from './goods/addPhoneScreen';
+import { addCrosshair, resizeCrosshair, crosshairRender } from './function/addCrosshair';
+import addTeaTable from './goods/addTeaTable';
 
 // 初始相机位置
 const initialCameraPosition = new Vector3(0, 30, 0);
@@ -63,6 +64,10 @@ const phoneScreenRef = shallowRef<Mesh | null>(null); // 手机屏幕
 const outlinePassRef = shallowRef<OutlinePass | null>(null);
 const pointerControlsIntersetObjectsRef = shallowRef<Object3D[]>([]); // 第一人称控制器可接受的碰撞检测对象列表
 const ceilingGroupRef = shallowRef<Group | null>(null); // 房屋天花板
+const doorListRef = shallowRef<Mesh[]>([]); // 所有房门的列表
+const groundGlassDoorListRef = shallowRef<Group[]>([]); // 所有磨砂玻璃门的列表
+const lampListRef = shallowRef<Group[]>([]); // 所有吊灯的列表
+const lampSwitchListRef = shallowRef<Group[]>([]); // 所有吊灯开关的列表
 const labelRendererRef = shallowRef<CSS2DRenderer | null>(null); // 鼠标准星渲染器
 const raycasterRef = shallowRef<Raycaster | null>(null); // 鼠标准星射线
 const reticleRef = shallowRef<CSS2DObject | null>(null); // 鼠标准星对象
@@ -83,10 +88,14 @@ const {
   globalContext,
   mouseRaycasterIntersectedRef,
   orbitControlsRef,
+  onClickDoor,
+  onClickGroundGlassDoor,
   tvVideoRef,
   onClickTVScreen,
   phoneVideoRef,
-  onClickPhoneScreen
+  onClickPhoneScreen,
+  lampListRef,
+  onClickCeilingLampSwitch,
 );
 
 const initializeHandle = (
@@ -100,7 +109,8 @@ const initializeHandle = (
     cameraRef.value = camera;
 
     // 设置场景背景颜色为天空蓝
-    scene.background = new Color(0x87CEEB);
+    const skyTexture = generateSkyTexture();
+    scene.background = skyTexture;
 
     // 设置相机初始位置为俯视角度(从天花板上方向下看)
     camera.position.copy(initialCameraPosition);
@@ -122,8 +132,35 @@ const initializeHandle = (
     // 添加环境光和太阳光
     addLighting(scene);
 
+    // 初始化资源管理器，将所有公共的刚体和部分公共材质预先创建并存到资源管理器中
+    initAssetManager(assetManager);
+
     // 创建并显示地板、墙体和玻璃窗
-    addHouseStructure(scene, assetManager, pointerControlsIntersetObjectsRef, false);
+    addHouseStructure(
+      scene,
+      assetManager,
+      mouseRaycasterIntersectObjectsRef,
+      pointerControlsIntersetObjectsRef,
+      false,
+    );
+
+    // 添加房门
+    addDoor(
+      scene,
+      assetManager,
+      doorListRef,
+      mouseRaycasterIntersectObjectsRef,
+      pointerControlsIntersetObjectsRef,
+    );
+
+    // 添加磨砂玻璃门
+    addGroundGlassDoor(
+      scene,
+      assetManager,
+      groundGlassDoorListRef,
+      mouseRaycasterIntersectObjectsRef,
+      pointerControlsIntersetObjectsRef,
+    )
 
     // 加载并显示电视墙、沙发、床等模型
     add3dModel(
@@ -140,7 +177,13 @@ const initializeHandle = (
     addCeiling(scene, assetManager, ceilingGroupRef);
 
     // 添加所有房间吊灯
-    addCeilingLamp(scene, assetManager);
+    addCeilingLamp(
+      scene,
+      assetManager,
+      lampListRef,
+      lampSwitchListRef,
+      mouseRaycasterIntersectObjectsRef
+    );
 
     // 初始化整体/漫游模式切换相关
     initModeToggle(
@@ -153,32 +196,27 @@ const initializeHandle = (
       viewModeRef,
       orbitControlsRef,
       animationStartTimeRef,
+      lampListRef.value,
+      lampSwitchListRef.value,
       allCeilingLampsVisibleToggle,
     );
 
     // 添加鼠标准星
     addCrosshair(scene, containerRef.value, labelRendererRef, raycasterRef, reticleRef);
 
-    // 启用后期处理器
-    const bloomComposer = new EffectComposer(renderer);
-    bloomComposer.renderToScreen = false;
-    const bloomPass = new UnrealBloomPass(
-      new Vector2(containerRef.value.clientWidth, containerRef.value.clientHeight),
-      1.2,
-      0.4,
-      0.96,
-    );
-    bloomComposer.addPass(new RenderPass(scene, camera));
-    bloomComposer.addPass(bloomPass);
-    bloomComposerRef.value = bloomComposer;
+    // 添加茶几
+    addTeaTable(scene, assetManager);
 
-    const mainComposer = new EffectComposer(renderer);
-    mainComposer.addPass(new RenderPass(scene, camera));
-    const outlinePass = createOutlinePass(scene, camera, containerRef.value);
-    outlinePassRef.value = outlinePass;
-    mainComposer.addPass(outlinePass);
-    mainComposer.addPass(new OutputPass());
-    mainComposerRef.value = mainComposer;
+    // 启用双后处理器架构
+    useDualComposer(
+      scene,
+      camera,
+      renderer,
+      mainComposerRef,
+      bloomComposerRef,
+      containerRef,
+      outlinePassRef,
+    );
   }
 };
 
@@ -187,7 +225,8 @@ const initializeHandle = (
    */
 const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
   // 模式切换动画过程渲染
-  modeToggleAnimationRender(camera,
+  modeToggleAnimationRender(
+    camera,
     animatingRef,
     viewModeRef,
     orbitControlsRef,
@@ -197,8 +236,16 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
     ceilingGroupRef,
     animationStartTimeRef,
     animationDurationRef,
+    lampListRef.value,
+    lampSwitchListRef.value,
     allCeilingLampsVisibleToggle
-  )
+  );
+
+  // 房门开/关动画过程渲染
+  doorAnimationRender(doorListRef.value);
+
+  // 磨砂玻璃门开/关动画过程渲染
+  groundGlassDoorAnimationRender(groundGlassDoorListRef.value)
 
   // 整体模式下更新轨道控制器
   if (viewModeRef.value === 'overview' && orbitControlsRef.value && !animatingRef.value) {
@@ -206,7 +253,7 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
   }
 
   // 漫游模式下第一人称控制器和摄像机移动过程渲染
-  pointerControlsMoveRender(camera, animatingRef, viewModeRef, pointerControlsRef, prevTimeRef)
+  pointerControlsMoveRender(camera, animatingRef, viewModeRef, pointerControlsRef, pointerControlsIntersetObjectsRef.value, prevTimeRef)
 
   // 漫游模式下，实时计算距离摄像机最近的n个吊灯，打开吊灯光源，其他则关闭（客厅和餐厅吊灯除外）
   dynamicOptimizationLampLightRender(camera, animatingRef, viewModeRef);
@@ -257,6 +304,8 @@ const onToggleViewMode = (e: any) => {
     viewModeRef,
     orbitControlsRef,
     animationStartTimeRef,
+    lampListRef.value,
+    lampSwitchListRef.value,
     allCeilingLampsVisibleToggle
   )
 }
