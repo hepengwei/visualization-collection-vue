@@ -122,16 +122,41 @@ export const crosshairRender = (
         }
 
         if (outlinePass) {
-          const firstHit = hits[0].object;
-          // 处理高亮切换
-          if (mouseRaycasterIntersectedRef.value !== firstHit) {
-            // 设置新的高亮
-            outlinePass.selectedObjects = [firstHit];
-            mouseRaycasterIntersectedRef.value = firstHit;
+          let namedObj: Object3D = hits[0].object;
+          // 沿父链向上找到有 name 的节点
+          while (!namedObj.name && namedObj.parent) {
+            namedObj = namedObj.parent;
+          }
+          // 将墙体、玻璃窗和垭口包边加入鼠标射线检测是为了防止隔着这些物体高亮了可交互的物体
+          if (
+            namedObj.name &&
+            !["墙体", "玻璃窗", "垭口包边"].includes(namedObj.name)
+          ) {
+            // 处理高亮切换
+            if (mouseRaycasterIntersectedRef.value !== namedObj) {
+              // 设置新的高亮
+              outlinePass.selectedObjects = [namedObj];
+              mouseRaycasterIntersectedRef.value = namedObj;
+            }
+          } else {
+            // 没打到物体：准星飞到远处
+            if (showCrosshair) {
+              const t = camera.far * 0.95; // 接近远裁面
+              const farPoint = new Vector3();
+              raycaster.ray.at(t, farPoint);
+              reticle?.position.copy(farPoint);
+            }
+            if (outlinePass) {
+              // 没有瞄准任何东西，清除高亮
+              if (mouseRaycasterIntersectedRef.value) {
+                outlinePass.selectedObjects = [];
+              }
+            }
+            mouseRaycasterIntersectedRef.value = null;
           }
         }
       } else {
-        // 没打到物体：沿鼠标射线飞到远处
+        // 没打到物体：准星飞到远处
         if (showCrosshair) {
           const t = camera.far * 0.95; // 接近远裁面
           const farPoint = new Vector3();

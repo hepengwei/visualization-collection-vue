@@ -85,7 +85,8 @@ const useInitialize = (
       renderer = new WebGLRenderer({ antialias: true });
       rendererRef.value = renderer;
       renderer.setSize(clientWidth, clientHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
+      const pixelRatio = Math.min(window.devicePixelRatio, 2); // 别超过 2
+      renderer.setPixelRatio(pixelRatio);
       renderer.shadowMap.enabled = true;
       renderer.outputColorSpace = SRGBColorSpace;
 
@@ -110,7 +111,8 @@ const useInitialize = (
       renderer.setSize(clientWidth, clientHeight);
 
       // 设置渲染器的像素比
-      renderer.setPixelRatio(window.devicePixelRatio);
+      const pixelRatio = Math.min(window.devicePixelRatio, 2); // 别超过 2
+      renderer.setPixelRatio(pixelRatio);
 
       resizeHandle?.(scene, camera, renderer);
     }
