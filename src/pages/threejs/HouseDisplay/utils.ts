@@ -1,19 +1,47 @@
 import {
+  Scene,
   PlaneGeometry,
   CircleGeometry,
   BoxGeometry,
   CylinderGeometry,
   SphereGeometry,
+  ExtrudeGeometry,
   MeshStandardMaterial,
+  MeshPhysicalMaterial,
+  Mesh,
   CanvasTexture,
   SRGBColorSpace,
   RepeatWrapping,
   EquirectangularReflectionMapping,
   Color,
+  Vector3,
+  ColorRepresentation,
   DoubleSide,
+  FrontSide,
+  Shape,
+  Group,
+  RectAreaLight,
+  SpotLight,
+  CatmullRomCurve3,
+  BufferGeometry,
+  Float32BufferAttribute,
+  Matrix4,
+  Euler,
 } from "three";
 import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry.js";
+// @ts-ignore
+import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils";
 import type { AssetManager } from "hooks/threejs/useInitialize";
+
+const WALL_COLOR = 0xf4f3ef; // 珍珠白乳胶漆颜色
+const LIGHT_STRIP_COLOR = 0xffe8c2; // 灯带和灯光的颜色，暖黄白
+export const WOOD_LIGHT_COLOR = 0xefebe7; // 浅色木头
+export const WOOD_DARK_COLOR = 0xa5acb7; // 深色木头(浅蓝色)
+export const WOOD_DARK_LINE_COLOR = 0x505762; // 深色木头对应更深的线条颜色
+const WOOD_LIGHT_YELLOW_COLOR = 0xfffaf0; // 浅黄白色木头
+export const ALUMINIUM_ALLOY_COLOR = 0xbfc3c7; // 铝合金颜色
+export const DOOR_COLOR = new Color(165, 173, 183); // 门扇的颜色
+export const LIGHT_STRIP_HEIGHT = 0.034; // 发光灯带的默认高度
 
 // 初始化资源管理器，将所有公共的几何体和部分公共材质预先创建并存到资源管理器中
 export const initAssetManager = (assetManager: AssetManager) => {
@@ -29,9 +57,19 @@ export const initAssetManager = (assetManager: AssetManager) => {
   // 创建圆柱体
   const cylinderGeometry = new CylinderGeometry(1, 1, 1);
   assetManager.geometries.set("cylinderGeometry", cylinderGeometry);
-  //创建球体
+  // 创建球体
   const sphereGeometry = new SphereGeometry(1);
   assetManager.geometries.set("sphereGeometry", sphereGeometry);
+  // 创建斜面为四分之一圆的内曲面的直角三角棱柱几何体
+  const curvedSurfaceRightAngledTriangularPrismGeometry =
+    generateCurvedSurfaceRightAngledTriangularPrismGeometry(1, 1);
+  assetManager.geometries.set(
+    "curvedSurfaceRightAngledTriangularPrismGeometry",
+    curvedSurfaceRightAngledTriangularPrismGeometry,
+  );
+  // 创建半圆柱几何体
+  const halfCylinderGeometry = generateHalfCylinderGeometry(1, 1);
+  assetManager.geometries.set("halfCylinderGeometry", halfCylinderGeometry);
 
   // 创建完全不可见且射线检测能检测到的材质
   const completelyInvisibleMaterial = new MeshStandardMaterial({
@@ -43,16 +81,146 @@ export const initAssetManager = (assetManager: AssetManager) => {
     "completelyInvisibleMaterial",
     completelyInvisibleMaterial,
   );
-  // 创建铝合金包边材质
-  const aluminiumAlloyFrameMaterial = new MeshStandardMaterial({
-    color: 0xc0c0c8,
+  // 墙体材质
+  const wallMaterial = new MeshStandardMaterial({
+    color: WALL_COLOR,
+    roughness: 0.85, // 乳胶漆的粗糙度，有轻微漫反射
+    metalness: 0, // 完全不反射金属光泽
+    envMapIntensity: 0.3,
+  });
+  assetManager.materials.set("wallMaterial", wallMaterial);
+  // 创建铝合金材质
+  const aluminiumAlloyMaterial = new MeshStandardMaterial({
+    color: ALUMINIUM_ALLOY_COLOR,
+    metalness: 0.8,
     roughness: 0.3,
-    metalness: 0.9,
+  });
+  assetManager.materials.set("aluminiumAlloyMaterial", aluminiumAlloyMaterial);
+  // 创建哑光工业铝材质
+  const whiteAluminumMaterial = new MeshStandardMaterial({
+    color: 0xf2f5f8,
+    metalness: 0.9, // 金属度，0.85~1.0
+    roughness: 0.6, // 哑光工业铝
+    envMapIntensity: 1.0, // 有 scene.environment 时才有效果
+  });
+  assetManager.materials.set("whiteAluminumMaterial", whiteAluminumMaterial);
+
+  // 创建不同颜色的实木木板材质
+  const woodBoardLightMaterial = makeWoodBoardMaterial(WOOD_LIGHT_COLOR); // 灰白色
+  const woodBoardDarkMaterial = makeWoodBoardMaterial(WOOD_DARK_COLOR); // 深色
+  const woodBoardMoreDarkMaterial = makeWoodBoardMaterial(WOOD_DARK_LINE_COLOR); // 比深色更深
+  const woodBoardLightYellowMaterial = makeWoodBoardMaterial(
+    WOOD_LIGHT_YELLOW_COLOR,
+  ); // 浅黄白色
+  assetManager.materials.set("woodBoardLightMaterial", woodBoardLightMaterial);
+  assetManager.materials.set("woodBoardDarkMaterial", woodBoardDarkMaterial);
+  assetManager.materials.set(
+    "woodBoardMoreDarkMaterial",
+    woodBoardMoreDarkMaterial,
+  );
+  assetManager.materials.set(
+    "woodBoardLightYellowMaterial",
+    woodBoardLightYellowMaterial,
+  );
+
+  // 创建白色面板材质（受光影响）
+  const whitePanelMaterial = new MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: 0.3,
+    metalness: 0.0,
+    side: FrontSide,
+    polygonOffset: true, // 启用深度偏移，防止产生Z-fighting闪烁
+    polygonOffsetFactor: 0.1,
+    polygonOffsetUnits: 0.1,
+  });
+  assetManager.materials.set("whitePanelMaterial", whitePanelMaterial);
+
+  // 创建暖黄白色面板材质（不受光影响）
+  const yellowWhitePanelMaterial = new MeshPhysicalMaterial({
+    color: LIGHT_STRIP_COLOR,
+    emissive: LIGHT_STRIP_COLOR, // 自发光颜色
+    emissiveIntensity: 1.0, // 自发光强度，使其不受环境光影响变灰
+    roughness: 0.5,
+    metalness: 0.0,
+    side: FrontSide,
+    polygonOffset: true, // 启用深度偏移，防止产生Z-fighting闪烁
+    polygonOffsetFactor: 0.1,
+    polygonOffsetUnits: 0.1,
   });
   assetManager.materials.set(
-    "aluminiumAlloyFrameMaterial",
-    aluminiumAlloyFrameMaterial,
+    "yellowWhitePanelMaterial",
+    yellowWhitePanelMaterial,
   );
+
+  // 创建暖黄白色面板材质（受光影响）
+  const yellowWhitePanelMaterial2 = new MeshStandardMaterial({
+    color: LIGHT_STRIP_COLOR,
+    roughness: 0.3,
+    metalness: 0.0,
+    side: FrontSide,
+    polygonOffset: true, // 启用深度偏移，防止产生Z-fighting闪烁
+    polygonOffsetFactor: 0.1,
+    polygonOffsetUnits: 0.1,
+  });
+  assetManager.materials.set(
+    "yellowWhitePanelMaterial2",
+    yellowWhitePanelMaterial2,
+  );
+
+  // 创建深色木板对应的更深的线条材质（不受光影响）
+  const woodBoardDarkLineMaterial = new MeshPhysicalMaterial({
+    color: WOOD_DARK_LINE_COLOR,
+    emissive: WOOD_DARK_LINE_COLOR, // 自发光颜色
+    emissiveIntensity: 1.0, // 自发光强度，使其不受环境光影响变灰
+    roughness: 0.5,
+    metalness: 0.0,
+    side: FrontSide,
+    polygonOffset: true, // 启用深度偏移，防止与地砖产生Z-fighting闪烁
+    polygonOffsetFactor: 0.4,
+    polygonOffsetUnits: 0.4,
+  });
+  assetManager.materials.set(
+    "woodBoardDarkLineMaterial",
+    woodBoardDarkLineMaterial,
+  );
+
+  // 创建黑色玻璃材质
+  const blackGlassMaterial = new MeshPhysicalMaterial({
+    color: 0x0a0a0c, // 极深灰黑，不要纯黑
+    metalness: 0.0, // 玻璃是非金属
+    roughness: 0.2, // 玻璃表面很光滑
+    transparent: true,
+    opacity: 0.7, // 透明度，越小越透明
+    depthWrite: false, // 半透明薄片防深度排序问题
+    thickness: 0.3, // 玻璃厚度，影响折射和焦散感
+    clearcoat: 1.0, // 玻璃表面清漆层
+    clearcoatRoughness: 0.2, // 很光滑
+    reflectivity: 0.5, // 反射强度
+    envMapIntensity: 1.2, // 黑色玻璃反射环境很明显
+    side: DoubleSide, // 双面可见
+    polygonOffset: true, // 启用深度偏移，防止产生Z-fighting闪烁
+    polygonOffsetFactor: 1,
+    polygonOffsetUnits: 1,
+  });
+  assetManager.materials.set("blackGlassMaterial", blackGlassMaterial);
+};
+
+// 创建实木木板材质
+export const makeWoodBoardMaterial = (color: ColorRepresentation) => {
+  return new MeshPhysicalMaterial({
+    color: new Color(color),
+    roughness: 0.3,
+    metalness: 0.0,
+    sheen: 0.1,
+    sheenRoughness: 0.5,
+    clearcoat: 0.2, // 轻微漆面
+    clearcoatRoughness: 0.4,
+    envMapIntensity: 0.2, // 木板反射要弱
+    flatShading: true, // 关键：每个面用独立法线，光照一致
+    polygonOffset: true, // 启用深度偏移，防止产生Z-fighting闪烁
+    polygonOffsetFactor: 0.5,
+    polygonOffsetUnits: 0.5,
+  });
 };
 
 // 生成天空贴图
@@ -307,7 +475,46 @@ export const generateRoughnessMap = (size = 1024) => {
 };
 
 /**
- * @description: 生成椭圆形的圆环刚体
+ * @description: 生成四周为圆角的立方体
+ * @param {number} width 立方体的宽度
+ * @param {number} height 立方体的高度
+ * @param {number} depth 立方体的深度
+ *  @param {number} radius 圆角半径
+ * @return {ExtrudeGeometry}
+ */
+export const generateRoundedBoxGeometry = (
+  width: number,
+  height: number,
+  depth: number,
+  radius: number,
+) => {
+  const shape = new Shape();
+  const w = width / 2,
+    h = height / 2;
+  shape.moveTo(-w + radius, -h);
+  shape.lineTo(w - radius, -h);
+  shape.quadraticCurveTo(w, -h, w, -h + radius);
+  shape.lineTo(w, h - radius);
+  shape.quadraticCurveTo(w, h, w - radius, h);
+  shape.lineTo(-w + radius, h);
+  shape.quadraticCurveTo(-w, h, -w, h - radius);
+  shape.lineTo(-w, -h + radius);
+  shape.quadraticCurveTo(-w, -h, -w + radius, -h);
+
+  const geo = new ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: true,
+    bevelThickness: 0.002,
+    bevelSize: 0.002,
+    bevelSegments: 4,
+    curveSegments: 12,
+  });
+  geo.center(); // 居中，使 z 从 -boardD/2 ~ boardD/2
+  return geo;
+};
+
+/**
+ * @description: 生成椭圆形的圆环几何体
  * @param {number} longRadius 椭圆长轴半径
  * @param {number} shortRadius 椭圆短轴半径
  * @param {number} tube 圆环截面半径
@@ -334,4 +541,605 @@ export const generateEllipticalTorusGeometry = (
     120, // 轨道分段
     40, // 截面分段
   );
+};
+
+/**
+ * @description: 生成斜面为四分之一圆的内曲面的直角三角棱柱几何体
+ * @param {number} radius 曲面圆半径
+ * @param {number} depth 直角三角柱的深度
+ * @return {ExtrudeGeometry}
+ */
+export const generateCurvedSurfaceRightAngledTriangularPrismGeometry = (
+  radius: number,
+  depth: number,
+) => {
+  const shape = new Shape();
+  shape.moveTo(0, 0);
+  shape.lineTo(radius, 0);
+  // 内曲面（四分之一圆）
+  shape.absarc(
+    radius, // 圆心 x
+    radius, // 圆心 y
+    radius, // 半径
+    -Math.PI / 2, // 起始角度
+    -Math.PI, // 结束角度
+    true, // 顺时针
+  );
+  shape.lineTo(0, 0);
+
+  let geometry: any = new ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: false, // 关掉倒角，否则两端会变圆边
+    curveSegments: 64, // 圆弧细分（越高越平滑）
+  });
+
+  // 合并重复顶点 → 顶点共享 → 法线可跨三角形平均
+  geometry = mergeVertices(geometry, 1e-4);
+  geometry.computeVertexNormals();
+
+  return geometry;
+};
+
+/**
+ * @description: 生成半圆柱几何体
+ * @param {number} radius 圆半径
+ * @param {number} depth 半圆柱深度
+ * @return {ExtrudeGeometry}
+ */
+export const generateHalfCylinderGeometry = (radius: number, depth: number) => {
+  const shape = new Shape();
+  shape.moveTo(0, 0);
+  shape.lineTo(radius, 0);
+  // 半圆
+  shape.absarc(
+    0, // 圆心 x
+    0, // 圆心 y
+    radius, // 半径
+    0, // 起始角度
+    Math.PI, // 结束角度
+    false, // 逆时针
+  );
+  shape.lineTo(0, 0);
+
+  let geometry: any = new ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: false, // 关掉倒角，否则两端会变圆边
+    curveSegments: 64, // 圆弧细分（越高越平滑）
+  });
+
+  // 合并重复顶点 → 顶点共享 → 法线可跨三角形平均
+  geometry = mergeVertices(geometry, 1e-4);
+  geometry.computeVertexNormals();
+
+  return geometry;
+};
+
+/**
+ * @description: 生成四分之一圆柱几何体
+ * @param {number} radius 圆半径
+ * @param {number} depth 四分之一圆柱深度
+ * @return {ExtrudeGeometry}
+ */
+export const generateQuarterCylinderGeometry = (
+  radius: number,
+  depth: number,
+) => {
+  const shape = new Shape();
+  shape.moveTo(0, 0);
+  shape.lineTo(radius, 0);
+  // 四分之一圆
+  shape.absarc(
+    0, // 圆心 x
+    0, // 圆心 y
+    radius, // 半径
+    0, // 起始角度
+    Math.PI / 2, // 结束角度
+    false, // 逆时针
+  );
+  shape.lineTo(0, 0);
+
+  let geometry: any = new ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: false, // 关掉倒角，否则两端会变圆边
+    curveSegments: 32, // 圆弧细分（越高越平滑）
+  });
+
+  // 合并重复顶点 → 顶点共享 → 法线可跨三角形平均
+  geometry = mergeVertices(geometry, 1e-4);
+  geometry.computeVertexNormals();
+
+  return geometry;
+};
+
+/**
+ * @description: 生成半圆环柱几何体
+ * @param {number} outerRadius 外圆半径
+ * @param {number} innerRadius 内圆半径
+ * @param {number} depth 半圆环柱深度
+ * @return {ExtrudeGeometry}
+ */
+export const generateHalfCircularRingCylinderGeometry = (
+  outerRadius: number,
+  innerRadius: number,
+  depth: number,
+) => {
+  const shape = new Shape();
+  shape.moveTo(innerRadius, 0);
+  shape.lineTo(outerRadius, 0);
+  // 外半圆
+  shape.absarc(
+    0, // 圆心 x
+    0, // 圆心 y
+    outerRadius, // 半径
+    0, // 起始角度
+    Math.PI, // 结束角度
+    false, // 逆时针
+  );
+  shape.lineTo(-innerRadius, 0);
+  // 内半圆
+  shape.absarc(
+    0, // 圆心 x
+    0, // 圆心 y
+    innerRadius, // 半径
+    Math.PI, // 起始角度
+    0, // 结束角度
+    true, // 顺时针
+  );
+
+  let geometry: any = new ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: false, // 关掉倒角，否则两端会变圆边
+    curveSegments: 64, // 圆弧细分（越高越平滑）
+  });
+
+  // 合并重复顶点 → 顶点共享 → 法线可跨三角形平均
+  geometry = mergeVertices(geometry, 1e-4);
+  geometry.computeVertexNormals();
+
+  return geometry;
+};
+
+/**
+ * @description: 生成“圆角立方体的一角”几何体
+ * @param {number} size 正方形边长
+ * @param {number} radius 圆角半径
+ * @return {BufferGeometry}
+ */
+export const generateRoundedBoxCornerGeometry = (radius = 1) => {
+  const seg = 12;
+
+  const vertices = [];
+  const normals = [];
+  const uvs = [];
+  const indices = [];
+
+  // 球面参数化：只取第一象限（八分之一球面）
+  for (let i = 0; i <= seg; i++) {
+    const phi = (Math.PI / 2) * (i / seg); // 极角 [0, π/2]
+
+    for (let j = 0; j <= seg; j++) {
+      const theta = (Math.PI / 2) * (j / seg); // 方位角 [0, π/2]
+
+      // 球面坐标
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta);
+      const z = radius * Math.cos(phi);
+
+      // 法线（单位球面方向）
+      const nx = Math.sin(phi) * Math.cos(theta);
+      const ny = Math.sin(phi) * Math.sin(theta);
+      const nz = Math.cos(phi);
+
+      vertices.push(x, y, z);
+      normals.push(nx, ny, nz);
+      uvs.push(i / seg, j / seg);
+    }
+  }
+
+  // 索引（标准 grid）
+  for (let i = 0; i < seg; i++) {
+    for (let j = 0; j < seg; j++) {
+      const a = i * (seg + 1) + j;
+      const b = i * (seg + 1) + j + 1;
+      const c = (i + 1) * (seg + 1) + j;
+      const d = (i + 1) * (seg + 1) + j + 1;
+
+      indices.push(a, c, b);
+      indices.push(b, c, d);
+    }
+  }
+
+  // ===============================
+  // 用 3 个扇面把球面“切”成封闭体
+  // ===============================
+
+  // 扇面 1：XY 平面（z = 0）
+  const fan1 = vertices.length / 3;
+
+  // 圆心
+  vertices.push(0, 0, 0);
+  normals.push(0, 0, -1);
+  uvs.push(0.5, 0.5);
+
+  // 圆弧上的点
+  for (let i = 0; i <= seg; i++) {
+    const a = (Math.PI / 2) * (i / seg);
+    vertices.push(radius * Math.cos(a), radius * Math.sin(a), 0);
+    normals.push(0, 0, -1);
+    uvs.push(0.5 + 0.5 * Math.cos(a), 0.5 + 0.5 * Math.sin(a));
+  }
+
+  // 三角形扇
+  for (let i = 0; i < seg; i++) {
+    indices.push(fan1, fan1 + 1 + i + 1, fan1 + 1 + i);
+  }
+
+  // 扇面 2：YZ 平面（x = 0）
+  const fan2 = vertices.length / 3;
+
+  vertices.push(0, 0, 0);
+  normals.push(-1, 0, 0);
+  uvs.push(0.5, 0.5);
+
+  for (let i = 0; i <= seg; i++) {
+    const a = (Math.PI / 2) * (i / seg);
+    vertices.push(0, radius * Math.sin(a), radius * Math.cos(a));
+    normals.push(-1, 0, 0);
+    uvs.push(0.5 + 0.5 * Math.cos(a), 0.5 + 0.5 * Math.sin(a));
+  }
+
+  for (let i = 0; i < seg; i++) {
+    indices.push(fan2, fan2 + 1 + i, fan2 + 1 + i + 1);
+  }
+
+  // 扇面 3：ZX 平面（y = 0）
+  const fan3 = vertices.length / 3;
+
+  vertices.push(0, 0, 0);
+  normals.push(0, -1, 0);
+  uvs.push(0.5, 0.5);
+
+  for (let i = 0; i <= seg; i++) {
+    const a = (Math.PI / 2) * (i / seg);
+    vertices.push(radius * Math.cos(a), 0, radius * Math.sin(a));
+    normals.push(0, -1, 0);
+    uvs.push(0.5 + 0.5 * Math.cos(a), 0.5 + 0.5 * Math.sin(a));
+  }
+
+  for (let i = 0; i < seg; i++) {
+    indices.push(fan3, fan3 + 1 + i, fan3 + 1 + i + 1);
+  }
+
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
+  geometry.setAttribute("normal", new Float32BufferAttribute(normals, 3));
+  geometry.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+
+  return geometry;
+};
+
+// 创建并添加发光灯带
+export const addLightStrip = (
+  parent: Group,
+  assetManager: AssetManager,
+  w: number,
+  h: number,
+  x: number,
+  y: number,
+  z: number,
+  lightVisible = true, // 灯光默认显示还是隐藏
+  rotation = new Vector3(Math.PI / 2, 0, 0), // 默认面向地面
+  intensity = 1.5 * Math.PI,
+) => {
+  const planeGeometry = assetManager.geometries.get("planeGeometry");
+  const yellowWhitePanelMaterial = assetManager.materials.get(
+    "yellowWhitePanelMaterial",
+  );
+  const lightingStrip = new Mesh(planeGeometry, yellowWhitePanelMaterial);
+  lightingStrip.scale.set(w, h);
+  lightingStrip.position.set(x, y, z);
+  lightingStrip.rotation.set(rotation.x, rotation.y, rotation.z);
+  lightingStrip.layers.enable(1); // 为了让灯带的光能够单独增强
+  parent.add(lightingStrip);
+  if (intensity > 0) {
+    // 添加发光灯带的光源
+    return addRectAreaLighting(
+      parent,
+      w,
+      h,
+      x,
+      rotation.x < 0 ? y + 0.01 : y - 0.01,
+      z,
+      lightVisible,
+      new Vector3(-rotation.x, -rotation.y, rotation.z),
+      intensity,
+    );
+  }
+};
+
+// 添加矩形平面光源
+export const addRectAreaLighting = (
+  parent: Group,
+  w: number,
+  h: number,
+  x: number,
+  y: number,
+  z: number,
+  visible: boolean = true,
+  rotation?: Vector3,
+  intensity = 1.5 * Math.PI,
+) => {
+  const light = new RectAreaLight(
+    LIGHT_STRIP_COLOR, // 暖黄白
+    intensity, //  第二个参数intensity在v0.155版本后必须要乘以Math.PI
+    w,
+    h,
+  );
+  light.position.set(x, y, z);
+  if (rotation) {
+    light.rotation.x = rotation.x;
+    light.rotation.y = rotation.y;
+    light.rotation.z = rotation.z;
+  }
+  light.visible = visible;
+  parent.add(light);
+  return light;
+};
+
+// 创建并添加圆形射灯
+export const addLightingRoundLight = (
+  parent: Group,
+  assetManager: AssetManager,
+  radius: number,
+  x: number,
+  y: number,
+  z: number,
+  distance?: number,
+) => {
+  const circleGeometry = assetManager.geometries.get("circleGeometry");
+  const whiteAluminumMaterial = assetManager.materials.get(
+    "whiteAluminumMaterial",
+  );
+  const yellowWhitePanelMaterial = assetManager.materials.get(
+    "yellowWhitePanelMaterial",
+  );
+  const roundLightGroup = new Group();
+  const outerCircle = new Mesh(circleGeometry, whiteAluminumMaterial);
+  outerCircle.scale.set(radius, radius);
+  roundLightGroup.add(outerCircle);
+  const innerCircle = new Mesh(circleGeometry, yellowWhitePanelMaterial);
+  innerCircle.scale.set(radius * 0.86, radius * 0.86);
+  innerCircle.position.set(0, 0, 0.001);
+  roundLightGroup.add(innerCircle);
+  roundLightGroup.position.set(x, y, z);
+  roundLightGroup.rotation.x = Math.PI / 2; // 面向地面
+  roundLightGroup.layers.enable(1); // 为了让灯带的光能够单独增强
+  parent.add(roundLightGroup);
+
+  if (distance) {
+    // 添加圆形射灯光源
+    addRoundLight(parent, x, y - 0.01, z, -x, 0, z, distance);
+  }
+};
+
+// 添加圆形射灯光源
+export const addRoundLight = (
+  parent: Group,
+  x: number,
+  y: number,
+  z: number,
+  tx: number,
+  ty: number,
+  tz: number,
+  distance: number,
+  intensity = 0.8 * Math.PI,
+) => {
+  const light = new SpotLight(
+    LIGHT_STRIP_COLOR, // 暖黄白
+    intensity, //  第二个参数intensity在v0.155版本后必须要乘以Math.PI
+    distance,
+    Math.PI / 8, // angle
+    0.5, // penumbra（边缘柔化）
+    1, // decay
+  );
+  light.castShadow = true;
+  light.shadow.mapSize.set(512, 512);
+  light.shadow.bias = -0.0005;
+  light.shadow.normalBias = 0.03;
+  light.shadow.camera.near = 0.1;
+  light.shadow.camera.far = distance;
+  light.position.set(x, y, z);
+  light.target.position.set(tx, ty, tz);
+  parent.add(light);
+  parent.add(light.target);
+};
+
+// 创建并添加立方体
+export const addBox = (
+  parent: Group | Mesh | Scene,
+  assetManager: AssetManager,
+  mat: MeshPhysicalMaterial | MeshStandardMaterial,
+  w: number,
+  h: number,
+  d: number,
+  x: number,
+  y: number,
+  z: number,
+  visible = true,
+  receiveShadow = true,
+): Mesh | null => {
+  if (!mat) return null;
+  const boxGeometry = assetManager.geometries.get("boxGeometry");
+  const m = new Mesh(boxGeometry, mat);
+  m.scale.set(w, h, d);
+  m.position.set(x, y, z);
+  m.castShadow = true;
+  m.receiveShadow = receiveShadow;
+  m.visible = visible;
+  parent.add(m);
+  return m;
+};
+
+// 创建并添加平面
+export const addPlane = (
+  parent: Group | Mesh | Scene,
+  assetManager: AssetManager,
+  mat: MeshPhysicalMaterial | MeshStandardMaterial,
+  w: number,
+  h: number,
+  x: number,
+  y: number,
+  z: number,
+  rotation = new Vector3(0, 0, 0),
+): Mesh | null => {
+  if (!mat) return null;
+  const planeGeometry = assetManager.geometries.get("planeGeometry");
+  const m = new Mesh(planeGeometry, mat);
+  m.scale.set(w, h);
+  m.position.set(x, y, z);
+  m.rotation.set(rotation.x, rotation.y, rotation.z);
+  parent.add(m);
+  return m;
+};
+
+// 创建并添加圆柱体
+export const addCylinder = (
+  parent: Group | Mesh | Scene,
+  assetManager: AssetManager,
+  mat: MeshPhysicalMaterial | MeshStandardMaterial,
+  radius: number,
+  depth: number,
+  x: number,
+  y: number,
+  z: number,
+  rotation = new Vector3(0, 0, 0),
+  receiveShadow = true,
+): Mesh | null => {
+  if (!mat) return null;
+  const cylinderGeometry = assetManager.geometries.get("cylinderGeometry");
+  const m = new Mesh(cylinderGeometry, mat);
+  m.scale.set(radius, depth, radius);
+  m.position.set(x, y, z);
+  m.rotation.set(rotation.x, rotation.y, rotation.z);
+  m.receiveShadow = receiveShadow;
+  parent.add(m);
+  return m;
+};
+
+// 创建圆曲面发光灯带(完全使用RectAreaLight平面光实现，不卡顿)
+export const addCircleLightingStrip = (
+  parent: Group,
+  assetManager: AssetManager,
+  radius: number,
+  w: number,
+  x: number,
+  y: number,
+  z: number,
+  count: number = 3, // 在灯带上取多少个点
+  angle: number = Math.PI, // 默认为半圆
+  fwdSign: 1 | -1 = 1, // 默认内侧
+  rotation = new Vector3(0, 0, 0), // 默认在z=0的同一平面
+  intensity = 0.4 * Math.PI,
+) => {
+  const curvePoints = [];
+  for (let i = 0; i <= count; i++) {
+    const currentAngle = angle * (i / count); // 默认为0 → π
+    curvePoints.push(
+      new Vector3(
+        Math.cos(currentAngle) * radius, // X
+        Math.sin(currentAngle) * radius, // Y
+        0, // Z = 0，同一平面
+      ),
+    );
+  }
+  const curve = new CatmullRomCurve3(curvePoints);
+
+  const stripGeometry = buildRibbon(curve, count, w, fwdSign);
+  const yellowWhitePanelMaterial = assetManager.materials.get(
+    "yellowWhitePanelMaterial",
+  );
+  const lightingStrip = new Mesh(stripGeometry, yellowWhitePanelMaterial);
+  lightingStrip.position.set(x, y, z);
+  lightingStrip.rotation.set(rotation.x, rotation.y, rotation.z);
+  lightingStrip.layers.enable(1); // 为了让灯带的光能够单独增强
+  parent.add(lightingStrip);
+
+  // 计算 mesh 的旋转矩阵，用于将灯光从局部空间转换到世界空间
+  const meshRotMatrix = new Matrix4().makeRotationFromEuler(
+    new Euler(rotation.x, rotation.y, rotation.z),
+  );
+
+  const lightList: RectAreaLight[] = [];
+  for (let i = 0; i < count; i++) {
+    const t = (i + 0.5) / count;
+    const p = curve.getPointAt(t);
+    const tan = curve.getTangentAt(t).normalize();
+    const fwd = new Vector3(p.x, p.y, 0).normalize();
+    const side = new Vector3().crossVectors(fwd, tan).normalize();
+    const light = new RectAreaLight(
+      LIGHT_STRIP_COLOR, // 暖黄白
+      intensity,
+      curve.getLength() / count,
+      w,
+    );
+
+    // 在曲线局部空间计算位置，再旋转到世界方向，最后平移到 mesh 的世界位置
+    const localPos = p
+      .clone()
+      .add(fwd.clone().multiplyScalar(fwdSign > 0 ? -0.01 : 0.01));
+    light.position
+      .copy(localPos.applyMatrix4(meshRotMatrix))
+      .add(new Vector3(x, y, z));
+
+    // RectAreaLight 沿局部 -Z 发射
+    // 朝内(fwdSign>0): 发射方向 = -fwd(朝面板中心) → 基准 Z = fwd
+    // 朝外(fwdSign<0): 发射方向 = fwd(朝面板外侧) → 基准 Z = -fwd
+    const basisZ = fwdSign > 0 ? fwd : fwd.clone().negate();
+    const lightRotMatrix = new Matrix4().makeBasis(tan, side, basisZ);
+    const combinedMatrix = meshRotMatrix.clone().multiply(lightRotMatrix);
+    light.quaternion.setFromRotationMatrix(combinedMatrix);
+
+    lightList.push(light);
+    parent.add(light);
+  }
+
+  return lightList;
+};
+
+//  根据CatmullRomCurve3这个3D曲线来构建一条曲面刚体
+const buildRibbon = (
+  curve: CatmullRomCurve3,
+  count: number,
+  width: number, // 扁平带的宽度
+  fwdSign: 1 | -1 = 1, // 默认内侧
+) => {
+  const pts = curve.getSpacedPoints(count);
+  const halfW = width / 2;
+  const pos = [];
+  const idx = [];
+  for (let i = 0; i <= count; i++) {
+    const t = i / count;
+    const p = pts[i];
+    const tan = curve.getTangentAt(t).normalize();
+    const fwd = new Vector3(p.x, p.y, 0).normalize().multiplyScalar(fwdSign);
+    const side = new Vector3().crossVectors(fwd, tan).normalize();
+
+    const a = p.clone().add(side.clone().multiplyScalar(-halfW));
+    const b = p.clone().add(side.clone().multiplyScalar(halfW));
+    pos.push(a.x, a.y, a.z, b.x, b.y, b.z);
+  }
+  for (let i = 0; i < count; i++) {
+    const a = i * 2,
+      b = i * 2 + 1,
+      c = (i + 1) * 2,
+      d = (i + 1) * 2 + 1;
+    idx.push(a, b, d, a, d, c);
+  }
+  const geo = new BufferGeometry();
+  geo.setAttribute("position", new Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  return geo;
 };

@@ -14,19 +14,34 @@ import {
 import type { AssetManager } from "hooks/threejs/useInitialize";
 import { createDoorknob } from "./addDoor";
 import { getEaseProgress } from "../utils";
+import {
+  WALL_THICKNESS,
+  BEAM_HEIGHT,
+  BEAM_POSITION_Y,
+  WALL_13_POSITION_X,
+  WALL_14_WIDTH,
+  WALL_14_POSITION_Z,
+  WALL_20_POSITION_Z,
+  WALL_24_POSITION_X,
+} from "./addHouseStructure";
 
 const OPEN_OR_CLOSE_DOOR_DURATION = 800; // 开/关门动画总时长
-const GROUND_GLASS_W = 1.6; // 磨砂玻璃的宽
-const GROUND_GLASS_H = 3.4; // 磨砂玻璃的高
-const GROUND_GLASS_T = 0.04; // 磨砂玻璃的厚度
-const FRAME_D = 0.1; // 包边的厚度
-const HANDLE_POSITION_Y = 1.8; // 门把手高度
-const HALF_GROUND_GLASS_W = GROUND_GLASS_W / 2;
-const MOVE_DISTANCE = FRAME_D + GROUND_GLASS_W - 0.2; // 磨砂玻璃门可移动的距离
+const GROUND_GLASS_THICKNESS = 0.04; // 磨砂玻璃的厚度
+const FRAME_DEPTH = 0.04; // 包边的厚度
+const GROUND_GLASS_WIDTH = WALL_14_WIDTH - FRAME_DEPTH * 2 + 0.01; // 磨砂玻璃的宽
+const GROUND_GLASS_HEIGHT =
+  BEAM_POSITION_Y - BEAM_HEIGHT / 2 - FRAME_DEPTH + 0.01; // 磨砂玻璃的高
+const HANDLE_POSITION_Y = 1.5; // 门把手高度
+const HALF_GROUND_GLASS_WIDTH = GROUND_GLASS_WIDTH / 2;
+const MOVE_DISTANCE = FRAME_DEPTH + GROUND_GLASS_WIDTH - 0.1; // 磨砂玻璃门可移动的距离
 const doorConfigs = [
   // 主卧厕所门
   {
-    positon: new Vector3(-3.08, 0, -10.65),
+    positon: new Vector3(
+      WALL_13_POSITION_X + WALL_THICKNESS / 2 + FRAME_DEPTH / 2 - 0.02,
+      0,
+      WALL_14_POSITION_Z,
+    ),
     rotationY: -Math.PI / 2,
     customParams: {
       switchStatus: "OFF",
@@ -35,7 +50,11 @@ const doorConfigs = [
   },
   // 外厕所门
   {
-    positon: new Vector3(4.9, 0, -9.76),
+    positon: new Vector3(
+      WALL_24_POSITION_X,
+      0,
+      WALL_20_POSITION_Z - WALL_THICKNESS / 2 - FRAME_DEPTH / 2 + 0.02,
+    ),
     customParams: {
       switchStatus: "OFF",
       isAnimating: false,
@@ -47,21 +66,18 @@ export const addGroundGlassDoor = (
   scene: Scene,
   assetManager: AssetManager,
   groundGlassDoorListRef: Ref<Group[]>,
-  mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
   pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
+  mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
 ) => {
   // 磨砂玻璃材质
   const groundGlassMaterial = new MeshPhysicalMaterial({
     color: 0xeaf2ff,
     roughness: 0.75, // 高粗糙度 = 磨砂
     metalness: 0.0,
-    transmission: 0.75, // 透射/玻璃感
-    thickness: 0.05,
-    ior: 1.45,
-    clearcoat: 0.3,
-    clearcoatRoughness: 0.6,
     transparent: true,
     opacity: 0.9,
+    clearcoat: 0.3,
+    clearcoatRoughness: 0.6,
     depthWrite: false, // 透明物体不写深度，避免遮挡后面的透明物体
     alphaTest: 0.5, // 设置alphaTest阈值，让半透明物体也能投射阴影
     envMapIntensity: 0.6,
@@ -88,8 +104,8 @@ export const addGroundGlassDoor = (
       }
     }
     groundGlassDoorListRef.value.push(groundGlassDoor);
-    mouseRaycasterIntersectObjectsRef.value.push(groundGlassDoor);
     pointerControlsIntersetObjectsRef.value.push(groundGlassDoor);
+    mouseRaycasterIntersectObjectsRef.value.push(groundGlassDoor);
     scene.add(groundGlassDoor);
   });
 };
@@ -101,8 +117,8 @@ const createGroundGlassDoor = (
 ) => {
   const boxGeometry = assetManager.geometries.get("boxGeometry");
   const groundGlassMaterial = assetManager.materials.get("groundGlassMaterial");
-  const aluminiumAlloyFrameMaterial = assetManager.materials.get(
-    "aluminiumAlloyFrameMaterial",
+  const aluminiumAlloyMaterial = assetManager.materials.get(
+    "aluminiumAlloyMaterial",
   );
 
   const groundGlassDoorGroup = new Group();
@@ -112,47 +128,59 @@ const createGroundGlassDoor = (
 
   /** 磨砂玻璃门包边部分*/
   const frameGroup = new Group();
-  frameGroup.castShadow = true;
-  frameGroup.receiveShadow = true;
 
   // 左包边
-  const leftJamb = new Mesh(boxGeometry, aluminiumAlloyFrameMaterial);
-  leftJamb.scale.set(FRAME_D, GROUND_GLASS_H, GROUND_GLASS_T);
+  const leftJamb = new Mesh(boxGeometry, aluminiumAlloyMaterial);
+  leftJamb.scale.set(FRAME_DEPTH, GROUND_GLASS_HEIGHT, GROUND_GLASS_THICKNESS);
   leftJamb.position.set(
-    -HALF_GROUND_GLASS_W - FRAME_D / 2,
-    GROUND_GLASS_H / 2,
+    -HALF_GROUND_GLASS_WIDTH - FRAME_DEPTH / 2,
+    GROUND_GLASS_HEIGHT / 2,
     0,
   );
+  leftJamb.castShadow = true;
+  leftJamb.receiveShadow = true;
   frameGroup.add(leftJamb);
 
   // 右包边
-  const rightJamb = new Mesh(boxGeometry, aluminiumAlloyFrameMaterial);
-  rightJamb.scale.set(FRAME_D, GROUND_GLASS_H, GROUND_GLASS_T);
+  const rightJamb = new Mesh(boxGeometry, aluminiumAlloyMaterial);
+  rightJamb.scale.set(FRAME_DEPTH, GROUND_GLASS_HEIGHT, GROUND_GLASS_THICKNESS);
   rightJamb.position.set(
-    HALF_GROUND_GLASS_W + FRAME_D / 2,
-    GROUND_GLASS_H / 2,
+    HALF_GROUND_GLASS_WIDTH + FRAME_DEPTH / 2,
+    GROUND_GLASS_HEIGHT / 2,
     0,
   );
+  rightJamb.castShadow = true;
+  rightJamb.receiveShadow = true;
   frameGroup.add(rightJamb);
 
   // 上包边
-  const headerMesh = new Mesh(boxGeometry, aluminiumAlloyFrameMaterial);
-  headerMesh.scale.set(GROUND_GLASS_W + FRAME_D * 2, FRAME_D, GROUND_GLASS_T);
-  headerMesh.position.set(0, GROUND_GLASS_H + FRAME_D / 2, 0);
+  const headerMesh = new Mesh(boxGeometry, aluminiumAlloyMaterial);
+  headerMesh.scale.set(
+    GROUND_GLASS_WIDTH + FRAME_DEPTH * 2,
+    FRAME_DEPTH,
+    GROUND_GLASS_THICKNESS,
+  );
+  headerMesh.position.set(0, GROUND_GLASS_HEIGHT + FRAME_DEPTH / 2, 0);
+  headerMesh.castShadow = true;
+  headerMesh.receiveShadow = true;
   frameGroup.add(headerMesh);
   groundGlassDoorGroup.add(frameGroup);
 
   /** 磨砂玻璃部分*/
   const groundGlass = new Mesh(boxGeometry, groundGlassMaterial);
-  groundGlass.scale.set(GROUND_GLASS_W, GROUND_GLASS_H, GROUND_GLASS_T);
-  groundGlass.position.set(0, GROUND_GLASS_H / 2, 0);
+  groundGlass.scale.set(
+    GROUND_GLASS_WIDTH,
+    GROUND_GLASS_HEIGHT,
+    GROUND_GLASS_THICKNESS,
+  );
+  groundGlass.position.set(0, GROUND_GLASS_HEIGHT / 2, 0);
   groundGlass.castShadow = true;
   groundGlass.receiveShadow = true;
   groundGlassDoorGroup.add(groundGlass);
 
   /** 门把手部分*/
   const doorknob = createDoorknob(assetManager);
-  doorknob.position.set(HALF_GROUND_GLASS_W - 0.1, HANDLE_POSITION_Y, 0);
+  doorknob.position.set(HALF_GROUND_GLASS_WIDTH - 0.1, HANDLE_POSITION_Y, 0);
   groundGlassDoorGroup.add(doorknob);
 
   return groundGlassDoorGroup;

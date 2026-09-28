@@ -24,6 +24,7 @@ import moonImg from "images/threejs/moon.jpg";
 import moonDisplacemenImg from "images/threejs/normal.jpg";
 
 const initRotateY = [0, -1.5, 0];
+
 const gltfList: GLTF[] = [];
 let pageIndex = 0;
 let scrollCameraTimeline: any = gsap.timeline();
@@ -52,21 +53,21 @@ const initializeHandle = (scene: Scene) => {
 
     // 创建并添加3个飞行器模型
     loadGlb("/model/spaceStation.glb").then((gltf: GLTF) => {
-      gltf.scene.scale.set(0.15, 0.15, 0.15);
-      gltf.scene.position.set(5, 0, 0);
+      gltf.scene.scale.set(0.1, 0.1, 0.1);
+      gltf.scene.position.set(4, 0, 0);
       scene.add(gltf.scene);
       gltfList.push(gltf);
     });
     loadGlb("/model/spaceStation2.glb").then((gltf: GLTF) => {
-      gltf.scene.scale.set(1, 1, 1);
-      gltf.scene.position.set(5, -20, 0);
+      gltf.scene.scale.set(0.7, 0.7, 0.7);
+      gltf.scene.position.set(4, -20, 0);
       gltf.scene.rotation.set(0, initRotateY[1], 0);
       scene.add(gltf.scene);
       gltfList.push(gltf);
     });
     loadGlb("/model/spaceStation3.glb").then((gltf: GLTF) => {
-      gltf.scene.scale.set(0.18, 0.18, 0.18);
-      gltf.scene.position.set(5, -40, 0);
+      gltf.scene.scale.set(0.12, 0.12, 0.12);
+      gltf.scene.position.set(4, -40, 0);
       scene.add(gltf.scene);
       gltfList.push(gltf);
     });

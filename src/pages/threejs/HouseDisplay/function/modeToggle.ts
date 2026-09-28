@@ -3,7 +3,6 @@
  */
 import { ref, shallowRef, Ref, ShallowRef, onMounted, onUnmounted } from "vue";
 import {
-  Scene,
   PerspectiveCamera,
   Vector3,
   Vector2,
@@ -11,29 +10,39 @@ import {
   Object3D,
   Group,
   Mesh,
+  RectAreaLight,
 } from "three";
 import type { GlobalContext } from "hooks/useGlobalContext";
 // @ts-ignore
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 // @ts-ignore
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
+import {
+  CEILING_POSITION_Y,
+  CEILING_INIT_POSITION_Y,
+} from "../hardDecoration/addCeiling";
+import {
+  WALL_69_POSITION_X,
+  WALL_55_POSITION_Z,
+} from "../hardDecoration/addHouseStructure";
+import { allSuspendedCeilingVisibleToggle } from "../hardDecoration/addSuspendedCeiling";
+import { allCeilingLampsVisibleToggle } from "../softDecoration/addCeilingLamp";
+import { hideAllLightingStripLight } from "./dynamicOptimizationLightingStripRender";
 
 export type ViewMode = "overview" | "roaming";
 
 // 漫游模式配置参数
 const ROAMING_CONFIG = {
-  cameraHeight: 2.6, // 相机离地板的高度（米）
-  moveSpeed: 20, // WASD移动速度
-  gravity: 9.8 * 3, // 重力加速度
-  friction: 0.8, // 摩擦系数（0-1，越小摩擦越大，惯性越小）
-  collisionDistance: 0.5, // 碰撞检测距离（米）
+  cameraHeight: 2.2, // 相机离地板的高度（米）
+  moveSpeed: 3, // WASD移动速度
+  collisionDistance: 0.2, // 碰撞检测距离（米）
 };
 
 // 开始漫游模式时相机的位置
 const startRoamingCameraPosition = new Vector3(
-  2.5,
+  WALL_69_POSITION_X,
   ROAMING_CONFIG.cameraHeight,
-  5,
+  WALL_55_POSITION_Z,
 );
 
 // 第一人称控制器移动速度
@@ -47,8 +56,8 @@ let moveState = {
 };
 // 第一人称控制器在各方向上的移动值
 const direction = new Vector3();
-// 第一人称控制器可碰撞的所有物体列表
-const collisionObjects: Object3D[] = [];
+// 复用碰撞检测射线，避免每帧创建
+const collisionRaycaster = new Raycaster();
 
 export const useModeToggle = (
   containerRef: Ref<HTMLDivElement | null>,
@@ -66,6 +75,8 @@ export const useModeToggle = (
     ceilingLampSwitch: Group,
     lampList?: Group[],
   ) => void,
+  onClickCurtain?: (curtain: Group) => void,
+  onClickFridgeDoor?: (fridgeDoor: Group) => void,
 ) => {
   // 模式状态: 'overview' 整体模式, 'roaming' 漫游模式
   const viewModeRef = ref<ViewMode>("overview");
@@ -82,15 +93,9 @@ export const useModeToggle = (
 
   const onMouseMove = (e: any) => {
     // 只在整体模式下更新鼠标位置
-    if (viewModeRef.value === "overview" && containerRef.value) {
-      const { clientWidth, clientHeight } = containerRef.value;
-      mousePositionRef.value.x =
-        ((e.clientX - globalContext.value.menuWidth + 12) / clientWidth) * 2 -
-        1;
-      mousePositionRef.value.y =
-        -((e.clientY - globalContext.value.headHeight + 12) / clientHeight) *
-          2 +
-        1;
+    if (viewModeRef.value === "overview") {
+      mousePositionRef.value.x = e.clientX - globalContext.value.menuWidth;
+      mousePositionRef.value.y = e.clientY - globalContext.value.headHeight;
     }
   };
 
@@ -122,6 +127,20 @@ export const useModeToggle = (
       }
       if (name === "手机屏幕") {
         onClickPhoneScreen?.(phoneVideoRef?.value);
+        return;
+      }
+      if (name.startsWith("窗帘左半边") || name.startsWith("窗帘右半边")) {
+        const curtain = mouseRaycasterIntersectedRef.value.parent;
+        if (curtain?.name === "窗帘") {
+          onClickCurtain?.(curtain as Group);
+          return;
+        }
+      } else if (name === "窗帘") {
+        onClickCurtain?.(mouseRaycasterIntersectedRef.value as Group);
+        return;
+      }
+      if (["冰箱上门", "冰箱下门"].includes(name)) {
+        onClickFridgeDoor?.(mouseRaycasterIntersectedRef.value as Group);
         return;
       }
     }
@@ -169,7 +188,6 @@ export const useModeToggle = (
 
 // 初始化整体/漫游模式切换相关
 export const initModeToggle = (
-  scene: Scene,
   camera: PerspectiveCamera,
   container: HTMLDivElement,
   pointerControlsRef: ShallowRef<PointerLockControls | null>,
@@ -178,13 +196,10 @@ export const initModeToggle = (
   viewModeRef: Ref<ViewMode>,
   orbitControlsRef: ShallowRef<OrbitControls | null>,
   animationStartTimeRef: Ref<number>,
+  suspendedCeilingList: (Group | Mesh)[],
   lampList: Group[],
   lampSwitchList: Group[],
-  allCeilingLampsVisibleToggle?: (
-    lampList: Group[],
-    lampSwitchList: Group[],
-    visible: boolean,
-  ) => void,
+  lightingStripLightMap: Record<string, RectAreaLight[]>,
 ) => {
   // ===== 第一人称控制器(用于漫游模式) =====
   // 使用容器元素而不是renderer.domElement，避免与OrbitControls冲突
@@ -208,23 +223,6 @@ export const initModeToggle = (
   });
   pointerControls.addEventListener("unlock", () => {
     isPointerLockedRef.value = false;
-  });
-
-  // 收集第一人称控制器可碰撞的所有物体
-  scene.traverse((object) => {
-    if (object instanceof Mesh && object.geometry) {
-      // 排除地板(y<=0.1的物体)、天花板、准星、吊灯
-      if (
-        object.position.y > 0.1 &&
-        object.name !== "天花板组" &&
-        !object.name.includes("准星") &&
-        !object.name.includes("吊灯") &&
-        // 排除吊灯的所有父级Group
-        !isChildOfLamp(object)
-      ) {
-        collisionObjects.push(object);
-      }
-    }
   });
 
   // 键盘事件监听 - WASD移动，Space空格
@@ -256,9 +254,10 @@ export const initModeToggle = (
           viewModeRef,
           orbitControlsRef,
           animationStartTimeRef,
+          suspendedCeilingList,
           lampList,
           lampSwitchList,
-          allCeilingLampsVisibleToggle,
+          lightingStripLightMap,
         );
         break;
     }
@@ -296,16 +295,12 @@ export const modeToggleAnimationRender = (
   pointerControlsRef: ShallowRef<PointerLockControls | null>,
   initialCameraPosition: Vector3,
   initialCameraTarget: Vector3,
-  ceilingGroupRef: ShallowRef<Group | null>,
+  ceilingRef: ShallowRef<Mesh | null>,
   animationStartTimeRef: Ref<number>,
   animationDurationRef: Ref<number>,
+  suspendedCeilingList: (Group | Mesh)[],
   lampList: Group[],
   lampSwitchList: Group[],
-  allCeilingLampsVisibleToggle?: (
-    lampList: Group[],
-    lampSwitchList: Group[],
-    visible: boolean,
-  ) => void,
 ) => {
   // 处理相机动画
   if (animatingRef.value) {
@@ -346,11 +341,10 @@ export const modeToggleAnimationRender = (
       // }
 
       // 天花板下落动画
-      if (ceilingGroupRef.value) {
-        const startY = 50;
-        const endY = 0;
-        ceilingGroupRef.value.position.y =
-          startY + (endY - startY) * easeProgress;
+      if (ceilingRef.value) {
+        const startY = CEILING_INIT_POSITION_Y;
+        const endY = CEILING_POSITION_Y;
+        ceilingRef.value.position.y = startY + (endY - startY) * easeProgress;
       }
     } else {
       // 切换到整体模式的动画
@@ -373,11 +367,10 @@ export const modeToggleAnimationRender = (
       camera.rotation.z = 0;
 
       // 天花板上升动画
-      if (ceilingGroupRef.value) {
-        const startY = 0;
-        const endY = 50;
-        ceilingGroupRef.value.position.y =
-          startY + (endY - startY) * easeProgress;
+      if (ceilingRef.value) {
+        const startY = CEILING_POSITION_Y;
+        const endY = CEILING_INIT_POSITION_Y;
+        ceilingRef.value.position.y = startY + (endY - startY) * easeProgress;
       }
     }
 
@@ -387,6 +380,8 @@ export const modeToggleAnimationRender = (
 
       // 动画结束后的控制器状态确认
       if (currentMode === "roaming") {
+        // 将所有吊顶和吊顶板显示出来
+        allSuspendedCeilingVisibleToggle?.(suspendedCeilingList, true);
         // 将所有吊灯显示出来
         allCeilingLampsVisibleToggle?.(lampList, lampSwitchList, true);
         // 确保轨道控制器完全禁用
@@ -445,43 +440,41 @@ export const pointerControlsMoveRender = (
     const time = performance.now();
     const delta = (time - prevTimeRef.value) / 1000;
 
-    // 重力模拟
-    velocity.y -= ROAMING_CONFIG.gravity * delta;
-
     // 移动方向计算
-    direction.z = Number(moveState.forward) - Number(moveState.backward);
+    direction.z = Number(moveState.backward) - Number(moveState.forward);
     direction.x = Number(moveState.right) - Number(moveState.left);
     direction.normalize();
 
     // 移动速度
     if (moveState.forward || moveState.backward) {
-      velocity.z -= direction.z * ROAMING_CONFIG.moveSpeed * delta;
+      velocity.z = direction.z * ROAMING_CONFIG.moveSpeed * delta;
+    } else {
+      velocity.z = 0;
     }
     if (moveState.left || moveState.right) {
-      velocity.x -= direction.x * ROAMING_CONFIG.moveSpeed * delta;
+      velocity.x = direction.x * ROAMING_CONFIG.moveSpeed * delta;
+    } else {
+      velocity.x = 0;
     }
 
     // 保存当前位置用于碰撞检测
     const oldPosition = camera.position.clone();
 
     // 应用移动
-    pointerControlsRef.value.moveRight(-velocity.x * delta);
-    pointerControlsRef.value.moveForward(-velocity.z * delta);
+    pointerControlsRef.value.moveRight(velocity.x);
+    pointerControlsRef.value.moveForward(-velocity.z);
 
     // 碰撞检测：基于实际移动方向动态检测
     const cameraPosition = camera.position;
     const moveVector = new Vector3().subVectors(cameraPosition, oldPosition);
 
-    let hasCollision = false;
-
     // 如果有实际移动，沿移动方向检测碰撞
     if (moveVector.lengthSq() > 0.0001) {
-      const raycaster = new Raycaster();
       const moveDirection = moveVector.clone().normalize();
 
       // 从旧位置沿移动方向发射射线
-      raycaster.set(oldPosition, moveDirection);
-      const intersections = raycaster.intersectObjects(
+      collisionRaycaster.set(oldPosition, moveDirection);
+      const intersections = collisionRaycaster.intersectObjects(
         pointerControlsIntersetObjects,
         true,
       );
@@ -492,28 +485,10 @@ export const pointerControlsMoveRender = (
         intersections[0].distance <
           moveVector.length() + ROAMING_CONFIG.collisionDistance
       ) {
-        hasCollision = true;
+        // 如果发生碰撞,恢复到旧位置
+        cameraPosition.copy(oldPosition);
       }
     }
-
-    // 如果发生碰撞,恢复到旧位置
-    if (hasCollision) {
-      cameraPosition.copy(oldPosition);
-    }
-
-    // Y轴限制(地板和天花板)
-    if (cameraPosition.y < ROAMING_CONFIG.cameraHeight) {
-      velocity.y = 0;
-      cameraPosition.y = ROAMING_CONFIG.cameraHeight;
-    }
-    if (cameraPosition.y > 3.5) {
-      velocity.y = 0;
-      cameraPosition.y = 3.5;
-    }
-
-    // 应用摩擦力
-    velocity.x *= ROAMING_CONFIG.friction;
-    velocity.z *= ROAMING_CONFIG.friction;
 
     prevTimeRef.value = time;
   }
@@ -526,13 +501,10 @@ export const handleModeToggle = (
   viewModeRef: Ref<ViewMode>,
   orbitControlsRef: ShallowRef<OrbitControls | null>,
   animationStartTimeRef: Ref<number>,
+  suspendedCeilingList: (Group | Mesh)[],
   lampList: Group[],
   lampSwitchList: Group[],
-  allCeilingLampsVisibleToggle?: (
-    lampList: Group[],
-    lampSwitchList: Group[],
-    visible: boolean,
-  ) => void,
+  lightingStripLightMap: Record<string, RectAreaLight[]>,
 ) => {
   //   e?.currentTarget?.blur(); // 点击后立即失焦，避免按下空格或回车键时触发点击事件（由于HTML标准的可访问性特性的存在）
   e?.stopPropagation(); // 阻止事件冒泡
@@ -560,8 +532,12 @@ export const handleModeToggle = (
   } else {
     // 切换到整体模式
     console.log("返回整体模式，退出指针锁定并重置状态");
+    // 将所有吊顶和吊顶板隐藏
+    allSuspendedCeilingVisibleToggle?.(suspendedCeilingList, false);
     // 将所有吊灯隐藏
     allCeilingLampsVisibleToggle?.(lampList, lampSwitchList, false);
+    // 将所有灯带的光源隐藏(装饰背景板除外)
+    hideAllLightingStripLight(lightingStripLightMap);
     // 重置移动状态
     moveState = {
       forward: false,
@@ -571,16 +547,4 @@ export const handleModeToggle = (
     };
     velocity.set(0, 0, 0);
   }
-};
-
-// 检查对象是否是吊灯的子对象
-const isChildOfLamp = (object: Object3D): boolean => {
-  let current = object.parent;
-  while (current) {
-    if (current.name && current.name.includes("吊灯")) {
-      return true;
-    }
-    current = current.parent;
-  }
-  return false;
 };

@@ -9,9 +9,10 @@ import {
   WebGLRenderer,
   Vector3,
   Mesh,
-  Raycaster,
   Object3D,
   Group,
+  Raycaster,
+  RectAreaLight
 } from "three";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
@@ -34,20 +35,30 @@ import {
   handleModeToggle
 } from './function/modeToggle';
 import addLighting from "./function/addLighting";
-import addHouseStructure from './goods/addHouseStructure';
-import { addDoor, onClickDoor, doorAnimationRender } from "./goods/addDoor";
-import { addGroundGlassDoor, onClickGroundGlassDoor, groundGlassDoorAnimationRender } from './goods/addGroundGlassDoor';
-import add3dModel from "./goods/add3dModel";
-import addCeiling from "./goods/addCeiling";
-import { addCeilingLamp, allCeilingLampsVisibleToggle, dynamicOptimizationLampLightRender } from './goods/addCeilingLamp';
-import { onClickCeilingLampSwitch } from './goods/addCeilingLampSwitch';
-import { onClickTVScreen } from './goods/addTVScreen';
-import { onClickPhoneScreen } from './goods/addPhoneScreen';
-import { addCrosshair, resizeCrosshair, crosshairRender } from './function/addCrosshair';
-import addTeaTable from './goods/addTeaTable';
+import addHouseStructure from './hardDecoration/addHouseStructure';
+import addSuspendedCeiling from './hardDecoration/addSuspendedCeiling';
+import { addDoor, onClickDoor, doorAnimationRender } from "./hardDecoration/addDoor";
+import { addGroundGlassDoor, onClickGroundGlassDoor, groundGlassDoorAnimationRender } from './hardDecoration/addGroundGlassDoor';
+import add3dModel from "./softDecoration/add3dModel";
+import addCeiling from "./hardDecoration/addCeiling";
+import addTVBackground from './hardDecoration/addTVBackground';
+import { addTV, onClickTVScreen } from './softDecoration/addTV';
+import addSideboard from './hardDecoration/addSideboard';
+import addShoeCabinet from './hardDecoration/addShoeCabinet';
+import { addCeilingLamp } from './softDecoration/addCeilingLamp';
+import { onClickCeilingLampSwitch } from './softDecoration/addCeilingLampSwitch';
+import { onClickPhoneScreen } from './softDecoration/addPhoneScreen';
+import { addCrosshair, crosshairRender } from './function/addCrosshair';
+import addTeaTable from './softDecoration/addTeaTable';
+import { addCurtain, onClickCurtain, curtainAnimationRender } from "./softDecoration/addCurtain";
+import { addFridge, onClickFridgeDoor, fridgeDoorAnimationRender } from "./softDecoration/addFridge";
+import addGlassWhiteboard from "./softDecoration/addGlassWhiteboard";
+import addDecorateBackgroundPanel from './softDecoration/addDecorateBackgroundPanel';
+import addLivingRoomCabinet from './hardDecoration/addLivingRoomCabinet';
+import { dynamicOptimizationLightingStripRender } from './function/dynamicOptimizationLightingStripRender';
 
 // 初始相机位置
-const initialCameraPosition = new Vector3(0, 30, 0);
+const initialCameraPosition = new Vector3(0, 24, 0);
 const initialCameraTarget = new Vector3(0, 0, 0);
 
 const globalContext = useGlobalContext() as Ref<GlobalContext>;
@@ -58,21 +69,22 @@ const orbitControlsRef = shallowRef<OrbitControls | null>(null); // 轨道控制
 const mainComposerRef = shallowRef<EffectComposer | null>(null);
 const bloomComposerRef = shallowRef<EffectComposer | null>(null);
 const tvVideoRef = ref<HTMLVideoElement | null>(null); // 电视屏幕播放的视频
-const tvScreenRef = shallowRef<Mesh | null>(null); // 电视屏幕
 const phoneVideoRef = ref<HTMLVideoElement | null>(null); // 手机屏幕播放的视频
 const phoneScreenRef = shallowRef<Mesh | null>(null); // 手机屏幕
 const outlinePassRef = shallowRef<OutlinePass | null>(null);
 const pointerControlsIntersetObjectsRef = shallowRef<Object3D[]>([]); // 第一人称控制器可接受的碰撞检测对象列表
-const ceilingGroupRef = shallowRef<Group | null>(null); // 房屋天花板
+const ceilingRef = shallowRef<Mesh | null>(null); // 房屋天花板
+const suspendedCeilingListRef = shallowRef<(Group | Mesh)[]>([]); // 所有的吊顶和吊顶板
 const doorListRef = shallowRef<Mesh[]>([]); // 所有房门的列表
 const groundGlassDoorListRef = shallowRef<Group[]>([]); // 所有磨砂玻璃门的列表
 const lampListRef = shallowRef<Group[]>([]); // 所有吊灯的列表
 const lampSwitchListRef = shallowRef<Group[]>([]); // 所有吊灯开关的列表
-const labelRendererRef = shallowRef<CSS2DRenderer | null>(null); // 鼠标准星渲染器
 const raycasterRef = shallowRef<Raycaster | null>(null); // 鼠标准星射线
-const reticleRef = shallowRef<CSS2DObject | null>(null); // 鼠标准星对象
 const mouseRaycasterIntersectObjectsRef = shallowRef<Object3D[]>([]); // 鼠标射线可接受的检测对象列表
 const mouseRaycasterIntersectedRef = shallowRef<Object3D | null>(null); // 当前鼠标射线命中的物体
+const curtainListRef = shallowRef<Group[]>([]); // 所有窗帘的列表
+const fridgeDoorListRef = shallowRef<Group[]>([]); // 冰箱门的列表
+const lightingStripLightMapRef = shallowRef<Record<string, RectAreaLight[]>>({}); // 所有要进行动态控制的灯带的光(按不同的物件划分不同的数组)
 
 const {
   viewModeRef,
@@ -96,6 +108,8 @@ const {
   onClickPhoneScreen,
   lampListRef,
   onClickCeilingLampSwitch,
+  onClickCurtain,
+  onClickFridgeDoor,
 );
 
 const initializeHandle = (
@@ -139,18 +153,21 @@ const initializeHandle = (
     addHouseStructure(
       scene,
       assetManager,
-      mouseRaycasterIntersectObjectsRef,
       pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
       false,
     );
+
+    // 添加吊顶
+    addSuspendedCeiling(scene, assetManager, suspendedCeilingListRef);
 
     // 添加房门
     addDoor(
       scene,
       assetManager,
       doorListRef,
-      mouseRaycasterIntersectObjectsRef,
       pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
     );
 
     // 添加磨砂玻璃门
@@ -158,23 +175,56 @@ const initializeHandle = (
       scene,
       assetManager,
       groundGlassDoorListRef,
-      mouseRaycasterIntersectObjectsRef,
       pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
     )
 
     // 加载并显示电视墙、沙发、床等模型
     add3dModel(
       scene,
       assetManager,
-      tvVideoRef.value,
-      tvScreenRef,
       phoneVideoRef.value,
       phoneScreenRef,
       mouseRaycasterIntersectObjectsRef
     );
 
     // 添加天花板（初始隐藏在天空中）
-    addCeiling(scene, assetManager, ceilingGroupRef);
+    addCeiling(scene, assetManager, ceilingRef);
+
+    // 添加电视背景
+    addTVBackground(
+      scene,
+      assetManager,
+      pointerControlsIntersetObjectsRef,
+      lightingStripLightMapRef,
+    )
+
+    // 添加电视
+    addTV(
+      scene,
+      assetManager,
+      pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
+      tvVideoRef.value,
+    )
+
+    // 添加餐边柜
+    addSideboard(
+      scene,
+      assetManager,
+      pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
+      lightingStripLightMapRef,
+    )
+
+
+    // 添加鞋柜
+    addShoeCabinet(
+      scene,
+      assetManager,
+      pointerControlsIntersetObjectsRef,
+      lightingStripLightMapRef,
+    )
 
     // 添加所有房间吊灯
     addCeilingLamp(
@@ -187,7 +237,6 @@ const initializeHandle = (
 
     // 初始化整体/漫游模式切换相关
     initModeToggle(
-      scene,
       camera,
       containerRef.value,
       pointerControlsRef,
@@ -196,16 +245,50 @@ const initializeHandle = (
       viewModeRef,
       orbitControlsRef,
       animationStartTimeRef,
+      suspendedCeilingListRef.value,
       lampListRef.value,
       lampSwitchListRef.value,
-      allCeilingLampsVisibleToggle,
+      lightingStripLightMapRef.value
     );
 
     // 添加鼠标准星
-    addCrosshair(scene, containerRef.value, labelRendererRef, raycasterRef, reticleRef);
+    addCrosshair(containerRef.value, raycasterRef);
 
     // 添加茶几
     addTeaTable(scene, assetManager);
+
+    // 添加窗帘
+    addCurtain(
+      scene,
+      assetManager,
+      curtainListRef,
+      pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
+    );
+
+    // 添加冰箱
+    addFridge(
+      scene,
+      assetManager,
+      fridgeDoorListRef,
+      pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
+    );
+
+    // 添加哑光钢化玻璃白板
+    addGlassWhiteboard(scene, renderer, assetManager, pointerControlsIntersetObjectsRef);
+
+    // 添加装饰背景板
+    addDecorateBackgroundPanel(scene, assetManager, pointerControlsIntersetObjectsRef, lightingStripLightMapRef);
+
+    // 添加客厅柜
+    addLivingRoomCabinet(
+      scene,
+      assetManager,
+      pointerControlsIntersetObjectsRef,
+      mouseRaycasterIntersectObjectsRef,
+      lightingStripLightMapRef
+    );
 
     // 启用双后处理器架构
     useDualComposer(
@@ -233,12 +316,12 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
     pointerControlsRef,
     initialCameraPosition,
     initialCameraTarget,
-    ceilingGroupRef,
+    ceilingRef,
     animationStartTimeRef,
     animationDurationRef,
+    suspendedCeilingListRef.value,
     lampListRef.value,
     lampSwitchListRef.value,
-    allCeilingLampsVisibleToggle
   );
 
   // 房门开/关动画过程渲染
@@ -246,6 +329,12 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
 
   // 磨砂玻璃门开/关动画过程渲染
   groundGlassDoorAnimationRender(groundGlassDoorListRef.value)
+
+  // 窗帘开/关动画过程渲染
+  curtainAnimationRender(curtainListRef.value);
+
+  // 冰箱门开/关动画过程渲染
+  fridgeDoorAnimationRender(fridgeDoorListRef.value);
 
   // 整体模式下更新轨道控制器
   if (viewModeRef.value === 'overview' && orbitControlsRef.value && !animatingRef.value) {
@@ -255,16 +344,20 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
   // 漫游模式下第一人称控制器和摄像机移动过程渲染
   pointerControlsMoveRender(camera, animatingRef, viewModeRef, pointerControlsRef, pointerControlsIntersetObjectsRef.value, prevTimeRef)
 
-  // 漫游模式下，实时计算距离摄像机最近的n个吊灯，打开吊灯光源，其他则关闭（客厅和餐厅吊灯除外）
-  dynamicOptimizationLampLightRender(camera, animatingRef, viewModeRef);
+  // 漫游模式下，根据相机位置实时计算，打开或关闭灯带光源
+  dynamicOptimizationLightingStripRender(
+    camera,
+    animatingRef,
+    viewModeRef,
+    lightingStripLightMapRef.value,
+    lampListRef.value
+  );
 
   // 鼠标准星渲染
   crosshairRender(
-    scene,
     camera,
-    labelRendererRef.value,
+    containerRef.value,
     raycasterRef.value,
-    reticleRef.value,
     viewModeRef,
     mousePositionRef,
     mouseRaycasterIntersectObjectsRef,
@@ -292,8 +385,6 @@ watch(
   () => globalContext.value.menuWidth,
   () => {
     resize();
-    // 同时调整 labelRenderer 的大小
-    resizeCrosshair(containerRef.value, labelRendererRef.value);
   }
 );
 
@@ -304,9 +395,10 @@ const onToggleViewMode = (e: any) => {
     viewModeRef,
     orbitControlsRef,
     animationStartTimeRef,
+    suspendedCeilingListRef.value,
     lampListRef.value,
     lampSwitchListRef.value,
-    allCeilingLampsVisibleToggle
+    lightingStripLightMapRef.value
   )
 }
 </script>
@@ -330,9 +422,6 @@ const onToggleViewMode = (e: any) => {
         ? '空格切换模式'
         : isPointerLockedRef ? 'WASD移动 | 鼠标转动视角 | ESC解锁鼠标 | 空格切换模式' : '点击屏幕解锁鼠标 | 空格切换模式' }}
     </div>
-
-    <!-- 准星 - 在漫游模式下固定在屏幕中心，否则跟随鼠标 -->
-    <div :className="`crosshair ${viewModeRef === 'roaming' ? 'centered' : ''}`" />
     <video ref="tvVideoRef" id="tvVideo" muted autoPlay preload="true" loop x5-video-player-fullscreen="true"
       x5-playsinline="true" playsInline webkit-playsinline="true" crossOrigin="anonymous" :style="{
         display: 'none'
@@ -371,24 +460,6 @@ const onToggleViewMode = (e: any) => {
 
     div {
       margin: 3px 0;
-    }
-  }
-
-  .crosshair {
-    width: 12px;
-    height: 12px;
-    border: 2px solid #ff3b32;
-    border-radius: 50%;
-    box-sizing: border-box;
-    pointer-events: none;
-    position: absolute;
-    top: -12px;
-    left: -12px;
-
-    &.centered {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
     }
   }
 

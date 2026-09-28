@@ -14,28 +14,39 @@ import {
 import type { AssetManager } from "hooks/threejs/useInitialize";
 import addVase from "./addVase";
 import { generateEllipticalTorusGeometry } from "../utils";
+import {
+  WALL_10_POSITION_X,
+  WALL_58_POSITION_Z,
+} from "../hardDecoration/addHouseStructure";
 
+// 茶几位置
+const TEA_TABLE_POSITION = new Vector3(
+  WALL_10_POSITION_X + 0.1,
+  0.025,
+  WALL_58_POSITION_Z - 0.4,
+);
 const PANEL_LONG_RIDIUS = 1.8; // 茶几桌面的长半径
 const PANEL_SHORT_RIDIUS = 1.2; // 茶几桌面的短半径
 const PANEL_THICKNESS = 0.055; // 茶几桌面厚度
-const TEA_TABLE_LEG_LENGTH = 0.6; // 茶几桌腿长度
+const TEA_TABLE_LEG_LENGTH = 0.8; // 茶几桌腿长度
 const PANEL_TORUS_TUBE_RIDIUS = 0.012; // 茶几桌面金属圆环截面半径
 const GLASS_RADIUS = 0.85; // 下层玻璃隔板的半径
 const GLASS_PANEL_DISTANCE = 0.36; // 下层玻璃隔板与桌面的距离
 const PILLAR_HEIGHT = 0.48; // 中心支撑柱的高度
 const TEA_TABLE_LEG_CONTACT_RADIUS = 0.035; // 茶几桌腿的球形接头的半径
-const TEA_TABLE_POSITION = new Vector3(-7.8, 0.025, -1.8); // 茶几位置
-const vasePosition = new Vector3(
+// 花瓶位置
+const VASE_POSITION = new Vector3(
   0,
   TEA_TABLE_LEG_LENGTH + TEA_TABLE_LEG_CONTACT_RADIUS / 2 + PANEL_THICKNESS,
   0,
-); // 花瓶位置
+);
 
 const addTeaTable = (scene: Scene, assetManager: AssetManager) => {
   const teaTableGroup = new Group();
   teaTableGroup.name = "茶几";
   teaTableGroup.castShadow = true;
   teaTableGroup.receiveShadow = true;
+  teaTableGroup.scale.set(0.5, 0.5, 0.5);
 
   // 圆柱体
   const cylinderGeometry = assetManager.geometries.get("cylinderGeometry");
@@ -204,7 +215,7 @@ const addTeaTable = (scene: Scene, assetManager: AssetManager) => {
   scene.add(teaTableGroup);
 
   // 添加花瓶
-  addVase(teaTableGroup, assetManager, vasePosition);
+  addVase(teaTableGroup, assetManager, VASE_POSITION);
 };
 
 export default addTeaTable;
