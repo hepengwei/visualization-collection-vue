@@ -2,63 +2,34 @@
  * 添加鼠标准星
  */
 import { Ref, ShallowRef } from "vue";
-import {
-  Scene,
-  PerspectiveCamera,
-  Vector2,
-  Vector3,
-  Raycaster,
-  Object3D,
-} from "three";
-import {
-  CSS2DRenderer,
-  CSS2DObject,
-  // @ts-ignore
-} from "three/examples/jsm/renderers/CSS2DRenderer";
+import { PerspectiveCamera, Vector2, Raycaster, Object3D } from "three";
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass.js";
 
 let frameCount = 0;
-const RAY_INTERVAL = 6; // 每 N 帧检测一次
+const RAY_INTERVAL = 5; // 每 N 帧检测一次
+const CROSSHAIR_RADIUS = 6; // 鼠标准星半径
 
 export const addCrosshair = (
-  scene: Scene,
-  container: HTMLDivElement | null,
-  labelRendererRef: ShallowRef<CSS2DRenderer | null>,
+  container: HTMLDivElement,
   raycasterRef: ShallowRef<Raycaster | null>,
-  reticleRef: ShallowRef<CSS2DObject | null>,
 ) => {
   frameCount = 0;
   if (container) {
-    // 创建 labelRenderer
-    const labelRenderer = new CSS2DRenderer();
-    labelRendererRef.value = labelRenderer;
-    const { clientWidth, clientHeight } = container;
-    labelRenderer.setSize(clientWidth, clientHeight);
-    labelRenderer.domElement.style.position = "absolute";
-    labelRenderer.domElement.style.top = "0";
-    labelRenderer.domElement.style.left = "0";
-    labelRenderer.domElement.style.pointerEvents = "none";
-    labelRenderer.domElement.style.zIndex = "10";
-    container.appendChild(labelRenderer.domElement);
-  }
-
-  if (scene) {
-    // 创建鼠标准星
-    const reticleDiv = document.createElement("div");
-    // 必须通过内联样式设置，因为这是动态创建的 DOM，Vue 的 scoped CSS 无法应用
-    reticleDiv.style.width = "12px";
-    reticleDiv.style.height = "12px";
-    reticleDiv.style.border = "2px solid #ff3b32";
-    reticleDiv.style.borderRadius = "50%";
-    reticleDiv.style.boxSizing = "border-box";
-    reticleDiv.style.pointerEvents = "none";
-    reticleDiv.style.position = "absolute";
-    reticleDiv.style.top = "-12px";
-    reticleDiv.style.left = "-12px";
-    const reticle = new CSS2DObject(reticleDiv);
-    reticle.scale.set(0.2, 0.2, 0.2); // 控制大小
-    reticleRef.value = reticle;
-    scene?.add(reticle);
+    // 创建2D准星
+    const crosshair2D = document.createElement("div");
+    crosshair2D.style.position = "absolute";
+    crosshair2D.style.top = "0";
+    crosshair2D.style.left = "0";
+    crosshair2D.style.pointerEvents = "none";
+    crosshair2D.style.zIndex = "11";
+    crosshair2D.style.boxSizing = "border-box";
+    crosshair2D.style.border = "2px solid #ff3b32";
+    crosshair2D.style.borderRadius = "50%";
+    crosshair2D.style.transform = "translate(-50%, -50%)";
+    crosshair2D.style.width = `${CROSSHAIR_RADIUS * 2}px`;
+    crosshair2D.style.height = `${CROSSHAIR_RADIUS * 2}px`;
+    crosshair2D.id = "crosshair-2d";
+    container.appendChild(crosshair2D);
   }
 
   // 创建射线
@@ -67,131 +38,98 @@ export const addCrosshair = (
   raycaster.far = 50; // 超过 50 个单位不检测
 };
 
-export const resizeCrosshair = (
-  container: HTMLDivElement | null,
-  labelRenderer: CSS2DRenderer | null,
-) => {
-  if (container && labelRenderer) {
-    labelRenderer.setSize(container.clientWidth, container.clientHeight);
-  }
-};
-
 export const crosshairRender = (
-  scene: Scene,
   camera: PerspectiveCamera,
-  labelRenderer: CSS2DRenderer | null,
+  container: HTMLDivElement | null,
   raycaster: Raycaster | null,
-  reticle: CSS2DObject | null,
   viewModeRef: Ref<"overview" | "roaming">,
   mousePositionRef: Ref<Vector2>,
   mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
   outlinePass: OutlinePass | null,
-  mouseRaycasterIntersectedRef: ShallowRef<Object3D | null>,
+  mouseRaycasterIntersectedRef: Ref<Object3D | null>,
 ) => {
-  if (!reticle) return;
-  const showCrosshair = viewModeRef.value === "overview"; // 是否显示3D准星
-  // 控制3D准星的显示/隐藏, 在漫游模式下隐藏3D准星
-  reticle.visible = showCrosshair;
-  if (raycaster) {
-    // 在漫游模式下，准星固定在屏幕中心(0, 0)；在整体模式下，跟随鼠标位置
+  if (!container || !raycaster || !mousePositionRef.value) return;
+  const { clientWidth, clientHeight } = container;
+  const crosshair2D = document.getElementById("crosshair-2d");
+  const isOverviewMode = viewModeRef.value === "overview";
+
+  // 整体模式：使用 2D 准星（直接跟随鼠标）；漫游模式：使用 3D 准星（屏幕中心）
+  if (crosshair2D) {
+    if (isOverviewMode) {
+      // 使用 transform 居中，CSS 已设置 transform: translate(-50%, -50%)
+      crosshair2D.style.left = `${mousePositionRef.value.x || 0}px`;
+      crosshair2D.style.top = `${mousePositionRef.value.y || 0}px`;
+    } else {
+      crosshair2D.style.left = `${clientWidth / 2}px`;
+      crosshair2D.style.top = `${clientHeight / 2}px`;
+    }
+  }
+
+  // 射线检测节流（用于高亮物体检测，与准星位置无关）
+  frameCount++;
+  if (frameCount % RAY_INTERVAL === 0) {
     const crosshairPosition =
       viewModeRef.value === "roaming"
         ? new Vector2(0, 0) // 屏幕中心
-        : mousePositionRef.value; // 鼠标位置
-    raycaster.setFromCamera(crosshairPosition as Vector2, camera);
+        : new Vector2(
+            ((mousePositionRef.value?.x || 0) / clientWidth) * 2 - 1,
+            -((mousePositionRef.value?.y || 0) / clientHeight) * 2 + 1,
+          ); // 鼠标位置（归一化坐标）
+    raycaster.setFromCamera(crosshairPosition, camera);
 
-    // 每帧都更新准星位置（让视觉跟随流畅），默认沿射线到一个固定距离
-    if (showCrosshair) {
-      const defaultDistance = 10; // 默认距离
-      const defaultPoint = new Vector3();
-      raycaster.ray.at(defaultDistance, defaultPoint);
-      reticle?.position.copy(defaultPoint);
-    }
-
-    // 射线检测节流（只节流物体检测，不节流视觉更新），提高性能
-    frameCount++;
-    if (frameCount % RAY_INTERVAL === 0) {
-      const hits = raycaster.intersectObjects(
-        mouseRaycasterIntersectObjectsRef.value,
-        true,
-      );
-      if (hits.length > 0) {
-        // 准星贴在命中点
-        if (showCrosshair) {
-          reticle.position.copy(hits[0].point);
+    const hits = raycaster.intersectObjects(
+      mouseRaycasterIntersectObjectsRef.value,
+      true,
+    );
+    if (hits.length > 0) {
+      // 检测到物体
+      if (outlinePass) {
+        let namedObj: Object3D = hits[0].object;
+        // 沿父链向上找到有 name 的节点
+        while (!namedObj.name && namedObj.parent) {
+          namedObj = namedObj.parent;
         }
-
-        if (outlinePass) {
-          let namedObj: Object3D = hits[0].object;
-          // 沿父链向上找到有 name 的节点
-          while (!namedObj.name && namedObj.parent) {
-            namedObj = namedObj.parent;
-          }
-          // 将墙体、玻璃窗和垭口包边加入鼠标射线检测是为了防止隔着这些物体高亮了可交互的物体
-          if (
-            namedObj.name &&
-            !["墙体", "玻璃窗", "垭口包边"].includes(namedObj.name)
-          ) {
-            // 处理高亮切换
-            if (mouseRaycasterIntersectedRef.value !== namedObj) {
-              // 设置新的高亮
+        // 将墙体、玻璃窗等加入鼠标射线检测是为了防止隔着这些物体高亮了可交互的物体
+        if (
+          namedObj.name &&
+          ![
+            "墙体",
+            "玻璃窗",
+            "垭口包边",
+            "餐边柜",
+            "冰箱",
+            "客厅柜",
+            "儿童衣柜",
+          ].includes(namedObj.name)
+        ) {
+          // 处理高亮切换
+          if (mouseRaycasterIntersectedRef.value !== namedObj) {
+            // 设置新的高亮
+            if (
+              ["冰箱门左半边", "冰箱门右半边"].includes(namedObj.name) &&
+              namedObj.parent
+            ) {
+              outlinePass.selectedObjects = [namedObj.parent];
+              mouseRaycasterIntersectedRef.value = namedObj.parent;
+            } else {
               outlinePass.selectedObjects = [namedObj];
               mouseRaycasterIntersectedRef.value = namedObj;
             }
-          } else {
-            // 没打到物体：准星飞到远处
-            if (showCrosshair) {
-              const t = camera.far * 0.95; // 接近远裁面
-              const farPoint = new Vector3();
-              raycaster.ray.at(t, farPoint);
-              reticle?.position.copy(farPoint);
-            }
-            if (outlinePass) {
-              // 没有瞄准任何东西，清除高亮
-              if (mouseRaycasterIntersectedRef.value) {
-                outlinePass.selectedObjects = [];
-              }
-            }
-            mouseRaycasterIntersectedRef.value = null;
           }
-        }
-      } else {
-        // 没打到物体：准星飞到远处
-        if (showCrosshair) {
-          const t = camera.far * 0.95; // 接近远裁面
-          const farPoint = new Vector3();
-          raycaster.ray.at(t, farPoint);
-          reticle.position.copy(farPoint);
-        }
-        if (outlinePass) {
-          // 没有瞄准任何东西，清除高亮
-          if (mouseRaycasterIntersectedRef.value) {
+        } else {
+          // 没有瞄准任何可交互物体，清除高亮
+          if (outlinePass && mouseRaycasterIntersectedRef.value) {
             outlinePass.selectedObjects = [];
           }
+          mouseRaycasterIntersectedRef.value = null;
         }
-        mouseRaycasterIntersectedRef.value = null;
       }
+    } else {
+      // 没打到物体，清除高亮
+      if (outlinePass && mouseRaycasterIntersectedRef.value) {
+        outlinePass.selectedObjects = [];
+      }
+      mouseRaycasterIntersectedRef.value = null;
     }
   }
-  labelRenderer.render(scene, camera);
-};
-
-export const createOutlinePass = (
-  scene: Scene,
-  camera: PerspectiveCamera,
-  container: HTMLDivElement,
-) => {
-  const { clientWidth, clientHeight } = container;
-  const outlinePass = new OutlinePass(
-    new Vector2(clientWidth, clientHeight),
-    scene,
-    camera,
-  );
-  outlinePass.visibleEdgeColor.set("#1758ee"); // 高亮颜色
-  outlinePass.hiddenEdgeColor.set("#1758ee");
-  outlinePass.edgeThickness = 1.6; // 边缘厚度
-  outlinePass.edgeStrength = 10; // 边缘强度
-  outlinePass.edgeGlow = 1; // 发光
-  outlinePass.downSampleRatio = 1; // 抗锯齿
-  return outlinePass;
 };

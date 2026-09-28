@@ -2,7 +2,7 @@
 /**
  * 地球展示
  */
-import { ref, Ref, watch, onUnmounted } from "vue";
+import { ref, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { AppstoreOutlined } from "@ant-design/icons-vue";
 import {
@@ -51,7 +51,7 @@ import glow from "images/threejs/glow.png";
 import aperture from "images/threejs/aperture.png";
 import lightColumn from "images/threejs/lightColumn.png";
 
-const cameraInitPosition = { x: 0, y: 20, z: 110 }; // 相机初始位置
+const cameraInitPosition = new Vector3(0, 20, 170); // 相机初始位置
 const earthRadius = 50; // 地球半径
 const lightColumnStartColor = 0xe4007f; // 起始地址的光柱颜色
 const lightColumnEndColor = 0xffffff; // 结束地址的光柱颜色
@@ -381,11 +381,7 @@ const initializeHandle = (
         scene.background = resourceManager.textures.pageBg;
       }
 
-      camera.position.set(
-        cameraInitPosition.x,
-        cameraInitPosition.y,
-        cameraInitPosition.z
-      );
+      camera.position.copy(cameraInitPosition);
 
       createStarrySky(scene);
       createEarthObj(scene);

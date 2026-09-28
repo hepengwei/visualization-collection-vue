@@ -5,8 +5,6 @@ import { Ref } from "vue";
 import {
   Scene,
   PerspectiveCamera,
-  CircleGeometry,
-  CylinderGeometry,
   RingGeometry,
   TorusGeometry,
   MeshBasicMaterial,
@@ -22,56 +20,107 @@ import {
   Object3D,
 } from "three";
 import type { AssetManager } from "hooks/threejs/useInitialize";
-import { wallHeight } from "./addHouseStructure";
 import type { ViewMode } from "../function/modeToggle";
 import {
   addCeilingLampSwitch,
   ceilingLampSwitchToggle,
 } from "./addCeilingLampSwitch";
+import {
+  WALL_HEIGHT,
+  WALL_1_POSITION_X,
+  WALL_10_POSITION_X,
+  WALL_15_POSITION_X,
+  WALL_25_POSITION_X,
+  WALL_33_POSITION_X,
+  WALL_34_POSITION_X,
+  WALL_55_POSITION_X,
+  WALL_75_POSITION_X,
+  WALL_3_POSITION_Z,
+  WALL_19_POSITION_Z,
+  WALL_40_POSITION_Z,
+  WALL_42_POSITION_Z,
+  WALL_53_POSITION_Z,
+  WALL_58_POSITION_Z,
+  WALL_67_POSITION_Z,
+} from "../hardDecoration/addHouseStructure";
 
-const LAMP_RADIUS = 0.9; // 灯的半径
-const LAMP_THICKNESS = 0.12; // 灯的厚度
-const DYNAMIC_OPTIMIZATION_LAMP_COUNT = 2; // 动态优化吊灯时亮灯的个数
-const ceilingLampY = wallHeight - LAMP_THICKNESS / 2 - 0.05;
+const LAMP_RADIUS = 0.65; // 灯的半径
+const LAMP_THICKNESS = 0.1; // 灯的厚度
+const CEILING_LAMP_Y = WALL_HEIGHT - LAMP_THICKNESS / 2 - 0.05;
 const lampConfigList = [
   {
     name: "客厅吊灯",
-    position: new Vector3(-8.5, ceilingLampY, -1),
+    position: new Vector3(
+      WALL_10_POSITION_X + 0.8,
+      CEILING_LAMP_Y,
+      WALL_58_POSITION_Z - 0.2,
+    ),
     noNeedDynamicOptimization: true,
   },
   {
     name: "餐厅吊灯",
-    position: new Vector3(11, ceilingLampY, -1.4),
+    position: new Vector3(
+      WALL_34_POSITION_X,
+      CEILING_LAMP_Y,
+      WALL_42_POSITION_Z + 0.45,
+    ),
     noNeedDynamicOptimization: true,
   },
   {
     name: "主卧吊灯",
-    position: new Vector3(-9, ceilingLampY, -11),
+    position: new Vector3(
+      WALL_1_POSITION_X + 0.1,
+      CEILING_LAMP_Y,
+      WALL_3_POSITION_Z + 0.4,
+    ),
+    scale: new Vector3(0.8, 0.8, 0.8),
   },
   {
     name: "儿童房吊灯",
-    position: new Vector3(11, ceilingLampY, -11),
+    position: new Vector3(
+      WALL_33_POSITION_X - 0.1,
+      CEILING_LAMP_Y,
+      WALL_40_POSITION_Z - 0.1,
+    ),
+    scale: new Vector3(0.7, 0.7, 0.7),
   },
   {
     name: "次卧吊灯",
-    position: new Vector3(-9, ceilingLampY, 8),
+    position: new Vector3(
+      WALL_55_POSITION_X - 0.4,
+      CEILING_LAMP_Y,
+      WALL_53_POSITION_Z + 0.2,
+    ),
+    scale: new Vector3(0.7, 0.7, 0.7),
   },
   {
     name: "厨房吊灯",
-    position: new Vector3(11, ceilingLampY, 5.4),
+    position: new Vector3(
+      WALL_75_POSITION_X,
+      CEILING_LAMP_Y,
+      WALL_67_POSITION_Z - 0.6,
+    ),
+    scale: new Vector3(0.5, 0.5, 0.5),
   },
   {
     name: "外厕所吊灯",
-    position: new Vector3(3.6, wallHeight - LAMP_THICKNESS / 2 - 0.05, -12.5),
-    scale: new Vector3(0.6, 0.6, 0.6),
+    position: new Vector3(
+      WALL_25_POSITION_X,
+      WALL_HEIGHT - LAMP_THICKNESS / 2 - 0.02,
+      WALL_19_POSITION_Z,
+    ),
+    scale: new Vector3(0.5, 0.5, 0.5),
   },
   {
     name: "主卧厕所吊灯",
-    position: new Vector3(-0.4, wallHeight - LAMP_THICKNESS / 2 - 0.05, -12.5),
-    scale: new Vector3(0.6, 0.6, 0.6),
+    position: new Vector3(
+      WALL_15_POSITION_X,
+      WALL_HEIGHT - LAMP_THICKNESS / 2 - 0.02,
+      WALL_19_POSITION_Z,
+    ),
+    scale: new Vector3(0.5, 0.5, 0.5),
   },
 ];
-let dynamicOptimizationlampList: Group[] = []; // 动态优化吊灯的列表（动态显示隐藏光源，提高性能）
 
 export const addCeilingLamp = (
   scene: Scene,
@@ -80,20 +129,6 @@ export const addCeilingLamp = (
   lampSwitchListRef: Ref<Group[]>,
   mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
 ) => {
-  dynamicOptimizationlampList = [];
-
-  // 圆形平面
-  let circleGeometry = assetManager.geometries.get("circleGeometry");
-  if (!circleGeometry) {
-    circleGeometry = new CircleGeometry(1);
-    assetManager.geometries.set("circleGeometry", circleGeometry);
-  }
-  // 圆柱体
-  let cylinderGeometry = assetManager.geometries.get("cylinderGeometry");
-  if (!cylinderGeometry) {
-    cylinderGeometry = new CylinderGeometry(1, 1, 1, 64, 1, false);
-    assetManager.geometries.set("cylinderGeometry", cylinderGeometry);
-  }
   // 吊灯底部圆环平面
   const ceilingLampRingGeometry = new RingGeometry(
     LAMP_RADIUS * 0.96,
@@ -176,7 +211,7 @@ export const addCeilingLamp = (
 
   // 添加所有吊灯
   lampConfigList.forEach((item) => {
-    const { name, position, noNeedDynamicOptimization, scale } = item;
+    const { name, position, scale } = item;
     const lamp = createLamp(assetManager);
     lamp.name = name;
     lamp.position.copy(position);
@@ -184,9 +219,6 @@ export const addCeilingLamp = (
       lamp.scale.copy(scale as Vector3);
     }
     lampListRef.value.push(lamp);
-    if (!noNeedDynamicOptimization) {
-      dynamicOptimizationlampList.push(lamp);
-    }
     scene.add(lamp);
   });
 
@@ -307,13 +339,14 @@ const createUniformLightTexture = () => {
 };
 
 // 创建并添加吊灯的光源
-const addLampLight = (lampGroup: Group, intensity = 3 * Math.PI) => {
+const addLampLight = (lampGroup: Group, intensity = 1.2 * Math.PI) => {
   const lightColor = kelvinToColor(4000); // 色温，值越大颜色越冷
-  const light = new PointLight(lightColor, intensity, 30, 1.2);
+  const light = new PointLight(lightColor, intensity, 10, 1.2);
   light.position.set(0, 0, 0);
   light.castShadow = true;
   light.shadow.mapSize.set(512, 512);
   light.shadow.bias = -0.0005;
+  light.shadow.normalBias = 0.03;
   light.shadow.camera.near = 0.1;
   light.shadow.camera.far = 10;
 
@@ -383,51 +416,4 @@ export const ceilingLampSwitchStatusToggle = (
       }
     }
   });
-};
-
-// 漫游模式下，实时计算距离摄像机最近的n个吊灯，打开吊灯光源，其他则关闭（客厅和餐厅吊灯除外）
-// 为了解决如果当前场景中参与阴影计算的光源太多，则模型会不显示的问题，提高性能
-export const dynamicOptimizationLampLightRender = (
-  camera: PerspectiveCamera,
-  animatingRef: Ref<boolean>,
-  viewModeRef: Ref<ViewMode>,
-) => {
-  if (viewModeRef.value === "roaming" && !animatingRef.value) {
-    const cameraPos = camera.position;
-    const distanceInfoList: { lamp: Group; dist: number }[] = [];
-    dynamicOptimizationlampList.forEach((lamp: Group) => {
-      const lampPos = lamp.position;
-      const dist = cameraPos.distanceTo(lampPos);
-      if (distanceInfoList.length === 0) {
-        distanceInfoList.push({ lamp, dist });
-      } else {
-        for (let i = 0, l = distanceInfoList.length; i < l; i++) {
-          const item = distanceInfoList[i];
-          if (dist < item.dist) {
-            distanceInfoList.splice(i, 0, { lamp, dist });
-            break;
-          } else if (i === l - 1) {
-            distanceInfoList.push({ lamp, dist });
-          }
-        }
-      }
-      distanceInfoList.forEach(
-        (item: { lamp: Group; dist: number }, index: number) => {
-          if (index < DYNAMIC_OPTIMIZATION_LAMP_COUNT) {
-            item.lamp.traverse((child) => {
-              if (child instanceof PointLight) {
-                child.visible = true;
-              }
-            });
-          } else {
-            item.lamp.traverse((child) => {
-              if (child instanceof PointLight) {
-                child.visible = false;
-              }
-            });
-          }
-        },
-      );
-    });
-  }
 };
