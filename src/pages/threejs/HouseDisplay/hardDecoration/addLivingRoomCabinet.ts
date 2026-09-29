@@ -7,7 +7,6 @@ import {
   MeshPhysicalMaterial,
   Group,
   Vector3,
-  Object3D,
   RectAreaLight,
   Mesh,
 } from "three";
@@ -82,17 +81,13 @@ const SECRET_COMPARTENT_WIDTH =
 const addLivingRoomCabinet = (
   scene: Scene,
   assetManager: AssetManager,
-  pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
-  mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
-  lightingStripLightMapRef: Ref<Record<string, RectAreaLight[]>>,
+  lightStripLightingMapRef: Ref<Record<string, RectAreaLight[]>>,
 ) => {
   const livingRoomCabinet = createLivingRoomCabinet(
     assetManager,
-    lightingStripLightMapRef,
+    lightStripLightingMapRef,
   );
   livingRoomCabinet.name = "客厅柜";
-  pointerControlsIntersetObjectsRef.value.push(livingRoomCabinet);
-  mouseRaycasterIntersectObjectsRef.value.push(livingRoomCabinet);
   livingRoomCabinet.rotation.y = Math.PI;
   livingRoomCabinet.position.copy(LIVING_ROOM_CABINET_POSITON);
   scene.add(livingRoomCabinet);
@@ -101,7 +96,7 @@ const addLivingRoomCabinet = (
 // 创建客厅柜
 const createLivingRoomCabinet = (
   assetManager: AssetManager,
-  lightingStripLightMapRef: Ref<Record<string, RectAreaLight[]>>,
+  lightStripLightingMapRef: Ref<Record<string, RectAreaLight[]>>,
 ) => {
   // 灰白色木板材质
   const woodBoardLightMaterial = assetManager.materials.get(
@@ -513,7 +508,7 @@ const createLivingRoomCabinet = (
     false,
   );
   light2 && lightList.push(light2);
-  lightingStripLightMapRef.value[LIGHT_GROUP_FIELD.LIVING_ROOM_CABINET] =
+  lightStripLightingMapRef.value[LIGHT_GROUP_FIELD.LIVING_ROOM_CABINET] =
     lightList;
 
   /**第四层抽屉门*/

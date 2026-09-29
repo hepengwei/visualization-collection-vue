@@ -4,7 +4,6 @@
 import { Ref } from "vue";
 import {
   Scene,
-  PerspectiveCamera,
   RingGeometry,
   TorusGeometry,
   MeshBasicMaterial,
@@ -20,7 +19,6 @@ import {
   Object3D,
 } from "three";
 import type { AssetManager } from "hooks/threejs/useInitialize";
-import type { ViewMode } from "../function/modeToggle";
 import {
   addCeilingLampSwitch,
   ceilingLampSwitchToggle,
@@ -126,6 +124,7 @@ export const addCeilingLamp = (
   scene: Scene,
   assetManager: AssetManager,
   lampListRef: Ref<Group[]>,
+  lampLightingListRef: Ref<PointLight[]>,
   lampSwitchListRef: Ref<Group[]>,
   mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
 ) => {
@@ -212,7 +211,7 @@ export const addCeilingLamp = (
   // 添加所有吊灯
   lampConfigList.forEach((item) => {
     const { name, position, scale } = item;
-    const lamp = createLamp(assetManager);
+    const lamp = createLamp(assetManager, lampLightingListRef, name);
     lamp.name = name;
     lamp.position.copy(position);
     if (scale) {
@@ -233,7 +232,11 @@ export const addCeilingLamp = (
 };
 
 // 创建吊灯
-const createLamp = (assetManager: AssetManager, intensity?: number) => {
+const createLamp = (
+  assetManager: AssetManager,
+  lampLightingListRef: Ref<PointLight[]>,
+  name: string,
+) => {
   const lampGroup = new Group();
   const circleGeometry = assetManager.geometries.get("circleGeometry");
   const cylinderGeometry = assetManager.geometries.get("cylinderGeometry");
@@ -307,7 +310,7 @@ const createLamp = (assetManager: AssetManager, intensity?: number) => {
   lampGroup.add(bottomTorus);
 
   // 添加吊灯光源
-  addLampLight(lampGroup, intensity);
+  addLampLight(lampGroup, lampLightingListRef, `${name}光源`);
 
   // 默认隐藏
   lampGroup.visible = false;
@@ -339,9 +342,14 @@ const createUniformLightTexture = () => {
 };
 
 // 创建并添加吊灯的光源
-const addLampLight = (lampGroup: Group, intensity = 1.2 * Math.PI) => {
+const addLampLight = (
+  lampGroup: Group,
+  lampLightingListRef: Ref<PointLight[]>,
+  name: string,
+) => {
   const lightColor = kelvinToColor(4000); // 色温，值越大颜色越冷
-  const light = new PointLight(lightColor, intensity, 10, 1.2);
+  const light = new PointLight(lightColor, 1.4 * Math.PI, 10, 1.2);
+  light.name = name;
   light.position.set(0, 0, 0);
   light.castShadow = true;
   light.shadow.mapSize.set(512, 512);
@@ -353,6 +361,7 @@ const addLampLight = (lampGroup: Group, intensity = 1.2 * Math.PI) => {
   // 默认隐藏
   light.visible = false;
 
+  lampLightingListRef.value?.push(light);
   lampGroup.add(light);
 };
 

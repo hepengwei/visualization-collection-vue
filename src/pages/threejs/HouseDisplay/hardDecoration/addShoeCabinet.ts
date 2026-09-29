@@ -73,12 +73,10 @@ const CHEST_WIDTH =
 const addShoeCabinet = (
   scene: Scene,
   assetManager: AssetManager,
-  pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
   lightingStripLightMapRef: Ref<Record<string, RectAreaLight[]>>,
 ) => {
   const shoeCabinet = createShoeCabinet(assetManager, lightingStripLightMapRef);
   shoeCabinet.name = "鞋柜";
-  pointerControlsIntersetObjectsRef.value.push(shoeCabinet);
   shoeCabinet.rotation.y = -Math.PI / 2;
   shoeCabinet.position.copy(SHOE_CABINET_POSITON);
   scene.add(shoeCabinet);

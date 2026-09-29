@@ -27,7 +27,7 @@ import {
 } from "../hardDecoration/addHouseStructure";
 import { allSuspendedCeilingVisibleToggle } from "../hardDecoration/addSuspendedCeiling";
 import { allCeilingLampsVisibleToggle } from "../softDecoration/addCeilingLamp";
-import { hideAllLightingStripLight } from "./dynamicOptimizationLightingStripRender";
+import { hideAllLightStripLighting } from "./dynamicOptimizationLightingStripRender";
 
 export type ViewMode = "overview" | "roaming";
 
@@ -35,7 +35,7 @@ export type ViewMode = "overview" | "roaming";
 const ROAMING_CONFIG = {
   cameraHeight: 2.2, // 相机离地板的高度（米）
   moveSpeed: 3, // WASD移动速度
-  collisionDistance: 0.2, // 碰撞检测距离（米）
+  collisionDistance: 0.1, // 碰撞检测距离（米）
 };
 
 // 开始漫游模式时相机的位置
@@ -59,24 +59,29 @@ const direction = new Vector3();
 // 复用碰撞检测射线，避免每帧创建
 const collisionRaycaster = new Raycaster();
 
+// 复用对象，避免每帧重复创建
+const tempOldPosition = new Vector3();
+const tempMoveVector = new Vector3();
+const tempMoveDirection = new Vector3();
+
 export const useModeToggle = (
   containerRef: Ref<HTMLDivElement | null>,
   globalContext: Ref<GlobalContext>,
   mouseRaycasterIntersectedRef: ShallowRef<Object3D | null>,
   orbitControlsRef: ShallowRef<OrbitControls | null>,
   onClickDoor?: (door: Mesh) => void,
-  onClickGroundGlassDoor?: (groundGlassDoor: Group) => void,
+  onClickGroundGlassDoor?: (groundGlass: Mesh) => void,
   tvVideoRef?: Ref<HTMLVideoElement | null>,
   onClickTVScreen?: (video?: HTMLVideoElement | null) => void,
   phoneVideoRef?: Ref<HTMLVideoElement | null>,
   onClickPhoneScreen?: (video?: HTMLVideoElement | null) => void,
   lampListRef?: Ref<Group[]>,
   onClickCeilingLampSwitch?: (
-    ceilingLampSwitch: Group,
+    ceilingLampSwitchBackBox: Mesh,
     lampList?: Group[],
   ) => void,
-  onClickCurtain?: (curtain: Group) => void,
-  onClickFridgeDoor?: (fridgeDoor: Group) => void,
+  onClickCurtain?: (halfCurtain: Mesh) => void,
+  onClickFridgeDoor?: (fridgeHalfDoor: Mesh) => void,
 ) => {
   // 模式状态: 'overview' 整体模式, 'roaming' 漫游模式
   const viewModeRef = ref<ViewMode>("overview");
@@ -108,14 +113,14 @@ export const useModeToggle = (
         onClickDoor?.(mouseRaycasterIntersectedRef.value as Mesh);
         return; // 点击了房门就不处理其他逻辑
       }
-      if (name === "磨砂玻璃门") {
-        onClickGroundGlassDoor?.(mouseRaycasterIntersectedRef.value as Group);
+      if (name === "磨砂玻璃门板") {
+        onClickGroundGlassDoor?.(mouseRaycasterIntersectedRef.value as Mesh);
         return;
       }
-      if (name.endsWith("吊灯开关")) {
+      if (name.endsWith("吊灯开关底盒")) {
         if (viewModeRef.value === "roaming") {
           onClickCeilingLampSwitch?.(
-            mouseRaycasterIntersectedRef.value as Group,
+            mouseRaycasterIntersectedRef.value as Mesh,
             lampListRef?.value,
           );
           return;
@@ -130,17 +135,11 @@ export const useModeToggle = (
         return;
       }
       if (name.startsWith("窗帘左半边") || name.startsWith("窗帘右半边")) {
-        const curtain = mouseRaycasterIntersectedRef.value.parent;
-        if (curtain?.name === "窗帘") {
-          onClickCurtain?.(curtain as Group);
-          return;
-        }
-      } else if (name === "窗帘") {
-        onClickCurtain?.(mouseRaycasterIntersectedRef.value as Group);
+        onClickCurtain?.(mouseRaycasterIntersectedRef.value as Mesh);
         return;
       }
-      if (["冰箱上门", "冰箱下门"].includes(name)) {
-        onClickFridgeDoor?.(mouseRaycasterIntersectedRef.value as Group);
+      if (["冰箱门左半边", "冰箱门右半边"].includes(name)) {
+        onClickFridgeDoor?.(mouseRaycasterIntersectedRef.value as Mesh);
         return;
       }
     }
@@ -199,7 +198,7 @@ export const initModeToggle = (
   suspendedCeilingList: (Group | Mesh)[],
   lampList: Group[],
   lampSwitchList: Group[],
-  lightingStripLightMap: Record<string, RectAreaLight[]>,
+  lightStripLightingMap: Record<string, RectAreaLight[]>,
 ) => {
   // ===== 第一人称控制器(用于漫游模式) =====
   // 使用容器元素而不是renderer.domElement，避免与OrbitControls冲突
@@ -257,7 +256,7 @@ export const initModeToggle = (
           suspendedCeilingList,
           lampList,
           lampSwitchList,
-          lightingStripLightMap,
+          lightStripLightingMap,
         );
         break;
     }
@@ -458,35 +457,34 @@ export const pointerControlsMoveRender = (
     }
 
     // 保存当前位置用于碰撞检测
-    const oldPosition = camera.position.clone();
+    tempOldPosition.copy(camera.position);
 
     // 应用移动
     pointerControlsRef.value.moveRight(velocity.x);
     pointerControlsRef.value.moveForward(-velocity.z);
 
     // 碰撞检测：基于实际移动方向动态检测
-    const cameraPosition = camera.position;
-    const moveVector = new Vector3().subVectors(cameraPosition, oldPosition);
+    tempMoveVector.subVectors(camera.position, tempOldPosition);
 
     // 如果有实际移动，沿移动方向检测碰撞
-    if (moveVector.lengthSq() > 0.0001) {
-      const moveDirection = moveVector.clone().normalize();
+    if (tempMoveVector.lengthSq() > 0.0001) {
+      tempMoveDirection.copy(tempMoveVector.normalize());
 
       // 从旧位置沿移动方向发射射线
-      collisionRaycaster.set(oldPosition, moveDirection);
+      collisionRaycaster.set(tempOldPosition, tempMoveDirection);
       const intersections = collisionRaycaster.intersectObjects(
         pointerControlsIntersetObjects,
-        true,
+        false,
       );
 
       // 检查是否会在移动过程中碰撞
       if (
         intersections.length > 0 &&
         intersections[0].distance <
-          moveVector.length() + ROAMING_CONFIG.collisionDistance
+          tempMoveVector.length() + ROAMING_CONFIG.collisionDistance
       ) {
         // 如果发生碰撞,恢复到旧位置
-        cameraPosition.copy(oldPosition);
+        camera.position.copy(tempOldPosition);
       }
     }
 
@@ -504,7 +502,7 @@ export const handleModeToggle = (
   suspendedCeilingList: (Group | Mesh)[],
   lampList: Group[],
   lampSwitchList: Group[],
-  lightingStripLightMap: Record<string, RectAreaLight[]>,
+  lightStripLightingMap: Record<string, RectAreaLight[]>,
 ) => {
   //   e?.currentTarget?.blur(); // 点击后立即失焦，避免按下空格或回车键时触发点击事件（由于HTML标准的可访问性特性的存在）
   e?.stopPropagation(); // 阻止事件冒泡
@@ -512,15 +510,11 @@ export const handleModeToggle = (
     return; // 动画进行中不允许切换
   }
   const newMode = viewModeRef.value === "overview" ? "roaming" : "overview";
-  console.log("从", viewModeRef.value, "切换到", newMode);
-  console.log("轨道控制器当前状态:", orbitControlsRef.value?.enabled);
-
   viewModeRef.value = newMode;
 
   // 开始动画
   animatingRef.value = true;
   animationStartTimeRef.value = performance.now();
-  console.log("动画已启动，animatingRef.current =", animatingRef.value);
 
   if (newMode === "roaming") {
     // 切换到漫游模式
@@ -537,7 +531,7 @@ export const handleModeToggle = (
     // 将所有吊灯隐藏
     allCeilingLampsVisibleToggle?.(lampList, lampSwitchList, false);
     // 将所有灯带的光源隐藏(装饰背景板除外)
-    hideAllLightingStripLight(lightingStripLightMap);
+    hideAllLightStripLighting(lightStripLightingMap);
     // 重置移动状态
     moveState = {
       forward: false,

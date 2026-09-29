@@ -6,8 +6,9 @@ import { PerspectiveCamera, Vector2, Raycaster, Object3D } from "three";
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass.js";
 
 let frameCount = 0;
-const RAY_INTERVAL = 5; // 每 N 帧检测一次
+const RAY_INTERVAL = 6; // 每 N 帧检测一次
 const CROSSHAIR_RADIUS = 6; // 鼠标准星半径
+const screenCenter = new Vector2(0, 0); // 屏幕中心
 
 export const addCrosshair = (
   container: HTMLDivElement,
@@ -35,7 +36,7 @@ export const addCrosshair = (
   // 创建射线
   const raycaster = new Raycaster();
   raycasterRef.value = raycaster;
-  raycaster.far = 50; // 超过 50 个单位不检测
+  raycaster.far = 30; // 超过 30 个单位不检测
 };
 
 export const crosshairRender = (
@@ -70,7 +71,7 @@ export const crosshairRender = (
   if (frameCount % RAY_INTERVAL === 0) {
     const crosshairPosition =
       viewModeRef.value === "roaming"
-        ? new Vector2(0, 0) // 屏幕中心
+        ? screenCenter // 屏幕中心
         : new Vector2(
             ((mousePositionRef.value?.x || 0) / clientWidth) * 2 - 1,
             -((mousePositionRef.value?.y || 0) / clientHeight) * 2 + 1,
@@ -79,7 +80,7 @@ export const crosshairRender = (
 
     const hits = raycaster.intersectObjects(
       mouseRaycasterIntersectObjectsRef.value,
-      true,
+      false,
     );
     if (hits.length > 0) {
       // 检测到物体
@@ -89,32 +90,20 @@ export const crosshairRender = (
         while (!namedObj.name && namedObj.parent) {
           namedObj = namedObj.parent;
         }
-        // 将墙体、玻璃窗等加入鼠标射线检测是为了防止隔着这些物体高亮了可交互的物体
-        if (
-          namedObj.name &&
-          ![
-            "墙体",
-            "玻璃窗",
-            "垭口包边",
-            "餐边柜",
-            "冰箱",
-            "客厅柜",
-            "儿童衣柜",
-          ].includes(namedObj.name)
-        ) {
+        // 将墙体、玻璃窗加入鼠标射线检测是为了防止隔着这些物体高亮了可交互的物体
+        if (namedObj.name && !["墙体", "玻璃窗"].includes(namedObj.name)) {
           // 处理高亮切换
           if (mouseRaycasterIntersectedRef.value !== namedObj) {
             // 设置新的高亮
             if (
               ["冰箱门左半边", "冰箱门右半边"].includes(namedObj.name) &&
-              namedObj.parent
+              namedObj.parent?.parent
             ) {
-              outlinePass.selectedObjects = [namedObj.parent];
-              mouseRaycasterIntersectedRef.value = namedObj.parent;
+              outlinePass.selectedObjects = [namedObj.parent.parent];
             } else {
               outlinePass.selectedObjects = [namedObj];
-              mouseRaycasterIntersectedRef.value = namedObj;
             }
+            mouseRaycasterIntersectedRef.value = namedObj;
           }
         } else {
           // 没有瞄准任何可交互物体，清除高亮

@@ -8,14 +8,13 @@ import {
   Mesh,
   Group,
   Vector3,
-  Object3D,
   RectAreaLight,
 } from "three";
 import type { AssetManager } from "hooks/threejs/useInitialize";
 import {
   addBox,
   addCylinder,
-  addRoundLight,
+  addRoundLighting,
   generateHalfCylinderGeometry,
   generateQuarterCylinderGeometry,
   generateCurvedSurfaceRightAngledTriangularPrismGeometry,
@@ -57,14 +56,12 @@ const DIAPHRAGM_DEPTH = MIDDLE_PANEL_THICKNESS * 5;
 const addDecorateBackgroundPanel = (
   scene: Scene,
   assetManager: AssetManager,
-  pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
-  lightingStripLightMapRef: Ref<Record<string, RectAreaLight[]>>,
+  lightStripLightingMapRef: Ref<Record<string, RectAreaLight[]>>,
 ) => {
   const decorateBackgroundPanel = createDecorateBackgroundPanel(
     assetManager,
-    lightingStripLightMapRef,
+    lightStripLightingMapRef,
   );
-  pointerControlsIntersetObjectsRef.value.push(decorateBackgroundPanel);
   decorateBackgroundPanel.position.copy(TV_BACKGROUND_POSITON);
   scene.add(decorateBackgroundPanel);
 
@@ -332,7 +329,7 @@ const createDecorateBackgroundPanel = (
   decorateBackgroundPanelGroup.add(diaphragm);
 
   // 添加圆形射灯光源(对着下方的深色圆面照射)
-  addRoundLight(
+  addRoundLighting(
     decorateBackgroundPanelGroup,
     0,
     PANEL_HEIGHT / 2 + 0.3,
@@ -458,9 +455,8 @@ const addAllLightingStrip = (
     0.6 * Math.PI,
   );
   light3 && lightList.push(light3);
-  lightingStripLightMapRef.value[
-    LIGHT_GROUP_FIELD.DECORATE_BACKGROUND_PANEL
-  ] = lightList;
+  lightingStripLightMapRef.value[LIGHT_GROUP_FIELD.DECORATE_BACKGROUND_PANEL] =
+    lightList;
 };
 
 export default addDecorateBackgroundPanel;

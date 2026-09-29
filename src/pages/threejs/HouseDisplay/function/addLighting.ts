@@ -5,7 +5,7 @@ import { Scene, AmbientLight, DirectionalLight, HemisphereLight } from "three";
 
 const addLighting = (scene: Scene) => {
   // 环境光 - 提供柔和的基础照明（进一步增加强度）
-  const ambientLight = new AmbientLight(0xffffff, 0.5 * Math.PI); // 第二个参数intensity在v0.155版本后必须要乘以Math.PI
+  const ambientLight = new AmbientLight(0xffffff, 0.6 * Math.PI); // 第二个参数intensity在v0.155版本后必须要乘以Math.PI
   scene.add(ambientLight);
 
   // 主太阳光 - 从左上方（南面）斜照下来，模拟自然阳光（进一步增加强度）

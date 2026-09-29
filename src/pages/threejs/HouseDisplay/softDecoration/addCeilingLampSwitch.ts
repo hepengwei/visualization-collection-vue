@@ -265,9 +265,10 @@ const createSwitch = (assetManager: AssetManager, switchStatus = "OFF") => {
 
 // 吊灯开关点击后的回调
 export const onClickCeilingLampSwitch = (
-  ceilingLampSwitch: Group,
+  ceilingLampSwitchBackBox: Mesh,
   lampList?: Group[],
 ) => {
+  const ceilingLampSwitch = ceilingLampSwitchBackBox?.parent;
   if (ceilingLampSwitch && lampList && lampList?.length > 0) {
     const positionName = ceilingLampSwitch.name.substring(
       0,
@@ -283,7 +284,7 @@ export const onClickCeilingLampSwitch = (
         break;
       }
     }
-    ceilingLampSwitchToggle(ceilingLampSwitch, nextStatus);
+    ceilingLampSwitchToggle(ceilingLampSwitch as Group, nextStatus);
   }
 };
 

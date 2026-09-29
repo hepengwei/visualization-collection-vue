@@ -98,22 +98,22 @@ const createPhoneLight = (size: Vector2, pos: Vector3) => {
 };
 
 // 创建手机屏幕投影
-const createPhoneProjection = (pos: Vector3, videoTexture: VideoTexture) => {
-  const projection = new SpotLight(
-    0xffffff,
-    0.5 * Math.PI, // 第二个参数intensity在v0.155版本后必须要乘以Math.PI
-    5, // distance
-    Math.PI / 18, // angle
-    0.5, // penumbra（边缘柔化）
-    1, // decay
-  );
+// const createPhoneProjection = (pos: Vector3, videoTexture: VideoTexture) => {
+//   const projection = new SpotLight(
+//     0xffffff,
+//     0.5 * Math.PI, // 第二个参数intensity在v0.155版本后必须要乘以Math.PI
+//     5, // distance
+//     Math.PI / 18, // angle
+//     0.5, // penumbra（边缘柔化）
+//     1, // decay
+//   );
 
-  // 关键：把视频贴到聚光灯上
-  projection.map = videoTexture;
-  projection.position.set(pos.x, pos.y, pos.z + 0.02);
-  projection.target.position.set(pos.x, pos.y, 10); // 打向天花板
-  return projection;
-};
+//   // 关键：把视频贴到聚光灯上
+//   projection.map = videoTexture;
+//   projection.position.set(pos.x, pos.y, pos.z + 0.02);
+//   projection.target.position.set(pos.x, pos.y, 10); // 打向天花板
+//   return projection;
+// };
 
 // 电视屏幕点击后的回调
 export const onClickPhoneScreen = (video?: HTMLVideoElement | null) => {
