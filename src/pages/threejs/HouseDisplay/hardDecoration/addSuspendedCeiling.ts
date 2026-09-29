@@ -21,7 +21,7 @@ import {
 } from "./addHouseStructure";
 import { SUSPENDED_CEILING_HEIGHT, SIDEBOARD_DEPTH } from "./addHouseStructure";
 import { CURTAIN_DEPTH } from "../softDecoration/addCurtain";
-import { addLightStrip, addBox, addLightingRoundLight } from "../utils";
+import { addLightStrip, addBox, addRoundLight } from "../utils";
 
 type SuspendedCeilingType = "front" | "back" | "left" | "right";
 
@@ -289,7 +289,7 @@ const addSingleSuspendedCeiling = (
   let positionX = -length / 2 + gap / 2;
   for (let i = 0; i < downlightNum; i++) {
     // 创建并添加筒灯
-    addLightingRoundLight(
+    addRoundLight(
       suspendedCeilingGroup,
       assetManager,
       DOWNLIGHT_RADIUS,

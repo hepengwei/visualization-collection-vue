@@ -12,7 +12,8 @@ import {
   Object3D,
   Group,
   Raycaster,
-  RectAreaLight
+  RectAreaLight,
+  PointLight
 } from "three";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
@@ -25,7 +26,7 @@ import { useGlobalContext } from "hooks/useGlobalContext";
 import type { GlobalContext } from "hooks/useGlobalContext";
 import useInitialize from "hooks/threejs/useInitialize";
 import type { AssetManager } from 'hooks/threejs/useInitialize';
-import useDualComposer from './function/useDualComposer';
+import useComposer from './function/useComposer';
 import { generateSkyTexture, initAssetManager } from './utils';
 import {
   useModeToggle,
@@ -67,7 +68,6 @@ const sceneRef = shallowRef<Scene | null>(null);
 const cameraRef = shallowRef<PerspectiveCamera | null>(null);
 const orbitControlsRef = shallowRef<OrbitControls | null>(null); // 轨道控制器
 const mainComposerRef = shallowRef<EffectComposer | null>(null);
-const bloomComposerRef = shallowRef<EffectComposer | null>(null);
 const tvVideoRef = ref<HTMLVideoElement | null>(null); // 电视屏幕播放的视频
 const phoneVideoRef = ref<HTMLVideoElement | null>(null); // 手机屏幕播放的视频
 const phoneScreenRef = shallowRef<Mesh | null>(null); // 手机屏幕
@@ -78,13 +78,14 @@ const suspendedCeilingListRef = shallowRef<(Group | Mesh)[]>([]); // 所有的�
 const doorListRef = shallowRef<Mesh[]>([]); // 所有房门的列表
 const groundGlassDoorListRef = shallowRef<Group[]>([]); // 所有磨砂玻璃门的列表
 const lampListRef = shallowRef<Group[]>([]); // 所有吊灯的列表
+const lampLightingListRef = shallowRef<PointLight[]>([]); // 所有吊灯光源的列表
 const lampSwitchListRef = shallowRef<Group[]>([]); // 所有吊灯开关的列表
 const raycasterRef = shallowRef<Raycaster | null>(null); // 鼠标准星射线
 const mouseRaycasterIntersectObjectsRef = shallowRef<Object3D[]>([]); // 鼠标射线可接受的检测对象列表
 const mouseRaycasterIntersectedRef = shallowRef<Object3D | null>(null); // 当前鼠标射线命中的物体
 const curtainListRef = shallowRef<Group[]>([]); // 所有窗帘的列表
 const fridgeDoorListRef = shallowRef<Group[]>([]); // 冰箱门的列表
-const lightingStripLightMapRef = shallowRef<Record<string, RectAreaLight[]>>({}); // 所有要进行动态控制的灯带的光(按不同的物件划分不同的数组)
+const lightStripLightingMapRef = shallowRef<Record<string, RectAreaLight[]>>({}); // 所有要进行动态控制的灯带的光(按不同的物件划分不同的数组)
 
 const {
   viewModeRef,
@@ -195,15 +196,13 @@ const initializeHandle = (
     addTVBackground(
       scene,
       assetManager,
-      pointerControlsIntersetObjectsRef,
-      lightingStripLightMapRef,
+      lightStripLightingMapRef,
     )
 
     // 添加电视
     addTV(
       scene,
       assetManager,
-      pointerControlsIntersetObjectsRef,
       mouseRaycasterIntersectObjectsRef,
       tvVideoRef.value,
     )
@@ -212,9 +211,7 @@ const initializeHandle = (
     addSideboard(
       scene,
       assetManager,
-      pointerControlsIntersetObjectsRef,
-      mouseRaycasterIntersectObjectsRef,
-      lightingStripLightMapRef,
+      lightStripLightingMapRef,
     )
 
 
@@ -222,8 +219,7 @@ const initializeHandle = (
     addShoeCabinet(
       scene,
       assetManager,
-      pointerControlsIntersetObjectsRef,
-      lightingStripLightMapRef,
+      lightStripLightingMapRef,
     )
 
     // 添加所有房间吊灯
@@ -231,6 +227,7 @@ const initializeHandle = (
       scene,
       assetManager,
       lampListRef,
+      lampLightingListRef,
       lampSwitchListRef,
       mouseRaycasterIntersectObjectsRef
     );
@@ -248,7 +245,7 @@ const initializeHandle = (
       suspendedCeilingListRef.value,
       lampListRef.value,
       lampSwitchListRef.value,
-      lightingStripLightMapRef.value
+      lightStripLightingMapRef.value
     );
 
     // 添加鼠标准星
@@ -262,7 +259,6 @@ const initializeHandle = (
       scene,
       assetManager,
       curtainListRef,
-      pointerControlsIntersetObjectsRef,
       mouseRaycasterIntersectObjectsRef,
     );
 
@@ -271,32 +267,28 @@ const initializeHandle = (
       scene,
       assetManager,
       fridgeDoorListRef,
-      pointerControlsIntersetObjectsRef,
       mouseRaycasterIntersectObjectsRef,
     );
 
     // 添加哑光钢化玻璃白板
-    addGlassWhiteboard(scene, renderer, assetManager, pointerControlsIntersetObjectsRef);
+    addGlassWhiteboard(scene, renderer, assetManager);
 
     // 添加装饰背景板
-    addDecorateBackgroundPanel(scene, assetManager, pointerControlsIntersetObjectsRef, lightingStripLightMapRef);
+    addDecorateBackgroundPanel(scene, assetManager, lightStripLightingMapRef);
 
     // 添加客厅柜
     addLivingRoomCabinet(
       scene,
       assetManager,
-      pointerControlsIntersetObjectsRef,
-      mouseRaycasterIntersectObjectsRef,
-      lightingStripLightMapRef
+      lightStripLightingMapRef
     );
 
-    // 启用双后处理器架构
-    useDualComposer(
+    // 启用后处理器架构（单 composer，手动渲染场景替代 RenderPass）
+    useComposer(
       scene,
       camera,
       renderer,
       mainComposerRef,
-      bloomComposerRef,
       containerRef,
       outlinePassRef,
     );
@@ -349,8 +341,8 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
     camera,
     animatingRef,
     viewModeRef,
-    lightingStripLightMapRef.value,
-    lampListRef.value
+    lightStripLightingMapRef.value,
+    lampLightingListRef.value
   );
 
   // 鼠标准星渲染
@@ -365,11 +357,8 @@ const renderHandle = (scene: Scene, camera: PerspectiveCamera) => {
     mouseRaycasterIntersectedRef
   );
 
-  // Bloom效果渲染
-  camera.layers.set(1);
-  bloomComposerRef.value?.render();
-  camera.layers.enableAll();
-  mainComposerRef.value?.render();
+  // 后处理器渲染（Bloom + Outline + SMAA + Output）
+  (mainComposerRef.value as any)?.__customRender?.();
 
   return true;
 };
@@ -398,7 +387,7 @@ const onToggleViewMode = (e: any) => {
     suspendedCeilingListRef.value,
     lampListRef.value,
     lampSwitchListRef.value,
-    lightingStripLightMapRef.value
+    lightStripLightingMapRef.value
   )
 }
 </script>

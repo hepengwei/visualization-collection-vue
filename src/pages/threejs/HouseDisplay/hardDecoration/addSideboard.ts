@@ -8,7 +8,6 @@ import {
   Mesh,
   Group,
   Vector3,
-  Object3D,
   Color,
   DoubleSide,
   RectAreaLight,
@@ -20,7 +19,7 @@ import {
   addBox,
   addLightStrip,
   addRectAreaLighting,
-  addLightingRoundLight,
+  addRoundLight,
 } from "../utils";
 import {
   WALL_HEIGHT,
@@ -98,8 +97,6 @@ const GLASS_THICKNESS = 0.06; // 装饰挡板中间玻璃厚度
 const addSideboard = (
   scene: Scene,
   assetManager: AssetManager,
-  pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
-  mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
   lightingStripLightMapRef: Ref<Record<string, RectAreaLight[]>>,
 ) => {
   // 艺术玻璃材质
@@ -133,8 +130,6 @@ const addSideboard = (
 
   const sideboard = createSideboard(assetManager, lightingStripLightMapRef);
   sideboard.name = "餐边柜";
-  pointerControlsIntersetObjectsRef.value.push(sideboard);
-  mouseRaycasterIntersectObjectsRef.value.push(sideboard);
   sideboard.position.copy(SIDEBOARD_POSITON);
   scene.add(sideboard);
 };
@@ -745,7 +740,7 @@ const createSideboard = (
   );
 
   // 添加圆形筒灯
-  addLightingRoundLight(
+  addRoundLight(
     decorativeBafflePlate,
     assetManager,
     (width - 0.02) / 2,

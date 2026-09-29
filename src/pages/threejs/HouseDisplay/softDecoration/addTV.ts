@@ -42,14 +42,12 @@ let videoIsPlay = false;
 export const addTV = (
   scene: Scene,
   assetManager: AssetManager,
-  pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
   mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
   tvVideo?: HTMLVideoElement | null,
 ) => {
   const tv = createTV(assetManager, mouseRaycasterIntersectObjectsRef, tvVideo);
   tv.position.copy(TV_POSITION);
   tv.rotation.y = Math.PI;
-  pointerControlsIntersetObjectsRef.value?.push(tv);
   scene.add(tv);
   if (tvVideo) {
     safePlay(tvVideo);

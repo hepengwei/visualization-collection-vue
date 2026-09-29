@@ -106,12 +106,7 @@ const loadSofa = (scene: Scene, gltfLoader: GLTFLoader) => {
       sofa.scale.set(4.6, 3.6, 3);
       scene.add(sofa);
     },
-    (progress: Record<string, any>) => {
-      console.log(
-        "沙发加载进度:",
-        ((progress.loaded / progress.total) * 100).toFixed(2) + "%",
-      );
-    },
+    null,
     (error: any) => {
       console.error("沙发模型加载失败:", error);
     },
@@ -197,12 +192,7 @@ const loadBeds = (
       bed3.rotation.y = Math.PI / 2; // 向右旋转90度
       scene.add(bed3);
     },
-    (progress: Record<string, any>) => {
-      console.log(
-        "床加载进度:",
-        ((progress.loaded / progress.total) * 100).toFixed(2) + "%",
-      );
-    },
+    null,
     (error: any) => {
       console.error("床模型加载失败:", error);
     },
@@ -249,12 +239,7 @@ const loadTable = (
       // 添加花瓶
       addVase(table, assetManager, VASE_POSITION);
     },
-    (progress: Record<string, any>) => {
-      console.log(
-        "餐桌加载进度:",
-        ((progress.loaded / progress.total) * 100).toFixed(2) + "%",
-      );
-    },
+    null,
     (error: any) => {
       console.error("餐桌模型加载失败:", error);
     },
@@ -306,12 +291,7 @@ const loadPhone = (
         mouseRaycasterIntersectObjectsRef.value.push(phoneScreen);
       }
     },
-    (progress: Record<string, any>) => {
-      console.log(
-        "餐桌加载进度:",
-        ((progress.loaded / progress.total) * 100).toFixed(2) + "%",
-      );
-    },
+    null,
     (error: any) => {
       console.error("餐桌模型加载失败:", error);
     },

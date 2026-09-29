@@ -142,7 +142,6 @@ export const addCurtain = (
   scene: Scene,
   assetManager: AssetManager,
   curtainListRef: Ref<Group[]>,
-  pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
   mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
 ) => {
   // 白纱材质
@@ -180,10 +179,9 @@ export const addCurtain = (
       assetManager,
       { ...customParams, positon },
       curtainType,
+      mouseRaycasterIntersectObjectsRef,
     );
     curtainListRef.value.push(curtain);
-    pointerControlsIntersetObjectsRef.value.push(curtain);
-    mouseRaycasterIntersectObjectsRef.value.push(curtain);
     curtain.position.copy(positon);
     if (rotationY) {
       curtain.rotation.y = rotationY;
@@ -197,6 +195,7 @@ const createCurtain = (
   assetManager: AssetManager,
   customParams: Record<string, any>,
   curtainType: CurtainType,
+  mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
 ) => {
   const planeGeometry = assetManager.geometries.get("planeGeometry");
   const whiteVoileMaterial = assetManager.materials.get("whiteVoileMaterial");
@@ -234,6 +233,7 @@ const createCurtain = (
     curtainType === "voile" ? whiteVoileMaterial : clothMaterial,
   );
   leftWhiteVoile.name = "窗帘左半边";
+  mouseRaycasterIntersectObjectsRef.value?.push(leftWhiteVoile);
   leftWhiteVoile.renderOrder = 10; // 设置renderOrder，在玻璃窗之后渲染，这样在外面斜着透过玻璃窗才不会看不到半边
   leftWhiteVoile.frustumCulled = false; // 顶点变形后包围球失效，禁用视锥体剔除
   leftWhiteVoile.castShadow = true; // 启用阴影投射
@@ -249,6 +249,7 @@ const createCurtain = (
     curtainType === "voile" ? whiteVoileMaterial : clothMaterial,
   );
   rightWhiteVoile.name = "窗帘右半边";
+  mouseRaycasterIntersectObjectsRef.value?.push(rightWhiteVoile);
   rightWhiteVoile.renderOrder = 10; // 设置renderOrder，在玻璃窗之后渲染，这样在外面斜着透过玻璃窗才不会看不到半边
   rightWhiteVoile.frustumCulled = false; // 顶点变形后包围球失效，禁用视锥体剔除
   rightWhiteVoile.castShadow = true; // 启用阴影投射
@@ -269,6 +270,7 @@ const createCurtain = (
     completelyInvisibleMaterial,
   );
   leftCollisionPlane.name = "窗帘左半边碰撞检测面";
+  mouseRaycasterIntersectObjectsRef.value?.push(leftCollisionPlane);
   let leftCollisionPlaneWidth = expandedWidth + whiteVoileDoublicationWidth;
   let leftCollisionPlanePositionX = -expandedWidth / 2;
   if (switchStatus === "ON") {
@@ -289,6 +291,7 @@ const createCurtain = (
     completelyInvisibleMaterial,
   );
   rightCollisionPlane.name = "窗帘右半边碰撞检测面";
+  mouseRaycasterIntersectObjectsRef.value?.push(rightCollisionPlane);
   let rightCollisionPlaneWidth = expandedWidth + whiteVoileDoublicationWidth;
   let rightCollisionPlanePositionX = expandedWidth / 2;
   if (switchStatus === "ON") {
@@ -313,7 +316,8 @@ const createCurtain = (
 };
 
 // 窗帘点击后的回调
-export const onClickCurtain = (curtain: Group) => {
+export const onClickCurtain = (halfCurtain: Mesh) => {
+  const curtain = halfCurtain?.parent;
   // @ts-ignore
   if (curtain && !curtain.customParams.isAnimating) {
     // @ts-ignore

@@ -62,7 +62,6 @@ const DRAWER_COUNT = 4; // 抽屉数量
 const addTVBackground = (
   scene: Scene,
   assetManager: AssetManager,
-  pointerControlsIntersetObjectsRef: Ref<Object3D[]>,
   lightingStripLightMapRef: Ref<Record<string, RectAreaLight[]>>,
 ) => {
   const tvBackground = createTVBackground(
@@ -70,7 +69,6 @@ const addTVBackground = (
     lightingStripLightMapRef,
   );
   tvBackground.name = "电视背景";
-  pointerControlsIntersetObjectsRef.value.push(tvBackground);
   tvBackground.rotation.y = Math.PI;
   tvBackground.position.copy(TV_BACKGROUND_POSITON);
   scene.add(tvBackground);

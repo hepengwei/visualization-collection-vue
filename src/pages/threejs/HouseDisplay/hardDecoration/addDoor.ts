@@ -146,7 +146,7 @@ const createDoor = (
   mouseRaycasterIntersectObjectsRef: Ref<Object3D[]>,
 ) => {
   const boxGeometry = assetManager.geometries.get("boxGeometry");
-   const woodDoorMaterial = assetManager.materials.get("woodDoorMaterial");
+  const woodDoorMaterial = assetManager.materials.get("woodDoorMaterial");
   const woodBoardDarkMaterial = assetManager.materials.get(
     "woodBoardDarkMaterial",
   );
@@ -208,12 +208,12 @@ const createDoor = (
   doorPanelGroup.position.set(doorPanelGroupPositionX, 0, 0);
   const doorPanel = new Mesh(boxGeometry, woodDoorMaterial);
   doorPanel.name = "门板";
+  doorListRef.value.push(doorPanel);
+  mouseRaycasterIntersectObjectsRef.value.push(doorPanel);
   // @ts-ignore
   doorPanel.customParams = customParams;
   doorPanel.castShadow = true;
   doorPanel.receiveShadow = true;
-  doorListRef.value.push(doorPanel);
-  mouseRaycasterIntersectObjectsRef.value.push(doorPanel);
   doorPanel.scale.set(DOOR_WIDTH, DOOR_HEIGHT, DOOR_THICKNESS);
   let doorPanelPositionX = HALF_DOOR_WIDTH;
   if (handlePosition === "left") {
@@ -224,6 +224,8 @@ const createDoor = (
     DOOR_HEIGHT / 2,
     DOOR_THICKNESS / 2,
   );
+  doorPanel.receiveShadow = true;
+  doorPanel.castShadow = true;
   doorPanelGroup.add(doorPanel);
 
   /** 门把手部分*/
